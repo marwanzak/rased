@@ -103,14 +103,17 @@ class homeModel extends CI_Model {
 		$query = $this->db->get("subjects");
 		return $query->result();
 	}
-	
+
 	//insert user
-	public function insertUser($username,$password, $name, $role){
+	public function insertUser($username,$password, $salt, $name, $role, $active, $code){
 		return $this->db->insert("users", array(
 				"username" => $username,
 				"password" => $password,
 				"name" => $name,
-				"role" => $role
+				"role" => $role,
+				"active" => $active,
+				"code" => $code,
+				"salt" => $salt
 		));
 	}
 	//modify user.
@@ -290,20 +293,22 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert student.
-	public function insertStudent($username, $fullname, $class){
+	public function insertStudent($username, $fullname, $class, $idnum){
 		return $this->db->insert("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
-				"class" => $class
+				"class" => $class,
+				"idnum" => $idnum
 		));
 	}
 	//modify student.
-	public function modifyStudent($id, $username, $fullname, $class){
+	public function modifyStudent($id, $username, $fullname, $class, $idnum){
 		$this->db->where("id",$id);
 		return $this->db->update("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
-				"class" => $class
+				"class" => $class,
+				"idnum" => $idnum
 		));
 	}
 	//get student by id.
@@ -330,7 +335,7 @@ class homeModel extends CI_Model {
 		));
 	}
 	//get role by id.
-	public function getROle($id){
+	public function getRole($id){
 		$query = $this->db->get("roles", array("id"=>$id));
 		return $query->row();
 	}
@@ -348,12 +353,106 @@ class homeModel extends CI_Model {
 		));
 	}
 	//get all actions.
-	public function getAllaction(){
+	public function getAllAction(){
 		$query = $this->db->get("actions");
 		return $query->result();
 	}
+
+	//insert sitesettings.
+	public function insertSettings($smsusername, $smspassword, $year, $semester){
+		$salt = rand();
+		$password = $this->enPassword($smspassword,$salt);
+		return $this->db->insert("sitesettings", array(
+				"smsusername" => $smsusername,
+				"smspassword" => $password,
+				"smssalt" => $salt,
+				"year" => $year,
+				"semester" => $semester
+		));
+	}
+	//modify sitesettings.
+	public function modifySettings($id, $smsusername, $smspassword,
+			 $year, $semester){
+		$salt = rand();
+		$password = $this->enPassword($smspassword,$salt);
+		$this->db->where("id",$id);
+		return $this->db->update("sitesettings", array(
+				"smsusername" => $smsusername,
+				"smspassword" => $password,
+				"smssalt" => $salt,
+				"year" => $year,
+				"semester" => $semester
+		));
+	}
+	//get sitesettings by id.
+	public function getSettings(){
+		$query = $this->db->get("sitesettings");
+		return $query->row();
+	}
+	//insert note.
+	public function insertNote($type, $student, $subject, $note, $status,
+			 $datetime, $semester, $sold, $agreed, $username, $year){
+		return $this->db->insert("notes", array(
+				"type" 		=> $type,
+				"student" 	=> $sudent,
+				"subject" 	=> $subject,
+				"note" 		=> $note,
+				"status" 	=> $status,
+				"datetime" 	=> $datetime,
+				"semester" 	=> $semester,
+				"sold"		=> $sold,
+				"agreed" 	=> $agreed,
+				"username" 	=> $username,
+				"year" 		=> $year
+		));
+	}
+	//modify note.
+	public function modifyNote($id, $type, $student, $subject, $note, $status,
+			 $datetime, $semester, $sold, $agreed, $username, $year){
+		$this->db->where("id",$id);
+		return $this->db->update("role", array(
+				"type" 		=> $type,
+				"student" 	=> $sudent,
+				"subject" 	=> $subject,
+				"note" 		=> $note,
+				"status" 	=> $status,
+				"datetime" 	=> $datetime,
+				"semester" 	=> $semester,
+				"sold"		=> $sold,
+				"agreed" 	=> $agreed,
+				"username" 	=> $username,
+				"year" 		=> $year
+		));
+	}
+	//get note by id.
+	public function getNote($id){
+		$query = $this->db->get("notes", array("id"=>$id));
+		return $query->row();
+	}
+	//get all notes.
+	public function getAllNote(){
+		$query = $this->db->get("notes");
+		return $query->result();
+	}
+	//decode two ways password using pass with salt.
+	public function dePassword($password, $salt)
+	{
+		return rtrim(mcrypt_decrypt(
+				MCRYPT_RIJNDAEL_256,
+				md5($salt),
+				base64_decode($password),
+				MCRYPT_MODE_CBC,
+				md5(md5($salt))), "\0");
 	
-	
+	}
+	//encode two ways password using pass with salt.
+	public function enPassword($password, $salt)
+	{
+		return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256,
+				md5($salt), $password,
+				MCRYPT_MODE_CBC, md5(md5($salt))));
+	}
+
 	//Good array print function!
 	public function array_print($array = array()){
 		print "<pre>";
