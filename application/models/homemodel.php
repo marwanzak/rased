@@ -6,7 +6,7 @@ class homeModel extends CI_Model {
 	}
 
 	//insert level
-	public function insertlevel($level){
+	public function insertLevel($level){
 		return $this->db->insert("levels", array(
 				"level" => $level
 		));
@@ -105,25 +105,31 @@ class homeModel extends CI_Model {
 	}
 
 	//insert user
-	public function insertUser($username,$password, $salt, $name, $role, $active, $code){
+	public function insertUser($username,$pass, $name, $role, $active){
+		$salt = rand();
+		$code = rand();
+		$password = crypt($pass.$salt);
 		return $this->db->insert("users", array(
 				"username" => $username,
 				"password" => $password,
 				"name" => $name,
 				"role" => $role,
 				"active" => $active,
-				"code" => $code,
 				"salt" => $salt
 		));
 	}
 	//modify user.
-	public function modifyUser($id,$username,$password, $name, $role){
+	public function modifyUser($id,$username,$pass, $name, $role, $active){
+		$salt = rand();
+		$password = crypt($pass.$salt);
 		$this->db->where("id",$id);
 		return $this->db->update("users", array(
 				"username" => $username,
 				"password" => $password,
 				"name" => $name,
-				"role" => $role
+				"role" => $role,
+				"salt" => $salt,
+				"active" => $active
 		));
 	}
 	//get user by id.
@@ -330,7 +336,7 @@ class homeModel extends CI_Model {
 	//modify Role.
 	public function modifyRole($id, $role){
 		$this->db->where("id",$id);
-		return $this->db->update("role", array(
+		return $this->db->update("roles", array(
 				"role" => $role
 		));
 	}
@@ -391,7 +397,8 @@ class homeModel extends CI_Model {
 	}
 	//insert note.
 	public function insertNote($type, $student, $subject, $note, $status,
-			 $datetime, $semester, $sold, $agreed, $username, $year){
+			 $datetime, $sold, $agreed, $username){
+		$set = $this->getSettings();
 		return $this->db->insert("notes", array(
 				"type" 		=> $type,
 				"student" 	=> $sudent,
@@ -399,29 +406,30 @@ class homeModel extends CI_Model {
 				"note" 		=> $note,
 				"status" 	=> $status,
 				"datetime" 	=> $datetime,
-				"semester" 	=> $semester,
+				"semester" 	=> $set->semester,
 				"sold"		=> $sold,
 				"agreed" 	=> $agreed,
 				"username" 	=> $username,
-				"year" 		=> $year
+				"year" 		=> $set->year
 		));
 	}
 	//modify note.
 	public function modifyNote($id, $type, $student, $subject, $note, $status,
-			 $datetime, $semester, $sold, $agreed, $username, $year){
+			 $datetime, $sold, $agreed, $username){
+		$set = $this->getSettings();
 		$this->db->where("id",$id);
-		return $this->db->update("role", array(
+		return $this->db->update("notes", array(
 				"type" 		=> $type,
 				"student" 	=> $sudent,
 				"subject" 	=> $subject,
 				"note" 		=> $note,
 				"status" 	=> $status,
 				"datetime" 	=> $datetime,
-				"semester" 	=> $semester,
+				"semester" 	=> $set->semester,
 				"sold"		=> $sold,
 				"agreed" 	=> $agreed,
 				"username" 	=> $username,
-				"year" 		=> $year
+				"year" 		=> $set->year
 		));
 	}
 	//get note by id.
