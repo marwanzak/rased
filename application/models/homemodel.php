@@ -460,6 +460,30 @@ class homeModel extends CI_Model {
 				md5($salt), $password,
 				MCRYPT_MODE_CBC, md5(md5($salt))));
 	}
+	//replace message with variables passed
+	public function replaceMsg($student, $message)
+	{
+		$student = $this->getStudent($student);
+		$query = $this->db->query("SELECT RA_LEVELS.level,RA_CLASSES.class,RA_GRADES.grade,RA_USERS.name,RA_STUDENTS.fullname FROM RA_STUDENTS LEFT JOIN
+				(RA_LEVELS,RA_CLASSES,RA_GRADES,RA_USERS)
+				ON (RA_CLASSES.ID = ".$student->class." AND
+				RA_GRADES.ID = RA_CLASSES.GRADE AND
+				RA_USERS.ID = RA_STUDENTS.USERNAME AND
+				RA_LEVELS.ID = RA_GRADES.LEVEL)
+				");
+		 $row = $query->row();
+		$vars = array("$$", "&&", "^^", "**", "%%");
+		$values = array($row->fullname, $row->name,
+				$row->level, $row->grade,
+				$row->class
+		);
+		return $new_msg = str_replace($vars, $values, $message);
+	}
+	public function getWhere($table_where,$array_where)
+	{
+		$this->db->from($table_where)->where($array_where);
+		return $this->db->get();
+	}
 
 	//Good array print function!
 	public function array_print($array = array()){

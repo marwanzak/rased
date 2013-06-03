@@ -9,6 +9,7 @@ class home extends CI_Controller {
 		$this->load->view('header');
 		$this->load->view('body');
 		$this->load->view('footer');
+		
 	}
 	
 	//
