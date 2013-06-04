@@ -464,7 +464,9 @@ class homeModel extends CI_Model {
 	public function replaceMsg($student, $message)
 	{
 		$student = $this->getStudent($student);
-		$query = $this->db->query("SELECT RA_LEVELS.level,RA_CLASSES.class,RA_GRADES.grade,RA_USERS.name,RA_STUDENTS.fullname FROM RA_STUDENTS LEFT JOIN
+		$query = $this->db->query("SELECT RA_LEVELS.level,RA_CLASSES.class,
+				RA_GRADES.grade,RA_USERS.name,RA_STUDENTS.fullname FROM
+				RA_STUDENTS LEFT JOIN
 				(RA_LEVELS,RA_CLASSES,RA_GRADES,RA_USERS)
 				ON (RA_CLASSES.ID = ".$student->class." AND
 				RA_GRADES.ID = RA_CLASSES.GRADE AND
