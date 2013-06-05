@@ -25,3 +25,4 @@ $lang["body"] = "محتوى";
 $lang["note"] = "الملاحظة";
 $lang["message"] = "الرسالة";
 $lang["idnum"] = "الرقم الوطني";
+$lang["without"] = "بدون";
