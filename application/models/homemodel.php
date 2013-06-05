@@ -168,20 +168,24 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert default numbers and emails
-	public function insertDef($username,$number,$email){
+	public function insertDef($username,$number1,$number2,$email1,$email2){
 		return $this->db->insert("defaultnumemail", array(
 				"username" => $username,
-				"number" => $number,
-				"email" => $email
+				"email1" => $email1,
+				"email2" => $email2,
+				"number1" => $number1,
+				"number2" => $number2
 		));
 	}
 	//modify default numbers and mails.
-	public function modifyDef($id,$username,$number, $email){
+	public function modifyDef($id,$username,$number1,$number2,$email1,$email2){
 		$this->db->where("id",$id);
 		return $this->db->update("defaultnumemail", array(
 				"username" => $username,
-				"number" => $number,
-				"email" => $email
+				"email1" => $email1,
+				"email2" => $email2,
+				"number1" => $number1,
+				"number2" => $number2
 		));
 	}
 	//get defaults by id.
@@ -351,7 +355,8 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert action.
-	public function insertAction($username, $action, $datetime){
+	public function insertAction($username, $action){
+		$datetime = $this->getTimeDate();
 		return $this->db->insert("actions", array(
 				"username" => $username,
 				"action" => $action,
@@ -378,7 +383,7 @@ class homeModel extends CI_Model {
 	}
 	//modify sitesettings.
 	public function modifySettings($id, $smsusername, $smspassword,
-			 $year, $semester){
+			$year, $semester){
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
 		$this->db->where("id",$id);
@@ -397,7 +402,7 @@ class homeModel extends CI_Model {
 	}
 	//insert note.
 	public function insertNote($type, $student, $subject, $note, $status,
-			 $datetime, $sold, $agreed, $username){
+			$datetime, $sold, $agreed, $username){
 		$set = $this->getSettings();
 		return $this->db->insert("notes", array(
 				"type" 		=> $type,
@@ -415,7 +420,7 @@ class homeModel extends CI_Model {
 	}
 	//modify note.
 	public function modifyNote($id, $type, $student, $subject, $note, $status,
-			 $datetime, $sold, $agreed, $username){
+			$datetime, $sold, $agreed, $username){
 		$set = $this->getSettings();
 		$this->db->where("id",$id);
 		return $this->db->update("notes", array(
@@ -451,7 +456,7 @@ class homeModel extends CI_Model {
 				base64_decode($password),
 				MCRYPT_MODE_CBC,
 				md5(md5($salt))), "\0");
-	
+
 	}
 	//encode two ways password using pass with salt.
 	public function enPassword($password, $salt)
@@ -473,7 +478,7 @@ class homeModel extends CI_Model {
 				RA_USERS.ID = RA_STUDENTS.USERNAME AND
 				RA_LEVELS.ID = RA_GRADES.LEVEL)
 				");
-		 $row = $query->row();
+		$row = $query->row();
 		$vars = array("$$", "&&", "^^", "**", "%%");
 		$values = array($row->fullname, $row->name,
 				$row->level, $row->grade,
@@ -485,6 +490,12 @@ class homeModel extends CI_Model {
 	{
 		$this->db->from($table_where)->where($array_where);
 		return $this->db->get();
+	}
+
+	//get now time in Ryadh
+	public function getTimeDate(){
+		date_default_timezone_set('Asia/Riyadh');
+		return date("Y-m-d H:i");		
 	}
 
 	//Good array print function!

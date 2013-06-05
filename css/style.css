@@ -5,3 +5,11 @@
 body{
 	
 }
+
+label{
+	width:150px;
+	float:right;
+}
+input:not([type="radio"]),select{
+	display:block;
+}

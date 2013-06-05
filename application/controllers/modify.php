@@ -34,7 +34,7 @@ class modify extends CI_Controller {
 	}
 	public function modifyDef(){
 		echo $this->homemodel->modifyDef($_POST["id"], $_POST["username"],
-				$_POST["number"], $_POST["email"]);
+				$_POST["number1"], $_POST["number2"], $_POST["email1"], $_POST["email2"]);
 	}
 	public function modifyNotify(){
 		echo $this->homemodel->modifyUser($_POST["id"], $_POST["username"],

@@ -31,7 +31,7 @@ class insert extends CI_Controller {
 	}
 	public function insertDef(){
 		echo $this->homemodel->insertDef($_POST["username"],
-				$_POST["number"],$_POST["email"]);
+				$_POST["number1"],$_POST["number2"], $_POST["email1"], $_POST["email2"]);
 	}
 	public function insertNotify(){
 		echo $this->homemodel->insertNotify($_POST["username"],
@@ -57,7 +57,7 @@ class insert extends CI_Controller {
 	}
 	public function insertAction(){
 		echo $this->homemodel->insertAction($_POST["usename"],
-				$_POST["action"], $_POST["datetime"]);
+				$_POST["action"]);
 	}
 	public function insertSettings(){
 		echo $this->homemodel->insertSettings($_POST["smsusername"],

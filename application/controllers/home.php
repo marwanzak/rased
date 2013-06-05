@@ -18,7 +18,9 @@ class home extends CI_Controller {
 				);
 		$this->load->view('header');
 		$this->load->view('body');
-		$this->load->view('footer', $data);
+		$this->load->view('insert', $data);
+		$this->load->view('modify');
+		$this->load->view('footer');
 		
 	}
 	
