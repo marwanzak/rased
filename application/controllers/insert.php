@@ -57,7 +57,7 @@ class insert extends CI_Controller {
 	}
 	public function insertAction(){
 		echo $this->homemodel->insertAction($_POST["usename"],
-				$_POST["action"]);
+				$_POST["action"], $_POST["type"]);
 	}
 	public function insertSettings(){
 		echo $this->homemodel->insertSettings($_POST["smsusername"],

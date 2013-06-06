@@ -20,7 +20,7 @@ class homeModel extends CI_Model {
 	}
 	//get level by id.
 	public function getLevel($id){
-		$query = $this->db->get("levels", array("id"=>$id));
+		$query = $this->db->get_where("levels", array("id"=>$id));
 		return $query->row();
 	}
 	//get all levels.
@@ -45,7 +45,7 @@ class homeModel extends CI_Model {
 	}
 	//get grade by id.
 	public function getGrade($id){
-		$query = $this->db->get("grades", array("id"=>$id));
+		$query = $this->db->get_where("grades", array("id"=>$id));
 		return $query->row();
 	}
 	//get all grades.
@@ -70,7 +70,7 @@ class homeModel extends CI_Model {
 	}
 	//get class by id.
 	public function getClass($id){
-		$query = $this->db->get("classes", array("id"=>$id));
+		$query = $this->db->get_where("classes", array("id"=>$id));
 		return $query->row();
 	}
 	//get all classes.
@@ -95,7 +95,7 @@ class homeModel extends CI_Model {
 	}
 	//get subject by id.
 	public function getSubject($id){
-		$query = $this->db->get("subjects", array("id"=>$id));
+		$query = $this->db->get_where("subjects", array("id"=>$id));
 		return $query->row();
 	}
 	//get all subjects.
@@ -134,7 +134,7 @@ class homeModel extends CI_Model {
 	}
 	//get user by id.
 	public function getUser($id){
-		$query = $this->db->get("users", array("id"=>$id));
+		$query = $this->db->get_where("users", array("id"=>$id));
 		return $query->row();
 	}
 	//get all users.
@@ -159,7 +159,7 @@ class homeModel extends CI_Model {
 	}
 	//get permissions by id.
 	public function getPermissions($id){
-		$query = $this->db->get("permissions", array("id"=>$id));
+		$query = $this->db->get_where("permissions", array("id"=>$id));
 		return $query->row();
 	}
 	//get all permissions.
@@ -190,7 +190,7 @@ class homeModel extends CI_Model {
 	}
 	//get defaults by id.
 	public function getDef($id){
-		$query = $this->db->get("defaultnumemail", array("id"=>$id));
+		$query = $this->db->get_where("defaultnumemail", array("id"=>$id));
 		return $query->row();
 	}
 	//get all defaults.
@@ -221,7 +221,7 @@ class homeModel extends CI_Model {
 	}
 	//get notify report by id.
 	public function getNotify($id){
-		$query = $this->db->get("notifyreport", array("id"=>$id));
+		$query = $this->db->get_where("notifyreport", array("id"=>$id));
 		return $query->row();
 	}
 	//get all defaults.
@@ -246,7 +246,7 @@ class homeModel extends CI_Model {
 	}
 	//get note type by id.
 	public function getNoteType($id){
-		$query = $this->db->get("notestypes", array("id"=>$id));
+		$query = $this->db->get_where("notestypes", array("id"=>$id));
 		return $query->row();
 	}
 	//get all Notes types.
@@ -269,7 +269,7 @@ class homeModel extends CI_Model {
 	}
 	//get ready message by id.
 	public function getReady($id){
-		$query = $this->db->get("readymessages", array("id"=>$id));
+		$query = $this->db->get_where("readymessages", array("id"=>$id));
 		return $query->row();
 	}
 	//get all ready messages.
@@ -294,7 +294,7 @@ class homeModel extends CI_Model {
 	}
 	//get morning appearance by id.
 	public function getMorning($id){
-		$query = $this->db->get("morning", array("id"=>$id));
+		$query = $this->db->get_where("morning", array("id"=>$id));
 		return $query->row();
 	}
 	//get all morning appearance.
@@ -323,7 +323,7 @@ class homeModel extends CI_Model {
 	}
 	//get student by id.
 	public function getStudent($id){
-		$query = $this->db->get("students", array("id"=>$id));
+		$query = $this->db->get_where("students", array("id"=>$id));
 		return $query->row();
 	}
 	//get all students.
@@ -346,7 +346,7 @@ class homeModel extends CI_Model {
 	}
 	//get role by id.
 	public function getRole($id){
-		$query = $this->db->get("roles", array("id"=>$id));
+		$query = $this->db->get_where("roles", array("id"=>$id));
 		return $query->row();
 	}
 	//get all roles.
@@ -355,12 +355,13 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert action.
-	public function insertAction($username, $action){
+	public function insertAction($username, $action, $type){
 		$datetime = $this->getTimeDate();
 		return $this->db->insert("actions", array(
 				"username" => $username,
 				"action" => $action,
-				"datetime" => $datetime
+				"datetime" => $datetime,
+				"type" => $type
 		));
 	}
 	//get all actions.
@@ -439,7 +440,7 @@ class homeModel extends CI_Model {
 	}
 	//get note by id.
 	public function getNote($id){
-		$query = $this->db->get("notes", array("id"=>$id));
+		$query = $this->db->get_where("notes", array("id"=>$id));
 		return $query->row();
 	}
 	//get all notes.

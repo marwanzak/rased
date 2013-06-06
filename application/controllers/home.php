@@ -6,13 +6,12 @@ class home extends CI_Controller {
 		$this->lang->load("arabic", "arabic");
 
 	}
-	public function index($table = "")
+	public function index($table = "ra_grades")
 	{
 		$body = array();
 		$query = "";
 		$this->load->view('header');
 		$table_data = $this->tablemodel->getTable($table);
-		$this->homemodel->array_print($table_data);
 		$this->load->view('body',$table_data);
 		$data = array(
 				"levels" => $this->homemodel->getAllLevel(),
