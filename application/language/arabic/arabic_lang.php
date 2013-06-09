@@ -28,3 +28,6 @@ $lang["idnum"] = "الرقم الوطني";
 $lang["datetime"] = "الوقت والتاريخ";
 $lang["action"] = "العملية";
 $lang["without"] = "بدون";
+$lang["gaurd"] = "ولي الأمر";
+$lang["modify"] = "تعديل";
+$lang["repassword"] = "أعد كتابة كلمة المرور";

@@ -18,4 +18,10 @@ input:not([type="radio"]),select{
 	border:1px solid black;
 	display:none;
 }
+.redalert{
+	border:1px solid red;
+}
+.greenalert{
+	border:1px solid green;
+}
 

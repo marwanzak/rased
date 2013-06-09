@@ -4,7 +4,7 @@
 		action="http://<?= base_url() ?>insert/insertLevel" method="post">
 		<input type = "hidden" id = "hidden_level" name = "id"/>
 		<label><?= lang("level") ?> :</label><input type="text"
-			id="add_level_input" name="level" /> <input type="submit"
+			id="add_level_input" name="level" class = "required" /> <input type="submit"
 			value="<?= lang("add"); ?>" />
 	</form>
 </div>
@@ -16,7 +16,7 @@
 				<input type = "hidden" id = "hidden_grade" name = "id"/>
 		
 		<label><?= lang("level") ?> :</label><select id="grade_levels"
-			class="levels_select" name="level">
+			class="levels_select" name="level" class = "required">
 			<option value="">
 				<?= lang("choose_level")?>
 			</option>
@@ -27,7 +27,7 @@ foreach($levels as $level){?>
 			</option>
 			<?php }?>
 		</select><label><?= lang("grade") ?> :</label> <input type="text"
-			id="add_grade_input" name="grade" /> <input type="submit"
+			id="add_grade_input" name="grade" class = "required" /> <input type="submit"
 			value="<?= lang("add"); ?>" />
 	</form>
 </div>
@@ -55,7 +55,7 @@ foreach($levels as $level){?>
 				<?= lang("choose_grade") ?>
 			</option>
 		</select> <label><?= lang("class") ?> :</label><input type="text"
-			id="add_class_input" name="class" /> <input type="submit"
+			id="add_class_input" name="class" class = "required" /> <input type="submit"
 			value="<?= lang("add"); ?>" />
 	</form>
 </div>
@@ -83,7 +83,7 @@ foreach($levels as $level){?>
 				<?= lang("choose_grade") ?>
 			</option>
 		</select><label><?= lang("subject") ?> :</label> <input type="text"
-			id="add_grade_input" name="subject" /> <input type="submit"
+			id="add_subject_input" name="subject" class = "required" /> <input type="submit"
 			value="<?= lang("add"); ?>" />
 	</form>
 </div>
@@ -96,9 +96,12 @@ foreach($levels as $level){?>
 				<input type = "hidden" id = "hidden_user" name = "id"/>
 		
 		<label><?= lang("username") ?> :</label><input type="text"
-			name="username" /> <label><?= lang("fullname") ?> :</label><input
-			type="text" name="name" /> <label><?= lang("password") ?> :</label><input
-			type="password" name="password" /> <label><?= lang("role") ?> :</label><select
+			name="username" class = "required" /> <label><?= lang("fullname") ?> :</label><input
+			type="text" name="name" class = "required" /> <label><?= lang("password") ?> :</label><input
+			type="password" name="password" id = "add_user_password" class = "required" />
+			<label><?= lang("repassword") ?> :</label><input
+			type="password" name="" id = "add_user_repassword" class = "required" />
+			 <label><?= lang("role") ?> :</label><select
 			id="add_user_roles" class="roles_select" name="role">
 			<option value="">
 				<?= lang("choose_role")?>
@@ -135,9 +138,9 @@ foreach($users as $user){?>
 			</option>
 			<?php }?>
 		</select> <label><?= lang("phone") ?> 1 :</label><input type="text"
-			name="number1" /> <label><?= lang("phone") ?> 2 :</label><input
+			name="number1" class = "required" /> <label><?= lang("phone") ?> 2 :</label><input
 			type="text" name="number2" /> <label><?= lang("email") ?> 1 :</label><input
-			type="text" name="email1" /> <label><?= lang("email") ?> 2 :</label><input
+			type="text" name="email1"  /> <label><?= lang("email") ?> 2 :</label><input
 			type="text" name="email2" /> <input type="submit"
 			value="<?= lang("add")?>" />
 	</form>
@@ -162,9 +165,9 @@ foreach($levels as $level){?>
 			</option>
 			<?php }?>
 		</select> <label><?= lang("type"). " " . lang("note") ?> :</label><input
-			type="text" name="type" /> <label><?= lang("body"). " " . lang("note") ?>
+			type="text" name="type" class = "required" /> <label><?= lang("body"). " " . lang("note") ?>
 			:</label>
-		<textarea cols=30 rows=7 name="body"></textarea>
+		<textarea cols=30 rows=7 name="body" class = "required"></textarea>
 		<input type="submit" value="<?= lang("add")?>" />
 	</form>
 </div>
@@ -176,7 +179,7 @@ foreach($levels as $level){?>
 				<input type = "hidden" id = "hidden_ready" name = "id"/>
 		
 		<label><?= lang("message") ?> </label>
-		<textarea cols=30 rows=7 name="message"></textarea>
+		<textarea cols=30 rows=7 name="message" class = "required"></textarea>
 		<input type="submit" value="<?= lang("add") ?>" />
 	</form>
 </div>
@@ -186,7 +189,7 @@ foreach($levels as $level){?>
 		action="http://<?= base_url() ?>insert/insertRole" method="post">
 				<input type = "hidden" id = "hidden_role" name = "id"/>
 		
-		<label><?= lang("role") ?> </label><input type="text" name="role" /> <input
+		<label><?= lang("role") ?> </label><input type="text" name="role" class = "required" /> <input
 			type="submit" value="<?= lang("add") ?>" />
 	</form>
 </div>
@@ -230,7 +233,7 @@ foreach($levels as $level){?>
 				<?= lang("choose_class") ?>
 			</option>
 		</select> <label><?= lang("idnum") ?> :</label><input type="text"
-			name="idnum" /> <label><?= lang("fullname") ?> :</label><input
+			name="idnum" onkeypress="return isNumberKey(event)" class = "required" /> <label><?= lang("fullname") ?> :</label><input
 			type="text" name="fullname" /> <input type="submit"
 			value="<?= lang("add")?>" />
 	</form>

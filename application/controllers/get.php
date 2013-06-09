@@ -9,16 +9,20 @@ class get extends CI_Controller {
 
 	}
 	public function getLevel(){
-		echo $this->homemodel->getLevel($_POST["id"]);
+		echo json_encode($this->homemodel->getLevel($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllLevel(){
-		echo $this->homemodel->getAllLevel();
+		echo json_encode($this->homemodel->getAllLevel(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getGrade(){
-		echo $this->homemodel->getGrade($_POST["id"]);
+		echo json_encode($this->homemodel->getGrade($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllGrade(){
-		echo $this->homemodel->getAllGrade();
+		echo json_encode($this->homemodel->getAllGrade(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getClass(){
 		echo $this->homemodel->getClass($_POST["id"]);
@@ -98,4 +102,107 @@ class get extends CI_Controller {
 	public function getAllNote(){
 		echo $this->homemodel->getAllNote();
 	}
+	//get level grades json data type
+	public function getLevelGrades(){
+		$query = $this->db->get_where("ra_grades", array(
+				"level"=>$_POST["level"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	//get grade classes json data type
+	public function getGradeClasses(){
+		$query = $this->db->get_where("ra_classes", array(
+				"grade"=>$_POST["grade"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	//get grade subjects json data type
+	public function getGradeSubjects(){
+		$query = $this->db->get_where("ra_subjects", array(
+				"grade"=>$_POST["grade"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get class students json data type
+	public function getClassStudents(){
+		$query = $this->db->get_where("ra_students", array(
+				"class"=>$_POST["class"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get user students json data type
+	public function getUserStudents(){
+		$query = $this->db->get_where("ra_students", array(
+				"username"=>$_POST["username"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get user actions json data type
+	public function getUserActions(){
+		$query = $this->db->get_where("ra_actions", array(
+				"username"=>$_POST["username"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get user defaults json data type
+	public function getUserDefaults(){
+		$query = $this->db->get_where("ra_defaultnumemail", array(
+				"username"=>$_POST["username"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get user permissions json data type
+	public function getUserPermissions(){
+		$query = $this->db->get_where("ra_permissions", array(
+				"username"=>$_POST["username"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get user notes json data type
+	public function getUserNotes(){
+		$query = $this->db->get_where("ra_notes", array(
+				"username"=>$_POST["username"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get student notes json data type
+	public function getStudentNotes(){
+		$query = $this->db->get_where("ra_notes", array(
+				"student"=>$_POST["student"]
+		));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get users for validate inserting username in forms
+	public function getUserNames(){
+		$this->db->select("username");
+		$query = $this->db->get_where("ra_users", array("username" => $_POST["username"]));
+		echo ($query->num_rows()>0)? "0":"1";
+	}
+	
+	//get students for validate inserting student id number in forms
+	public function getStudentId(){
+		$this->db->select("idnum");
+		$query = $this->db->get_where("ra_students", array("idnum" => $_POST["idnum"]));
+		echo ($query->num_rows()>0)? "0":"1";
+	}
+	
+	
 }

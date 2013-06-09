@@ -49,7 +49,7 @@ class insert extends CI_Controller {
 				$_POST["datetime"]);
 	}
 	public function insertStudent(){
-		echo $this->homemodel->insertDef($_POST["username"],
+		echo $this->homemodel->insertStudent($_POST["username"],
 				$_POST["fullname"],$_POST["class"], $_POST["idnum"]);
 	}
 	public function insertRole(){

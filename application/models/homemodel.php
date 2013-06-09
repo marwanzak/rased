@@ -277,6 +277,31 @@ class homeModel extends CI_Model {
 		$query = $this->db->get("readymessages");
 		return $query->result();
 	}
+	//insert note prob message
+	public function insertProb($level,$type){
+		return $this->db->insert("notesprob", array(
+				"level" => $level,
+				"type" => $type
+		));
+	}
+	//modify note prob message.
+	public function modifyProb($id,$level, $type){
+		$this->db->where("id",$id);
+		return $this->db->update("notesprob", array(
+				"level" => $level,
+				"type" => $type
+		));
+	}
+	//get note prob by id.
+	public function getProb($id){
+		$query = $this->db->get_where("notesprob", array("id"=>$id));
+		return $query->row();
+	}
+	//get all notes probs.
+	public function getAllProb(){
+		$query = $this->db->get("notesprob");
+		return $query->result();
+	}
 	//insert morning appearance.
 	public function insertMorning($student, $datetime){
 		return $this->db->insert("morning", array(
@@ -496,7 +521,68 @@ class homeModel extends CI_Model {
 	//get now time in Ryadh
 	public function getTimeDate(){
 		date_default_timezone_set('Asia/Riyadh');
-		return date("Y-m-d H:i");		
+		return date("Y-m-d H:i");
+	}
+
+	//delete rows from a table
+	public function delete($related , $table, $rows = array()){
+		if( ! empty ( $rows ) )
+		{
+			switch($related){
+				case "delete":
+					switch($table)
+					{
+						case "ra_levels":
+							break;
+						case "ra_grades":
+							break;
+						case "ra_classes":
+							break;
+						case "ra_users":
+							break;
+						case "ra_students":
+							break;
+						case "ra_notesprob":
+							break;
+					}
+					break;
+				case "replace":
+					switch($table)
+					{
+						case "ra_levels":
+							break;
+						case "ra_grades":
+							break;
+						case "ra_classes":
+							break;
+						case "ra_users":
+							break;
+						case "ra_students":
+							break;
+						case "ra_notesprob":
+							break;
+					}
+					break;
+					case "null":
+						switch($table)
+						{
+							case "ra_levels":
+								break;
+							case "ra_grades":
+								break;
+							case "ra_classes":
+								break;
+							case "ra_users":
+								break;
+							case "ra_students":
+								break;
+							case "ra_notesprob":
+								break;
+						}
+						break;
+						
+			}
+		}
 	}
 
 	//Good array print function!
