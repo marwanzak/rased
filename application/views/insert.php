@@ -2,7 +2,7 @@
 <div id="add_level_dialog" class="dialog_div">
 	<form id="add_level_form"
 		action="http://<?= base_url() ?>insert/insertLevel" method="post">
-		<input type = "hidden" id = "hidden_level" name = "id"/>
+		<input type = "hidden" id = "hidden_ra_levels" name = "id"/>
 		<label><?= lang("level") ?> :</label><input type="text"
 			id="add_level_input" name="level" class = "required" /> <input type="submit"
 			value="<?= lang("add"); ?>" />
@@ -13,7 +13,7 @@
 <div id="add_grade_dialog" class="dialog_div">
 	<form id="add_grade_form"
 		action="http://<?= base_url() ?>insert/insertGrade" method="post">
-				<input type = "hidden" id = "hidden_grade" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_grades" name = "id"/>
 		
 		<label><?= lang("level") ?> :</label><select id="grade_levels"
 			class="levels_select" name="level" class = "required">
@@ -36,7 +36,7 @@ foreach($levels as $level){?>
 <div id="add_class_dialog" class="dialog_div">
 	<form id="add_class_form"
 		action="http://<?= base_url() ?>insert/insertClass" method="post">
-				<input type = "hidden" id = "hidden_class" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_classes" name = "id"/>
 		
 		<label><?= lang("level") ?> :</label><select id="class_levels"
 			class="levels_select" name="">
@@ -64,7 +64,7 @@ foreach($levels as $level){?>
 <div id="add_subject_dialog" class="dialog_div">
 	<form id="add_subject_form"
 		action="http://<?= base_url() ?>insert/insertSubject" method="post">
-				<input type = "hidden" id = "hidden_subject" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_subjects" name = "id"/>
 		
 		<label><?= lang("level") ?> :</label><select id="subject_levels"
 			class="levels_select" name="">
@@ -93,7 +93,7 @@ foreach($levels as $level){?>
 <div id="add_user_dialog" class="dialog_div">
 	<form id="add_user_form"
 		action="http://<?= base_url()?>insert/insertUser" method="post">
-				<input type = "hidden" id = "hidden_user" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_users" name = "id"/>
 		
 		<label><?= lang("username") ?> :</label><input type="text"
 			name="username" class = "required" /> <label><?= lang("fullname") ?> :</label><input
@@ -124,7 +124,7 @@ foreach($roles as $role){?>
 <div id="add_def_dialog" class="dialog_div">
 	<form id="add_def_form"
 		action="http://<?= base_url() ?>insert/insertDef" method="post">
-				<input type = "hidden" id = "hidden_def" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_defaultnumemail" name = "id"/>
 		
 		<label><?= lang("user") ?> :</label><select id="add_def_users"
 			class="users_select" name="username">
@@ -151,7 +151,7 @@ foreach($users as $user){?>
 <div id="add_notetype_dialog" class="dialog_div">
 	<form id="add_notetype_form"
 		action="http://<?= base_url() ?>insert/insertNoteType" method="post">
-				<input type = "hidden" id = "hidden_notetype" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_notestypes" name = "id"/>
 		
 		<label><?= lang("level") ?> :</label><select id="add_notetype_levels"
 			class="levels_select" name="level">
@@ -176,7 +176,7 @@ foreach($levels as $level){?>
 <div id="add_ready_dialog" class="dialog_div">
 	<form id="add_ready_form"
 		action="http://<?= base_url() ?>insert/insertReady" method="post">
-				<input type = "hidden" id = "hidden_ready" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_readymessages" name = "id"/>
 		
 		<label><?= lang("message") ?> </label>
 		<textarea cols=30 rows=7 name="message" class = "required"></textarea>
@@ -187,7 +187,7 @@ foreach($levels as $level){?>
 <div id="add_role_dialog" class="dialog_div">
 	<form id="add_role_form"
 		action="http://<?= base_url() ?>insert/insertRole" method="post">
-				<input type = "hidden" id = "hidden_role" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_roles" name = "id"/>
 		
 		<label><?= lang("role") ?> </label><input type="text" name="role" class = "required" /> <input
 			type="submit" value="<?= lang("add") ?>" />
@@ -198,7 +198,7 @@ foreach($levels as $level){?>
 <div id="add_student_dialog" class="dialog_div">
 	<form id="add_student_form"
 		action="http://<?= base_url() ?>insert/insertStudent" method="post">
-				<input type = "hidden" id = "hidden_student" name = "id"/>
+				<input type = "hidden" id = "hidden_ra_students" name = "id"/>
 		
 		<label><?= lang("user") ?> :</label><select id="add_student_users"
 			class="users_select" name="username">

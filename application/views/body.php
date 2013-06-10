@@ -12,7 +12,7 @@
 		array_unshift($headings,"<input type = 'checkbox' id = 'all_check'/>");
 		$this->table->set_heading($headings);
 		?>
-		<input type = "hidden" value = <?= $table ?> name = "table"/>
+		<input type="hidden" value=<?= $table ?> name="table" />
 		<?php 
 		if(count($rows)==0)
 			$this->table->add_row("No inputs");
@@ -20,11 +20,12 @@
 			$id = $row[0];
 			array_shift($row);
 			array_unshift($row,"<input type = 'checkbox' id ='".$id."' name = 'checks[]' class = 'table_checks'/>");
-			array_push($row, "<span id = '".$id."' class = 'modify_span'>".lang("modify")."</span>");
+			array_push($row, "<span id = '".$id."' class = 'modify_".$table."'>".lang("modify")."</span>");
 			$this->table->add_row($row);
 		}
 		echo $this->table->generate();
 		?>
-		<input type = "button" value = <?= lang("add") ?> class = "add_<?= $table ?>"/>
 	</div>
+	<input type="button" value=<?= lang("add") ?> class="add_<?= $table ?>" />
+
 </body>

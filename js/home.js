@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
 	//put ast after required inputs.
 	$($(".required"))
 	.after("<label class = 'ast'>*</label>");
@@ -7,17 +7,12 @@ $(document).ready(function(){
 	$( "form" ).on( "submit", function( event ) {
 		var sele = $(this).find("select");
 		for(var u = 0; u<sele.length; u++)
-			{
-		if(sele[u].value == ""){
-			alert("Choose every thing!");
-		return false;
-		}
+		{
+			if(sele[u].value == ""){
+				alert("اختر المطلوب في القوائم");
+				return false;
 			}
-		return true;
-	});
-	
-	//verify required text inputs and textarea elements.
-	$("form").submit(function(){
+		}
 		var inputs = $(this).find("input,textarea");
 		for(var i = 0; i<inputs.length; i++)
 			if(inputs[i].className.match(/\brequired\b/))
@@ -32,36 +27,6 @@ $(document).ready(function(){
 					inputs[i].className = "";				
 					inputs[i].className += "required greenalert";
 				}
-		return true;
-	});
-	
-	// make check all check box for tables.
-	$("#container").on("click","#all_check",function(){
-		if($(this).is(":checked"))
-			$(".table_checks").prop("checked",true);
-		else
-			$(".table_checks").prop("checked",false);
-		return false;
-	});
-	
-	//verfiy password and repassword inputs in user add form.
-	$("#add_user_repassword").blur(function(){
-		if(this.value!=$("#add_user_password").val())
-			alert("كلمة المرور غير متطابقة");
-		return false;
-	});
-	
-	//verfiy password and repassword inputs in user add form.
-	$("#add_user_password").blur(function(){
-		var re = $("#add_user_repassword").val();
-		if(re !="")
-		if(this.value != $("#add_user_repassword").val())
-			alert("كلمة المرور غير متطابقة");
-		return false;
-	});
-	
-	//post all forms using ajax
-	$("form").on("submit", function(){
 		var parent_id = $(this).parent().attr("id");
 		$.ajax({
 			url:$(this).attr("action"),
@@ -78,7 +43,33 @@ $(document).ready(function(){
 
 		return false;
 	});
-	
+
+
+	// make check all check box for tables.
+	$("#container").on("click","#all_check",function(){
+		if($(this).is(":checked"))
+			$(".table_checks").prop("checked",true);
+		else
+			$(".table_checks").prop("checked",false);
+	});
+
+	//verfiy password and repassword inputs in user add form.
+	$("#add_user_repassword").blur(function(){
+		if(this.value!=$("#add_user_password").val())
+			alert("كلمة المرور غير متطابقة");
+		return false;
+	});
+
+	//verfiy password and repassword inputs in user add form.
+	$("#add_user_password").blur(function(){
+		var re = $("#add_user_repassword").val();
+		if(re !="")
+			if(this.value != $("#add_user_repassword").val())
+				alert("كلمة المرور غير متطابقة");
+		return false;
+	});
+
+
 	//validate username in forms
 	$("input[name='username']").blur(function(){
 		$.ajax({
@@ -92,7 +83,7 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	
+
 	//validate id number for students
 	$("input[name='idnum']").blur(function(){
 		$.ajax({
@@ -106,24 +97,10 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	
+
 	//get grades and put them in grades select on level select changing.
 	$(".levels_select").on("change",function(){
-		$.ajax({
-			url:"/rased/get/getLevelGrades",
-			dataType:"JSON",
-			data:{level:$(this).val()},
-			type:"post"
-
-		})
-		.done(function(data){
-			$(".grades_select").empty();
-			$('<option/>').val('').html('اختر الصف').appendTo('.grades_select');
-			for (var i = 0; i < data.length; i++) {
-				$('<option/>').val(data[i].id).html(data[i].grade).appendTo('.grades_select');
-			}
-		});
-		return false;
+		getGrades(this.value);
 	});
 
 	//get classes and put them in classes select on grade select changing.
@@ -174,4 +151,22 @@ function isNumberKey(evt)
 				return false;
 
 	return true;
+}
+
+//function to get grades belong to selected level in select drop
+function getGrades(var thislevel){
+	$.ajax({
+		url:"/rased/get/getLevelGrades",
+		dataType:"JSON",
+		data:{level:thislevel},
+		type:"post"
+	})
+	.done(function(data){
+		$(".grades_select").empty();
+		$('<option/>').val('').html('اختر الصف').appendTo('.grades_select');
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].grade).appendTo('.grades_select');
+		}
+	});
+	return false;
 }
