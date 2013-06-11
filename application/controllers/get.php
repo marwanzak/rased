@@ -25,7 +25,11 @@ class get extends CI_Controller {
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getClass(){
-		echo $this->homemodel->getClass($_POST["id"]);
+		$query = $this->homemodel->getClass($_POST["id"]);
+		$grade = $this->homemodel->getGrade($query->grade);
+		$query->level = $grade->level;
+		echo json_encode($query, JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllClass(){
 		echo $this->homemodel->getAllClass();
@@ -37,7 +41,12 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllSubject();
 	}
 	public function getUser(){
-		echo $this->homemodel->getUser($_POST["id"]);
+		$query = $this->homemodel->getUser($_POST["id"]);
+		unset($query->password);
+		unset($query->salt);
+		unset($query->code);
+		echo json_encode($query, JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllUser(){
 		echo $this->homemodel->getAllUser();

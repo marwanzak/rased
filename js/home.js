@@ -52,7 +52,7 @@ $(document).ready(function(){
 		else
 			$(".table_checks").prop("checked",false);
 	});
-
+	
 	//verfiy password and repassword inputs in user add form.
 	$("#add_user_repassword").blur(function(){
 		if(this.value!=$("#add_user_password").val())
@@ -71,7 +71,7 @@ $(document).ready(function(){
 
 
 	//validate username in forms
-	$("input[name='username']").blur(function(){
+	$("#add_user_username").blur(function(){
 		$.ajax({
 			url:"/rased/get/getUserNames",
 			data:{username:this.value},
@@ -154,12 +154,13 @@ function isNumberKey(evt)
 }
 
 //function to get grades belong to selected level in select drop
-function getGrades(var thislevel){
+function getGrades(thislevel){
 	$.ajax({
 		url:"/rased/get/getLevelGrades",
 		dataType:"JSON",
 		data:{level:thislevel},
-		type:"post"
+		type:"post",
+		async:false
 	})
 	.done(function(data){
 		$(".grades_select").empty();

@@ -93,11 +93,9 @@ foreach($levels as $level){?>
 <div id="add_user_dialog" class="dialog_div">
 	<form id="add_user_form"
 		action="http://<?= base_url()?>insert/insertUser" method="post">
-				<input type = "hidden" id = "hidden_ra_users" name = "id"/>
-		
 		<label><?= lang("username") ?> :</label><input type="text"
-			name="username" class = "required" /> <label><?= lang("fullname") ?> :</label><input
-			type="text" name="name" class = "required" /> <label><?= lang("password") ?> :</label><input
+			name="username" class = "required" id = "add_user_username" /> <label id = "add_user_notify"></label> <label><?= lang("fullname") ?> :</label><input
+			type="text" name="name" class = "required" id = "add_user_name" /> <label><?= lang("password") ?> :</label><input
 			type="password" name="password" id = "add_user_password" class = "required" />
 			<label><?= lang("repassword") ?> :</label><input
 			type="password" name="" id = "add_user_repassword" class = "required" />
@@ -113,9 +111,9 @@ foreach($roles as $role){?>
 			</option>
 			<?php }?>
 		</select> <label><?= lang("user_status") ?>:</label><input
-			type="radio" name="active" checked="checked" value="active">
+			type="radio" name="active" checked="checked" value="active" id = "add_user_active">
 		<?= lang("active") ?>
-		<input type="radio" name="active" value="inactive">
+		<input type="radio" name="active" value="inactive" id = "add_user_inactive">
 		<?= lang("inactive") ?>
 		<input type="submit" value="<?= lang("add") ?>" />
 	</form>

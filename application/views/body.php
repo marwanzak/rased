@@ -1,4 +1,5 @@
 <body>
+	<div id = "body_container">
 	<div id="container">
 		<?php 
 		if($rows == ""){
@@ -25,6 +26,7 @@
 		}
 		echo $this->table->generate();
 		?>
+	</div>
 	</div>
 	<input type="button" value=<?= lang("add") ?> class="add_<?= $table ?>" />
 

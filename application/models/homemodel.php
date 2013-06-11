@@ -119,16 +119,12 @@ class homeModel extends CI_Model {
 		));
 	}
 	//modify user.
-	public function modifyUser($id,$username,$pass, $name, $role, $active){
-		$salt = rand();
-		$password = crypt($pass.$salt);
+	public function modifyUser($id,$username, $name, $role, $active){
 		$this->db->where("id",$id);
 		return $this->db->update("users", array(
 				"username" => $username,
-				"password" => $password,
 				"name" => $name,
 				"role" => $role,
-				"salt" => $salt,
 				"active" => $active
 		));
 	}

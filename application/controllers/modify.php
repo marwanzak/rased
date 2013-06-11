@@ -25,7 +25,7 @@ class modify extends CI_Controller {
 	}
 	public function modifyUser(){
 		echo $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
-				$_POST["password"], $_POST["name"],
+				$_POST["name"],
 				$_POST["role"], $_POST["active"]);
 	}
 	public function modifyPermissions(){
