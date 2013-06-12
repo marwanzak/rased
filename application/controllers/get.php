@@ -206,6 +206,15 @@ class get extends CI_Controller {
 		echo ($query->num_rows()>0)? "0":"1";
 	}
 	
+	//get users for validate modifying username
+	public function getUserModify(){
+		$this->db->select("username,id");
+		$query = $this->db->get_where("ra_users", array("username" => $_POST["username"]));
+		$user = $query->row();
+			echo ($user->id != $_POST["id"])? "0":"1";
+				
+	}
+	
 	//get students for validate inserting student id number in forms
 	public function getStudentId(){
 		$this->db->select("idnum");

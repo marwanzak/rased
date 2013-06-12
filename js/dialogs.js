@@ -104,7 +104,7 @@ $(document).ready(function(){
 		});
 		openDialog("add_class_dialog", 400);
 	});
-
+//modify user
 	$("#container").on("click", ".modify_ra_users",function(){
 		$("#hidden_ra_users").val(this.id);
 		$.ajax({
@@ -115,6 +115,7 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			$("#modify_user_username").val(data.username);
+			$("#hidden_ra_users_username").val(data.username);
 			$("#modify_user_name").val(data.name);
 			$("#modify_user_roles").val(data.role).select();
 			(data.active == "1")?$("#modify_user_active").prop("checked",true):$("#modify_user_inactive").prop("checked",true);

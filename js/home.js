@@ -1,5 +1,10 @@
 $(document).ready(function(){
-
+//hide password div in users table
+	$("#container div").hide();
+	//show password div to modify in users table
+	$("#container").on("click",".modify_ra_users_password",function(){
+		$(this).parent().find("div").show();
+	});
 	//put ast after required inputs.
 	$($(".required"))
 	.after("<label class = 'ast'>*</label>");
@@ -79,7 +84,25 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			if(data == "0")
-				alert("اسم المستخدم موجود مسبقاً");
+				$("#add_user_notify").text("اسم المستخدم موجود مسبقاً");
+			else
+				$("#add_user_notify").text("");
+		});
+		return false;
+	});
+	
+	//validate username in forms
+	$("#modify_user_username").blur(function(){
+		$.ajax({
+			url:"/rased/get/getUserModify",
+			data:{username:this.value,id:$("#hidden_ra_users").val()},
+			type:"POST"
+		})
+		.done(function(data){
+			if(data == "0")
+				$("#modify_user_notify").text("اسم المستخدم موجود مسبقاً");
+			else
+				$("#modify_user_notify").text("");
 		});
 		return false;
 	});

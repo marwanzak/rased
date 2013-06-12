@@ -30,4 +30,5 @@ $lang["action"] = "العملية";
 $lang["without"] = "بدون";
 $lang["gaurd"] = "ولي الأمر";
 $lang["modify"] = "تعديل";
+$lang["modify_password"] = "تعديل كلمة المرور";
 $lang["repassword"] = "أعد كتابة كلمة المرور";

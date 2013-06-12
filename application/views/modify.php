@@ -1,9 +1,10 @@
 <div id="modify_user_dialog" class="dialog_div">
 	<form id="modify_user_form"
 		action="http://<?= base_url()?>modify/modifyUser" method="post">
-		<input type="hidden" id="hidden_ra_users" name="id" /> <label><?= lang("username") ?>
+		<input type="hidden" id="hidden_ra_users" name="id" /> 
+		<label><?= lang("username") ?>
 			:</label><input type="text" name="username" class="required"
-			id="modify_user_username" /> <label><?= lang("fullname") ?> :</label><input
+			id="modify_user_username" /><label id = "modify_user_notify"></label> <label><?= lang("fullname") ?> :</label><input
 			type="text" name="name" class="required" id="modify_user_name" /> <label><?= lang("role") ?>
 			:</label><select id="modify_user_roles" class="roles_select" name="role">
 			<option value="">
