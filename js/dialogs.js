@@ -107,6 +107,7 @@ $(document).ready(function(){
 //modify user
 	$("#container").on("click", ".modify_ra_users",function(){
 		$("#hidden_ra_users").val(this.id);
+		$(".modify_password").prop("id",this.id);
 		$.ajax({
 			url:"/rased/get/getUser",
 			data:{id:this.id},
@@ -122,6 +123,24 @@ $(document).ready(function(){
 		});
 
 		openDialog("modify_user_dialog", 400);
+	});
+	
+	$("#container").on("click", ".modify_ra_subjects",function(){
+		$("#hidden_ra_subjects").val(this.id);
+		$("#add_subject_form").attr("action","/rased/modify/modifyClass");
+		$.ajax({
+			url:"/rased/get/getClass",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_class_input").val(data.class);
+			$("#class_levels").val(data.level).select();
+			getGrades(data.level);
+			$("#class_grades").val(data.grade).select();
+		});
+		openDialog("add_subject_dialog", 400);
 	});
 
 	$("#container").on("click", ".modify_ra_students",function(){

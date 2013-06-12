@@ -8,6 +8,9 @@ class modify extends CI_Controller {
 	{
 
 	}
+	public function modifyPassword(){
+		echo $this->homemodel->modifyPassword($_POST["id"], $_POST["password"]);
+	}
 	public function modifyLevel(){
 		echo $this->homemodel->modifyLevel($_POST["id"], $_POST["level"]);
 	}

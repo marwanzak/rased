@@ -1,9 +1,16 @@
 $(document).ready(function(){
-//hide password div in users table
-	$("#container div").hide();
+
+	//hide password modify div
+	$(".hide_modify_password").on("click", function(){
+		$(this).closest("div").hide();
+
+	});
+	//hide password div in users table
+	$("#modify_user_dialog div").hide();
 	//show password div to modify in users table
-	$("#container").on("click",".modify_ra_users_password",function(){
-		$(this).parent().find("div").show();
+	$(".modify_password").on("click",function(){
+		$(this).parent("div").find("div").find("form").find("input[name='id']").val(this.id);
+		$(this).parent("div").find("div").show();
 	});
 	//put ast after required inputs.
 	$($(".required"))
@@ -57,7 +64,7 @@ $(document).ready(function(){
 		else
 			$(".table_checks").prop("checked",false);
 	});
-	
+
 	//verfiy password and repassword inputs in user add form.
 	$("#add_user_repassword").blur(function(){
 		if(this.value!=$("#add_user_password").val())
@@ -90,7 +97,7 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	
+
 	//validate username in forms
 	$("#modify_user_username").blur(function(){
 		$.ajax({

@@ -53,7 +53,7 @@ class home extends CI_Controller {
 				break;
 			case "ra_users":
 				$headings = array(lang("username"),lang("fullname"),
-				lang("role"),lang("active"), lang("modify"),lang("send_code"),lang("modify_password"));
+				lang("role"),lang("active"), lang("modify"),lang("send_code"));
 				break;
 			case "ra_actions":
 				$headings = array(lang("username"),lang("action"),

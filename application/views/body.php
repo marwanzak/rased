@@ -22,13 +22,6 @@
 				array_shift($row);
 				array_unshift($row,"<input type = 'checkbox' id ='".$id."' name = 'checks[]' class = 'table_checks'/>");
 				array_push($row, "<span id = '".$id."' class = 'modify_".$table."'>".lang("modify")."</span>");
-				array_push($row, "<span id = '".$id."'
-				 class = 'modify_".$table."_password'>".lang("modify")."</span>
-					<div id = '".$id."_password_div'><form>
-					<input type = 'password' id = '".$id."password_input'/>
-						<input type = 'submit' value='set'/>
-						<input type = 'button' value = '×'/>
-						</form></div>");
 				$this->table->add_row($row);
 			}
 			echo $this->table->generate();

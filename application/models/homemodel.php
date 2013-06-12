@@ -118,6 +118,16 @@ class homeModel extends CI_Model {
 				"salt" => $salt
 		));
 	}
+	//modify password for user.
+	public function modifyPassword($id,$pass){
+		$salt = rand();
+		$password = crypt($pass.$salt);
+		$this->db->where("id",$id);
+		return $this->db->update("users", array(
+				"password" =>$password,
+				"salt" => $salt
+				));
+	}
 	//modify user.
 	public function modifyUser($id,$username, $name, $role, $active){
 		$this->db->where("id",$id);
