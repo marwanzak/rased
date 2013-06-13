@@ -75,7 +75,11 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllNotify();
 	}
 	public function getNoteType(){
-		echo $this->homemodel->getNoteType($_POST["id"]);
+		$query = $this->homemodel->getNoteType($_POST["id"]);
+		$prob = $this->homemodel->getProb($query->prob);
+		$query->level = $prob->level;
+		echo json_encode($query, JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllNoteType(){
 		echo $this->homemodel->getAllNoteType();
@@ -236,6 +240,14 @@ class get extends CI_Controller {
 		$this->db->select("idnum");
 		$query = $this->db->get_where("ra_students", array("idnum" => $_POST["idnum"]));
 		echo ($query->num_rows()>0)? "0":"1";
+	}
+	
+	//get level prob to add notetype
+	public function getLevelProbs(){
+		$query = $this->db->get_where("notesprob", array("level" => $_POST["level"]));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+		
 	}
 	
 	

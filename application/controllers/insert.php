@@ -39,7 +39,7 @@ class insert extends CI_Controller {
 				$_POST["datetime"], $_POST["message"]);
 	}
 	public function insertNoteType(){
-		echo $this->homemodel->insertNoteType($_POST["type"],$_POST["body"]);
+		echo $this->homemodel->insertNoteType($_POST["prob"],$_POST["body"]);
 	}
 	public function insertReady(){
 		echo $this->homemodel->insertReady($_POST["message"]);

@@ -199,6 +199,22 @@ $(document).ready(function(){
 	});
 	//modify note type
 	$("#container").on("click", ".modify_ra_notestypes",function(){
+		$("#hidden_ra_notestypes").val(this.id);
+		$("#add_notetype_form").attr("action","/rased/modify/modifyNoteType");
+		$.ajax({
+			url:"/rased/get/getNoteType",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_notetype_levels").val(data.level).select();
+			getProbs(data.level,"add_notetype_probs");
+			$("#add_notetype_probs").val(data.prob).select();
+			$("#add_notetype_dialog textarea[name='body']").val(data.body);
+
+
+		});
 		openDialog("add_notetype_dialog", 400);
 	});
 

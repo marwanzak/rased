@@ -114,7 +114,10 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-
+	//notestype level select change to get grades and probs.
+	$("#add_notetype_levels").on("change", function(){
+		
+	});
 	//validate id number for students
 	$("input[name='idnum']").blur(function(){
 		$.ajax({
@@ -157,9 +160,14 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-
-
+	//get level probs for notestypes add and modify
+	$("#add_notetype_levels").on("change", function(){
+		getProbs(this.value,"add_notetype_probs");
+	});
 });
+
+
+
 //function to make input text type only numbers.
 function isNumberKey(evt)
 {
@@ -207,3 +215,23 @@ function getClasses(thisgrade){
 	});
 	return false;
 }
+
+function getProbs(thislevel,probselect){
+	$.ajax({
+		url:"/rased/get/getLevelProbs",
+		dataType:"JSON",
+		data:{level:thislevel},
+		type:"post",
+		async:false
+
+	})
+	.done(function(data){
+		$("#"+probselect).empty();
+		$('<option/>').val('').html('اختر نوع الملاحظة').appendTo('#'+probselect);
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].prob).appendTo('#'+probselect);
+		}
+	});
+	return false;
+}
+

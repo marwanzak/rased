@@ -45,7 +45,7 @@ class modify extends CI_Controller {
 				$_POST["datetime"], $_POST["message"]);
 	}
 	public function modifyNoteType(){
-		echo $this->homemodel->modifyNoteType($_POST["id"], $_POST["type"],
+		echo $this->homemodel->modifyNoteType($_POST["id"], $_POST["prob"],
 				$_POST["body"]);
 	}
 	public function modifyReady(){
