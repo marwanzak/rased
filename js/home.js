@@ -3,14 +3,15 @@ $(document).ready(function(){
 	//hide password modify div
 	$(".hide_modify_password").on("click", function(){
 		$(this).closest("div").hide();
-
 	});
 	//hide password div in users table
 	$("#modify_user_dialog div").hide();
 	//show password div to modify in users table
 	$(".modify_password").on("click",function(){
+		$(this).parent("div").find("div").find("form").find("input[name='password']").val("");
 		$(this).parent("div").find("div").find("form").find("input[name='id']").val(this.id);
 		$(this).parent("div").find("div").show();
+		
 	});
 	//put ast after required inputs.
 	$($(".required"))
@@ -135,21 +136,7 @@ $(document).ready(function(){
 
 	//get classes and put them in classes select on grade select changing.
 	$(".grades_select").on("change",function(){
-		$.ajax({
-			url:"/rased/get/getGradeClasses",
-			dataType:"JSON",
-			data:{grade:$(this).val()},
-			type:"post"
-
-		})
-		.done(function(data){
-			$(".classes_select").empty();
-			$('<option/>').val('').html('اختر فصل').appendTo('.classes_select');
-			for (var i = 0; i < data.length; i++) {
-				$('<option/>').val(data[i].id).html(data[i].class).appendTo('.classes_select');
-			}
-		});
-		return false;
+		getClasses(this.value);
 	});
 
 	//get students and put them in students select on class select changing.
@@ -197,6 +184,25 @@ function getGrades(thislevel){
 		$('<option/>').val('').html('اختر الصف').appendTo('.grades_select');
 		for (var i = 0; i < data.length; i++) {
 			$('<option/>').val(data[i].id).html(data[i].grade).appendTo('.grades_select');
+		}
+	});
+	return false;
+}
+
+function getClasses(thisgrade){
+	$.ajax({
+		url:"/rased/get/getGradeClasses",
+		dataType:"JSON",
+		data:{grade:thisgrade},
+		type:"post",
+		async:false
+
+	})
+	.done(function(data){
+		$(".classes_select").empty();
+		$('<option/>').val('').html('اختر فصل').appendTo('.classes_select');
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].class).appendTo('.classes_select');
 		}
 	});
 	return false;

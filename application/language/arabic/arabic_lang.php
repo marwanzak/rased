@@ -5,6 +5,7 @@ $lang["choose_level"] = "اختر المرحلة";
 $lang["choose_class"] = "اختر الفصل";
 $lang["choose_role"] = "اختر المسمى الوظيفي";
 $lang["choose_user"] = "اختر مستخدم";
+$lang["choose_prob"] = "اختر نوع الملاحظة";
 $lang["active"] = "مفعل";
 $lang["inactive"] = "غير مفعل";
 $lang["level"] = "المرحلة";

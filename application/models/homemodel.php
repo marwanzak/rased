@@ -236,17 +236,17 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert notes type
-	public function insertNoteType($type,$body){
+	public function insertNoteType($prob,$body){
 		return $this->db->insert("notestypes", array(
-				"type" => $type,
+				"prob" => $prob,
 				"body" => $body
 		));
 	}
 	//modify note type.
-	public function modifyNoteType($id,$type, $body){
+	public function modifyNoteType($id,$prob, $body){
 		$this->db->where("id",$id);
 		return $this->db->update("notestypes", array(
-				"type" => $type,
+				"prob" => $prob,
 				"body" => $body
 		));
 	}
@@ -284,18 +284,18 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert note prob message
-	public function insertProb($level,$type){
+	public function insertProb($level,$prob){
 		return $this->db->insert("notesprob", array(
 				"level" => $level,
-				"type" => $type
+				"prob" => $prob
 		));
 	}
 	//modify note prob message.
-	public function modifyProb($id,$level, $type){
+	public function modifyProb($id,$level, $prob){
 		$this->db->where("id",$id);
 		return $this->db->update("notesprob", array(
 				"level" => $level,
-				"type" => $type
+				"prob" => $prob
 		));
 	}
 	//get note prob by id.

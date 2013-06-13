@@ -44,6 +44,9 @@ class insert extends CI_Controller {
 	public function insertReady(){
 		echo $this->homemodel->insertReady($_POST["message"]);
 	}
+	public function insertProb(){
+		echo $this->homemodel->insertProb($_POST["level"],$_POST["prob"]);
+	}
 	public function insertMorning(){
 		echo $this->homemodel->insertMorning($_POST["student"],
 				$_POST["datetime"]);

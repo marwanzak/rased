@@ -162,8 +162,17 @@ foreach($levels as $level){?>
 				<?= $level->level ?>
 			</option>
 			<?php }?>
-		</select> <label><?= lang("type"). " " . lang("note") ?> :</label><input
-			type="text" name="type" class = "required" /> <label><?= lang("body"). " " . lang("note") ?>
+		</select> <label><?= lang("type"). " " . lang("note") ?> :</label><select id="add_notetype_probs"
+			class="probs_select" name="prob">
+			<option value="">
+				<?= lang("choose_prob")?>
+			</option>
+			<?php
+foreach($probs as $prob){?>
+			<option value="<?= $prob->id ?>">
+				<?= $prob->prob ?>
+			</option>
+			<?php }?></select> <label><?= lang("body"). " " . lang("note") ?>
 			:</label>
 		<textarea cols=30 rows=7 name="body" class = "required"></textarea>
 		<input type="submit" value="<?= lang("add")?>" />
@@ -178,6 +187,29 @@ foreach($levels as $level){?>
 		
 		<label><?= lang("message") ?> </label>
 		<textarea cols=30 rows=7 name="message" class = "required"></textarea>
+		<input type="submit" value="<?= lang("add") ?>" />
+	</form>
+</div>
+
+<!-- add note prob dialog -->
+<div id="add_prob_dialog" class="dialog_div">
+	<form id="add_prob_form"
+		action="http://<?= base_url() ?>insert/insertProb" method="post">
+				<input type = "hidden" id = "hidden_ra_notesprob" name = "id"/>
+		<label><?= lang("level") ?> :</label><select id="add_notesprob_levels"
+			class="levels_select" name="level">
+			<option value="">
+				<?= lang("choose_level")?>
+			</option>
+			<?php
+foreach($levels as $level){?>
+			<option value="<?= $level->id ?>">
+				<?= $level->level ?>
+			</option>
+			<?php }?>
+		</select>
+		<label><?= lang("prob") ?> </label>
+		<input type = "text" name = "prob" class = "required"/>
 		<input type="submit" value="<?= lang("add") ?>" />
 	</form>
 </div>

@@ -51,6 +51,10 @@ class modify extends CI_Controller {
 	public function modifyReady(){
 		echo $this->homemodel->modifyReady($_POST["id"], $_POST["message"]);
 	}
+
+	public function modifyProb(){
+		echo $this->homemodel->modifyProb($_POST["id"], $_POST["level"], $_POST["prob"]);
+	}
 	public function modifyMorning(){
 		echo $this->homemodel->modifyMorning($_POST["id"], $_POST["student"],
 				$_POST["datetime"]);

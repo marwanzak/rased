@@ -35,7 +35,11 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllClass();
 	}
 	public function getSubject(){
-		echo $this->homemodel->getSubject($_POST["id"]);
+		$query =  $this->homemodel->getSubject($_POST["id"]);
+		$grade = $this->homemodel->getGrade($query->grade);
+		$query->level = $grade->level;
+		echo json_encode($query, JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllSubject(){
 		echo $this->homemodel->getAllSubject();
@@ -58,7 +62,8 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllPermissions();
 	}
 	public function getDef(){
-		echo $this->homemodel->getDef($_POST["id"]);
+		echo json_encode($this->homemodel->getDef($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllDef(){
 		echo $this->homemodel->getAllDef();
@@ -78,6 +83,12 @@ class get extends CI_Controller {
 	public function getReady(){
 		echo $this->homemodel->getReady($_POST["id"]);
 	}
+	
+	public function getProb(){
+		echo json_encode($this->homemodel->getProb($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
 	public function getAllReady(){
 		echo $this->homemodel->getAllReady();
 	}
@@ -88,7 +99,13 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllMorning();
 	}
 	public function getStudent(){
-		echo $this->homemodel->getStudent($_POST["id"]);
+		$query = $this->homemodel->getStudent($_POST["id"]);
+		$class = $this->homemodel->getClass($query->class);
+		$grade = $this->homemodel->getGrade($class->grade);
+		$query->level = $grade->level;
+		$query->grade = $grade->id;
+		echo json_encode($query, JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllStudent(){
 		echo $this->homemodel->getAllStudent();
@@ -212,7 +229,6 @@ class get extends CI_Controller {
 		$query = $this->db->get_where("ra_users", array("username" => $_POST["username"]));
 		$user = $query->row();
 			echo ($user->id != $_POST["id"])? "0":"1";
-				
 	}
 	
 	//get students for validate inserting student id number in forms

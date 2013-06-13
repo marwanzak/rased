@@ -27,7 +27,8 @@
 			echo $this->table->generate();
 			?>
 		</div>
+			<input type="button" value=<?= lang("add") ?> class="add_<?= $table ?>" />
+		
 	</div>
-	<input type="button" value=<?= lang("add") ?> class="add_<?= $table ?>" />
 
 </body>

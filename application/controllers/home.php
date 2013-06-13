@@ -106,7 +106,7 @@ class home extends CI_Controller {
 					$class = $this->homemodel->getClass($row->class);
 					$grade = $this->homemodel->getGrade($class->grade);
 					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$username->name,$row->fullname,
+					$rows[$i] = array($row->id,$username->username,$row->fullname,
 							$row->idnum,$level->level,
 							$grade->grade,$class->class);
 					break;
@@ -129,13 +129,13 @@ class home extends CI_Controller {
 					break;
 				case "ra_notesprob":
 					$level = $this->homemodel->getLevel($row->level);
-					$rows[$i] = array($row->id,$level->level, $row->type);
+					$rows[$i] = array($row->id,$level->level, $row->prob);
 					break;
 				case "ra_notestypes":
-					$type = $this->homemodel->getProb($row->type);
+					$type = $this->homemodel->getProb($row->prob);
 					$level = $this->homemodel->getLevel($type->level);
 					$rows[$i] = array($row->id,$level->level,
-							$type->type, $row->body);
+							$type->prob, $row->body);
 					break;
 				case "ra_readymessages":
 					$rows[$i] = array($row->id,$row->message);
