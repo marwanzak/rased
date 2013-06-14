@@ -269,4 +269,32 @@ foreach($levels as $level){?>
 	</form>
 </div>
 
+<!-- beginning values for inserting notes dialog -->
+<div id="begin_notes_dialog" class="dialog_div">
+<label><?= lang("level") ?> :</label><select
+			id="add_student_levels" class="levels_select" name="">
+			<option value="">
+				<?= lang("choose_level")?>
+			</option>
+			<?php
+foreach($levels as $level){?>
+			<option value="<?= $level->id ?>">
+				<?= $level->level ?>
+			</option>
+			<?php }?>
+		</select>
+		<label><?= lang("grade") ?> :</label><select
+			id="subject_grades" class="grades_select" name="grade">
+			<option value="">
+				<?= lang("choose_grade") ?>
+			</option>
+		</select>
+		<label><?= lang("class") ?> :</label><select
+			id="add_student_classes" class="classes_select" name="class">
+			<option value="">
+				<?= lang("choose_class") ?>
+			</option>
+		</select>
+		
+</div>
 

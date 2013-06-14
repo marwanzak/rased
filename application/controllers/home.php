@@ -79,6 +79,11 @@ class home extends CI_Controller {
 				$headings = array(lang("level"),
 				lang("grade"), lang("subject"), lang("modify"));
 				break;
+			case "ra_notes":
+				$headings = array(lang("type"), lang("student"), lang("subject"),
+				lang("note"), lang("status"), lang("datetime"),
+				lang("sold"), lang("agreed"), lang("username"));
+				break;
 			default:
 				echo "wrong table";
 				exit();

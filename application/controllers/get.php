@@ -85,14 +85,15 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllNoteType();
 	}
 	public function getReady(){
-		echo $this->homemodel->getReady($_POST["id"]);
+		echo json_encode($this->homemodel->getReady($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	public function getProb(){
 		echo json_encode($this->homemodel->getProb($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	public function getAllReady(){
 		echo $this->homemodel->getAllReady();
 	}
@@ -115,7 +116,8 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllStudent();
 	}
 	public function getRole(){
-		echo $this->homemodel->getRole($_POST["id"]);
+		echo json_encode($this->homemodel->getRole($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllRole(){
 		echo $this->homemodel->getAllRole();
@@ -156,7 +158,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get class students json data type
 	public function getClassStudents(){
 		$query = $this->db->get_where("ra_students", array(
@@ -165,7 +167,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get user students json data type
 	public function getUserStudents(){
 		$query = $this->db->get_where("ra_students", array(
@@ -174,7 +176,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get user actions json data type
 	public function getUserActions(){
 		$query = $this->db->get_where("ra_actions", array(
@@ -183,7 +185,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get user defaults json data type
 	public function getUserDefaults(){
 		$query = $this->db->get_where("ra_defaultnumemail", array(
@@ -192,7 +194,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get user permissions json data type
 	public function getUserPermissions(){
 		$query = $this->db->get_where("ra_permissions", array(
@@ -201,7 +203,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get user notes json data type
 	public function getUserNotes(){
 		$query = $this->db->get_where("ra_notes", array(
@@ -210,7 +212,7 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get student notes json data type
 	public function getStudentNotes(){
 		$query = $this->db->get_where("ra_notes", array(
@@ -219,36 +221,36 @@ class get extends CI_Controller {
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
 	//get users for validate inserting username in forms
 	public function getUserNames(){
 		$this->db->select("username");
 		$query = $this->db->get_where("ra_users", array("username" => $_POST["username"]));
 		echo ($query->num_rows()>0)? "0":"1";
 	}
-	
+
 	//get users for validate modifying username
 	public function getUserModify(){
 		$this->db->select("username,id");
 		$query = $this->db->get_where("ra_users", array("username" => $_POST["username"]));
 		$user = $query->row();
-			echo ($user->id != $_POST["id"])? "0":"1";
+		echo ($user->id != $_POST["id"])? "0":"1";
 	}
-	
+
 	//get students for validate inserting student id number in forms
 	public function getStudentId(){
 		$this->db->select("idnum");
 		$query = $this->db->get_where("ra_students", array("idnum" => $_POST["idnum"]));
 		echo ($query->num_rows()>0)? "0":"1";
 	}
-	
+
 	//get level prob to add notetype
 	public function getLevelProbs(){
 		$query = $this->db->get_where("notesprob", array("level" => $_POST["level"]));
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
-		
+
 	}
-	
-	
+
+
 }

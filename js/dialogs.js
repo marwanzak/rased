@@ -65,6 +65,11 @@ $(document).ready(function(){
 
 		openDialog("add_prob_dialog", 400);
 	});
+	
+	$("#body_container").on("click", ".add_ra_notes",function(){
+
+		openDialog("begin_notes_dialog", 400);
+	});
 
 	//modify dialogs
 	//modify level
@@ -219,10 +224,32 @@ $(document).ready(function(){
 	});
 
 	$("#container").on("click", ".modify_ra_readymessages",function(){
+		$("#hidden_ra_readymessages").val(this.id);
+		$("#add_ready_form").attr("action","/rased/modify/modifyReady");
+		$.ajax({
+			url:"/rased/get/getReady",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_ready_dialog textarea[name='message']").val(data.message);
+		});
 		openDialog("add_ready_dialog", 400);
 	});
 
 	$("#container").on("click", ".modify_ra_roles",function(){
+		$("#hidden_ra_roles").val(this.id);
+		$("#add_role_form").attr("action","/rased/modify/modifyRole");
+		$.ajax({
+			url:"/rased/get/getRole",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_role_dialog input[name='role']").val(data.role);
+		});
 		openDialog("add_role_dialog", 400);
 	});
 	
