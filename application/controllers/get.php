@@ -116,7 +116,8 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllStudent();
 	}
 	public function getRole(){
-		echo json_encode($this->homemodel->getRole($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+		echo json_encode($this->homemodel->getRole($_POST["id"]),
+				JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllRole(){
@@ -249,7 +250,13 @@ class get extends CI_Controller {
 		$query = $this->db->get_where("notesprob", array("level" => $_POST["level"]));
 		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
 
+	//get prob types to add note
+	public function getProbTypes(){
+		$query = $this->db->get_where("notestypes", array("prob" => $_POST["prob"]));
+		echo json_encode($query->result(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 
 

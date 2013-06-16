@@ -126,7 +126,7 @@ class homeModel extends CI_Model {
 		return $this->db->update("users", array(
 				"password" =>$password,
 				"salt" => $salt
-				));
+		));
 	}
 	//modify user.
 	public function modifyUser($id,$username, $name, $role, $active){
@@ -171,6 +171,34 @@ class homeModel extends CI_Model {
 	//get all permissions.
 	public function getAllPermissions(){
 		$query = $this->db->get("permissions");
+		return $query->result();
+	}
+
+	//get sold by id
+	public function getSold($id){
+		$query = $this->db->get_where("solds", array("id" => $id));
+		return $query->row();
+	}
+
+	//insert sold to database
+	public function insertSold($sold){
+		return $this->db->insert("solds", array(
+				"sold" => $sold
+		));
+	}
+
+	//modify sold
+	public function modifySold($id, $sold){
+		$this->db->where("id",$id);
+		return $this->db->update("solds", array(
+				"sold" => $sold
+		));
+	}
+
+
+	//get all solds
+	public function getAllSold(){
+		$query = $this->db->get("solds");
 		return $query->result();
 	}
 	//insert default numbers and emails
@@ -569,24 +597,24 @@ class homeModel extends CI_Model {
 							break;
 					}
 					break;
-					case "null":
-						switch($table)
-						{
-							case "ra_levels":
-								break;
-							case "ra_grades":
-								break;
-							case "ra_classes":
-								break;
-							case "ra_users":
-								break;
-							case "ra_students":
-								break;
-							case "ra_notesprob":
-								break;
-						}
-						break;
-						
+				case "null":
+					switch($table)
+					{
+						case "ra_levels":
+							break;
+						case "ra_grades":
+							break;
+						case "ra_classes":
+							break;
+						case "ra_users":
+							break;
+						case "ra_students":
+							break;
+						case "ra_notesprob":
+							break;
+					}
+					break;
+
 			}
 		}
 	}

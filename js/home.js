@@ -4,6 +4,10 @@ $(document).ready(function(){
 	$(".hide_modify_password").on("click", function(){
 		$(this).closest("div").hide();
 	});
+	
+	$(".togglecheck").on("click", function(){
+		$(this).parent("label").css({border: this.checked?"1px solid green":"1px solid red"});
+	});
 	//hide password div in users table
 	$("#modify_user_dialog div").hide();
 	//show password div to modify in users table
@@ -13,11 +17,37 @@ $(document).ready(function(){
 		$(this).parent("div").find("div").show();
 		
 	});
-	//put ast after required inputs.
+	
+	//get probs on change level selector put them in probs selector
+	//in notes begin add
+	$("#begin_notes_levels").on("change", function(){
+		$("#begin_notes_classes").empty();
+		$('<option/>').val('').html('اختر الفصل').appendTo('#begin_notes_classes');
+		$("#begin_notes_students").empty();
+		$('<option/>').val('').html('اختر الطالب').appendTo('#begin_notes_students');
+		$("#begin_notes_subjects").empty();
+		$('<option/>').val('').html('اختر المادة').appendTo('#begin_notes_subjects');
+		$("#begin_notes_types").empty();
+		$('<option/>').val('').html('اختر بند الملاحظة').appendTo('#begin_notes_types');
+		getProbs(this.value, "begin_notes_probs");
+		return false;
+	});
+	//get types on change prob selector and put them in types selector
+	$("#begin_notes_probs").on("change", function(){
+		var notes_types = $(this).parent().parent().find("#begin_notes_types");
+		getTypes(this.value, notes_types);
+	});
+	
+	//get types on change prob selector and put them in types selector of notes add
+	$(".notes_probs").on("change", function(){
+		var notes_types = $(this).parent().parent().find(".types_select");
+		getTypes(this.value, notes_types);
+	});
+	//put astrix after required inputs.
 	$($(".required"))
 	.after("<label class = 'ast'>*</label>");
 	//verify required select elements.
-	$( "form" ).on( "submit", function( event ) {
+	$( "form :not('#begin_notes_form')" ).on( "submit", function( event ) {
 		var sele = $(this).find("select");
 		for(var u = 0; u<sele.length; u++)
 		{
@@ -57,7 +87,13 @@ $(document).ready(function(){
 		return false;
 	});
 
-
+	// get grade subjects
+	$(".grades_select").on("change", function(){
+		var subjects_select = $(this).parent().parent().find(".subjects_select");
+		subjects_select.empty();
+		$('<option/>').val('').html('اختر المادة').appendTo(subjects_select);
+		getSubjects(this.value, subjects_select);
+	});
 	// make check all check box for tables.
 	$("#container").on("click","#all_check",function(){
 		if($(this).is(":checked"))
@@ -114,10 +150,7 @@ $(document).ready(function(){
 		});
 		return false;
 	});
-	//notestype level select change to get grades and probs.
-	$("#add_notetype_levels").on("change", function(){
-		
-	});
+	
 	//validate id number for students
 	$("input[name='idnum']").blur(function(){
 		$.ajax({
@@ -134,35 +167,31 @@ $(document).ready(function(){
 
 	//get grades and put them in grades select on level select changing.
 	$(".levels_select").on("change",function(){
-		getGrades(this.value);
+		var gradeselect = $(this).parent().parent().find(".grades_select");
+		getGrades(this.value,gradeselect);
 	});
 
 	//get classes and put them in classes select on grade select changing.
 	$(".grades_select").on("change",function(){
-		getClasses(this.value);
+		var classesselect = $(this).parent().parent().find(".classes_select");
+		getClasses(this.value, classesselect);
 	});
 
 	//get students and put them in students select on class select changing.
 	$(".classes_select").on("change",function(){
-		$.ajax({
-			url:"/rased/get/getClassStudents",
-			dataType:"JSON",
-			data:{class:$(this).val()},
-			type:"post"
-
-		})
-		.done(function(data){
-			$(".students_select").empty();
-			$('<option/>').val('').html('اختر طالب').appendTo('.students_select');
-			for (var i = 0; i < data.length; i++) {
-				$('<option/>').val(data[i].id).html(data[i].fullname).appendTo('.students_select');
-			}
-		});
-		return false;
+		var studentsselect = $(this).parent().parent().find(".students_select");
+		getClassStudents(this.value, studentsselect)
 	});
 	//get level probs for notestypes add and modify
 	$("#add_notetype_levels").on("change", function(){
-		getProbs(this.value,"add_notetype_probs");
+		var add_notetype_probs = $(this).parent().parent().find("#add_notetype_probs");
+		getProbs(this.value,add_notetype_probs);
+	});
+	
+	//get level probs for notestypes notes add
+	$(".notes_levels").on("change", function(){
+		var probs_select = $(this).parent().parent().find(".probs_select");
+		getProbs(this.value,probs_select);
 	});
 });
 
@@ -179,7 +208,7 @@ function isNumberKey(evt)
 }
 
 //function to get grades belong to selected level in select drop
-function getGrades(thislevel){
+function getGrades(thislevel,gradesselect){
 	$.ajax({
 		url:"/rased/get/getLevelGrades",
 		dataType:"JSON",
@@ -188,16 +217,16 @@ function getGrades(thislevel){
 		async:false
 	})
 	.done(function(data){
-		$(".grades_select").empty();
-		$('<option/>').val('').html('اختر الصف').appendTo('.grades_select');
+		$(gradesselect).empty();
+		$('<option/>').val('').html('اختر الصف').appendTo(gradesselect);
 		for (var i = 0; i < data.length; i++) {
-			$('<option/>').val(data[i].id).html(data[i].grade).appendTo('.grades_select');
+			$('<option/>').val(data[i].id).html(data[i].grade).appendTo(gradesselect);
 		}
 	});
 	return false;
 }
-
-function getClasses(thisgrade){
+//get grade classes
+function getClasses(thisgrade, classesselect){
 	$.ajax({
 		url:"/rased/get/getGradeClasses",
 		dataType:"JSON",
@@ -207,15 +236,15 @@ function getClasses(thisgrade){
 
 	})
 	.done(function(data){
-		$(".classes_select").empty();
-		$('<option/>').val('').html('اختر فصل').appendTo('.classes_select');
+		$(classesselect).empty();
+		$('<option/>').val('').html('اختر فصل').appendTo(classesselect);
 		for (var i = 0; i < data.length; i++) {
-			$('<option/>').val(data[i].id).html(data[i].class).appendTo('.classes_select');
+			$('<option/>').val(data[i].id).html(data[i].class).appendTo(classesselect);
 		}
 	});
 	return false;
 }
-
+//function to get level probs
 function getProbs(thislevel,probselect){
 	$.ajax({
 		url:"/rased/get/getLevelProbs",
@@ -226,10 +255,68 @@ function getProbs(thislevel,probselect){
 
 	})
 	.done(function(data){
-		$("#"+probselect).empty();
-		$('<option/>').val('').html('اختر نوع الملاحظة').appendTo('#'+probselect);
+		$(probselect).empty();
+		$('<option/>').val('').html('اختر نوع الملاحظة').appendTo(probselect);
 		for (var i = 0; i < data.length; i++) {
-			$('<option/>').val(data[i].id).html(data[i].prob).appendTo('#'+probselect);
+			$('<option/>').val(data[i].id).html(data[i].prob).appendTo(probselect);
+		}
+	});
+	return false;
+}
+
+//function to get grade subjects
+function getSubjects(thisgrade,subjectsselect){
+	$.ajax({
+		url:"/rased/get/getGradeSubjects",
+		dataType:"JSON",
+		data:{grade:thisgrade},
+		type:"post",
+		async:false
+
+	})
+	.done(function(data){
+		$(subjectsselect).empty();
+		$('<option/>').val('').html('اختر المادة').appendTo(subjectsselect);
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].subject).appendTo(subjectsselect);
+		}
+	});
+	return false;
+}
+
+//function to get prob types
+function getTypes(thisprob,typesselect){
+	$.ajax({
+		url:"/rased/get/getProbTypes",
+		dataType:"JSON",
+		data:{prob:thisprob},
+		type:"post",
+		async:false
+
+	})
+	.done(function(data){
+		$(typesselect).empty();
+		$('<option/>').val('').html('اختر بند الملاحظة').appendTo(typesselect);
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].body + " (" + data[i].sold + ")").appendTo(typesselect);
+		}
+	});
+	return false;
+}
+
+function getClassStudents(thisclass, studentsselect){
+	$.ajax({
+		url:"/rased/get/getClassStudents",
+		dataType:"JSON",
+		data:{class:$(this).val()},
+		type:"post"
+
+	})
+	.done(function(data){
+		$(studentsselect).empty();
+		$('<option/>').val('').html('اختر طالب').appendTo(studentsselect);
+		for (var i = 0; i < data.length; i++) {
+			$('<option/>').val(data[i].id).html(data[i].fullname).appendTo(studentsselect);
 		}
 	});
 	return false;

@@ -10,25 +10,64 @@ class home extends CI_Controller {
 	{
 		if($table == "")
 		{
-			echo "wrong table";
-			exit();
+			exit("طلب خاطئ");
 		}
 		$this->load->view('header');
 		$table_data = $this->getTable($table);
 		$table_data["table"] = $table;
 		$this->load->view('body',$table_data);
 		$data = array(
-				"levels" => $this->homemodel->getAllLevel(),
-				"grades" => $this->homemodel->getAllGrade(),
-				"classes" => $this->homemodel->getAllClass(),
-				"subjects" => $this->homemodel->getAllSubject(),
-				"users" => $this->homemodel->getAllUser(),
-				"roles" => $this->homemodel->getAllRole()
+				"levels" 	=> $this->homemodel->getAllLevel(),
+				"grades" 	=> $this->homemodel->getAllGrade(),
+				"classes" 	=> $this->homemodel->getAllClass(),
+				"subjects" 	=> $this->homemodel->getAllSubject(),
+				"users" 	=> $this->homemodel->getAllUser(),
+				"roles" 	=> $this->homemodel->getAllRole()
 		);
 		$this->load->view('insert', $data);
 		$this->load->view('modify');
 		$this->load->view('footer');
+	}
 
+	//show notes to insert
+	public function showNotes(){
+		$students = $this->getNotes(array(
+				"level" => $_POST["level"],
+				"grade" => $_POST["grade"],
+				"class" => $_POST["class"]
+		));
+		$query = $this->db->get_where("grades", array("level" => $_POST['level']));
+		$grades = $query->result();
+		$query = $this->db->get_where("classes", array("grade" => $_POST["grade"]));
+		$classes = $query->result();
+		$query = $this->db->get_where("subjects", array("grade" => $_POST["grade"]));
+		$subjects = $query->result();
+		$query = $this->db->get_where("notesprob", array("level" => $_POST["level"]));
+		$probs = $query->result();
+		$query = $this->db->get_where("notestypes", array("prob" => $_POST["prob"]));
+		$types = $query->result();
+		$data = array(
+				"subject" => $_POST["subject"],
+				"status" => $_POST["status"],
+				"datetime" => $_POST["datetime"],
+				"prob" => $_POST["prob"],
+				"type" => $_POST["type"],
+				"note" => $_POST["note"],
+				"level" => $_POST["level"],
+				"grade" => $_POST["grade"],
+				"class" => $_POST["class"],
+				"students" => $students,
+				"grades" => $grades,
+				"classes" => $classes,
+				"subjects" => $subjects,
+				"probs" => $probs,
+				"types" => $types,
+				"levels" 	=> $this->homemodel->getAllLevel()
+				);
+		$this->load->view('header');
+		$this->load->view("notes", $data);
+		$this->load->view("footer");
+		
 	}
 
 	//get table contents for the BIG SHOW!!
@@ -36,7 +75,7 @@ class home extends CI_Controller {
 		$headings = array();
 		$rows = array();
 		$query = $this->db->get($table);
-		
+
 		switch($table){
 			case "ra_levels":
 				$headings = array(lang("level", lang("modify")));
@@ -85,7 +124,7 @@ class home extends CI_Controller {
 				lang("sold"), lang("agreed"), lang("username"));
 				break;
 			default:
-				echo "wrong table";
+				echo "طلب خاطئ";
 				exit();
 				break;
 		}
@@ -155,7 +194,7 @@ class home extends CI_Controller {
 							$grade->grade, $row->subject);
 					break;
 				default:
-					echo "wrong table";
+					echo "طلب خاطئ";
 					exit();
 					break;
 			}
@@ -163,11 +202,91 @@ class home extends CI_Controller {
 		}
 		return array("headings" => $headings, "rows" => $rows);
 	}
-	
+
 	//delete rows from a table
 	public function delete(){
-		
+		$this->getNotes(array("class" => "", "grade" => "", "level" => ""));
 	}
 
+	//get notes as the properities form begin notes form to insert.
+	public function getNotes($atts = array()){
+		$students = array();
+		/*	$newatts = $atts;
+		 foreach($atts as $key => $value)
+		 {
+		if($value == "")
+			unset($atts[$key]);
+		}*/
+		if($atts["class"] != ""){
+			$query = $this->db->get_where("students", array(
+					"class" => $atts["class"]
+			));
+			if($query->num_rows()>0)
+				foreach($query->result() as $student)
+				array_push($students, array(
+						"student" => $student->fullname,
+						"id" => $student->id
+				));
+		}
+		else{
+			if($atts["grade"] != ""){
+				$query = $this->db->get_where("classes", array(
+						"grade" => $atts["grade"]
+				));
+					
+				if($query->num_rows()>0){
+					foreach($query->result() as $class){
+						$query = $this->db->get_where("students", array(
+								"class" => $class->id
+						));
+						if($query->num_rows()>0)
+							foreach($query->result() as $student){
+							array_push($students, array(
+							"student" => $student->fullname,
+							"id" => $student->id
+							));
+						}
+					}
+				}
+			}
+			else{
+				if($atts["level"] != ""){
+					$query = $this->db->get_where("grades", array(
+							"level" => $atts["level"]
+					));
+					if($query->num_rows()>0)
+						foreach($query->result() as $grade){
+						$query = $this->db->get_where("classes", array(
+								"grade" => $grade->id
+						));
+						if($query->num_rows()>0)
+							foreach($query->result() as $class){
+							$query = $this->db->get_where("students", array(
+									"class" => $class->id
+							));
+							if($query->num_rows()>0)
+								foreach($query->result() as $student){
+								array_push($students, array(
+								"student" => $student->fullname,
+								"id" => $student->id
+								));
+							}
+						}
+					}
 
+				}
+				else{
+					$query = $this->homemodel->getAllStudent();
+					foreach($query as $student){
+						array_push($students, array(
+						"student" => $student->fullname,
+						"id" => $student->id
+						));
+					}
+				}
+			}
+
+		}
+		return $students;
+	}
 }
