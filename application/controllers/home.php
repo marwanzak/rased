@@ -3,8 +3,23 @@
 class home extends CI_Controller {
 	function __construct(){
 		parent::__construct();
+		$this->check_isvalidated();
+		
 		$this->lang->load("arabic", "arabic");
 
+	}
+	
+	//////////////////
+	private function check_isvalidated(){
+		if(! $this->session->userdata('validated')){
+			redirect('http://'.base_url().'login');
+		}
+	}
+	
+	///////////////////
+	public function do_logout(){
+		$this->session->sess_destroy();
+		redirect('http://'.base_url().'login');
 	}
 	public function index($table="")
 	{

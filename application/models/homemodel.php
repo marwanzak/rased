@@ -32,6 +32,39 @@ class homeModel extends CI_Model {
 		);
 
 	}
+	public function validate(){
+		// grab user input
+		$username = $this->security->xss_clean($this->input->post('username'));
+		$pass = $this->security->xss_clean($this->input->post('password'));
+		// Prep the query
+		$this->db->where('username', $username);
+
+		// Run the query
+		$query = $this->db->get('users');
+		// Let's check if there are any results
+		if($query->num_rows == 1)
+		{
+			// If there is a user, then create session data
+			$row = $query->row();
+			$new_pass = crypt($pass,$row->salt);
+			if($new_pass == $row->password)
+			{
+				$data = array(
+						'id' => $row->id,
+						'name' => $row->name,
+						'username' => $row->username,
+						'role' => $row->role,
+						'validated' => true,
+				);
+				$this->session->set_userdata($data);
+				return true;
+			}
+		}
+		// If the previous process did not validate
+		// then return false.
+		return false;
+	}
+
 	//insert level
 	public function insertLevel($level){
 		return $this->db->insert("levels", array(
@@ -135,7 +168,7 @@ class homeModel extends CI_Model {
 	public function insertUser($username,$pass, $name, $role, $active){
 		$salt = rand();
 		$code = rand();
-		$password = crypt($pass.$salt);
+		$password = crypt($pass,$salt);
 		return $this->db->insert("users", array(
 				"username" => $username,
 				"password" => $password,
@@ -148,7 +181,7 @@ class homeModel extends CI_Model {
 	//modify password for user.
 	public function modifyPassword($id,$pass){
 		$salt = rand();
-		$password = crypt($pass.$salt);
+		$password = crypt($pass,$salt);
 		$this->db->where("id",$id);
 		return $this->db->update("users", array(
 				"password" =>$password,
@@ -651,6 +684,37 @@ class homeModel extends CI_Model {
 				"level"=>$level
 		));
 		return $query->result();
+	}
+
+	//get class level
+	public function getClassLevel($class){
+		$class_query = $this->db->get_where("classes", array("id" => $class));
+		$class = $class_query->row();
+		$grade_query = $this->db->get_where("grades", array("id" => $class->grade));
+		$grade = $grade_query->row();
+		$level_query = $this->db->get_where("levels", array("id" => $grade->level));
+		$level = $level_query->row();
+		return $level->id;
+	}
+
+	//get class probs
+	public function getClassProbs($class){
+		$level = $this->getClassLevel($class);
+		$probs_query = $this->db->get_where("notesprob", array("level" => $level));
+		return $probs_query->result();
+	}
+
+	//get class subjects
+	public function getClassSubjects($class){
+		$class_query = $this->db->get_where("classes", array("id" => $class));
+		$class = $class_query->row();
+		$subjects_query = $this->db->get_where("subjects", array("grade" => $class->grade));
+		return $subjects_query->restult();
+	}
+	
+	// get user classes
+	public function getUserClasses($user){
+		
 	}
 	//Good array print function!
 	public function array_print($array = array()){
