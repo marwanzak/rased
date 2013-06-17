@@ -5,6 +5,33 @@ class homeModel extends CI_Model {
 		parent::__construct();
 	}
 
+	//get students tree
+	public function getStudentTree($student){
+		$student_query = $this->db->get_where("students" ,array(
+				"id" => $student
+		));
+		$student = $student_query->row();
+		$class_query = $this->db->get_where("classes", array(
+				"id" => $student->class
+		));
+		$class = $class_query->row();
+		$grade_query = $this->db->get_where("grades", array(
+				"id" => $class->grade
+		));
+		$grade = $grade_query->row();
+		$level_query = $this->db->get_where("levels", array(
+				"id" => $grade->level
+		));
+		$level = $level_query->row();
+		return array(
+				"id" => $student->id,
+				"student" => $student->fullname,
+				"level" => $level->id,
+				"grade" => $grade->id,
+				"class" => $class->id
+		);
+
+	}
 	//insert level
 	public function insertLevel($level){
 		return $this->db->insert("levels", array(
@@ -618,7 +645,13 @@ class homeModel extends CI_Model {
 			}
 		}
 	}
-
+	//get level grades
+	public function getLevelGrades($level){
+		$query = $this->db->get_where("ra_grades", array(
+				"level"=>$level
+		));
+		return $query->result();
+	}
 	//Good array print function!
 	public function array_print($array = array()){
 		print "<pre>";

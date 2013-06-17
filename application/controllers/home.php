@@ -62,7 +62,8 @@ class home extends CI_Controller {
 				"subjects" => $subjects,
 				"probs" => $probs,
 				"types" => $types,
-				"levels" 	=> $this->homemodel->getAllLevel()
+				"levels" 	=> $this->homemodel->getAllLevel(),
+				"num" => $_POST["num"]
 				);
 		$this->load->view('header');
 		$this->load->view("notes", $data);
@@ -221,12 +222,10 @@ class home extends CI_Controller {
 			$query = $this->db->get_where("students", array(
 					"class" => $atts["class"]
 			));
+
 			if($query->num_rows()>0)
 				foreach($query->result() as $student)
-				array_push($students, array(
-						"student" => $student->fullname,
-						"id" => $student->id
-				));
+				array_push($students, $this->homemodel->getStudentTree($student->id));
 		}
 		else{
 			if($atts["grade"] != ""){
@@ -241,10 +240,7 @@ class home extends CI_Controller {
 						));
 						if($query->num_rows()>0)
 							foreach($query->result() as $student){
-							array_push($students, array(
-							"student" => $student->fullname,
-							"id" => $student->id
-							));
+							array_push($students, $this->homemodel->getStudentTree($student->id));
 						}
 					}
 				}
@@ -266,10 +262,7 @@ class home extends CI_Controller {
 							));
 							if($query->num_rows()>0)
 								foreach($query->result() as $student){
-								array_push($students, array(
-								"student" => $student->fullname,
-								"id" => $student->id
-								));
+								array_push($students, $this->homemodel->getStudentTree($student->id));
 							}
 						}
 					}
@@ -278,10 +271,7 @@ class home extends CI_Controller {
 				else{
 					$query = $this->homemodel->getAllStudent();
 					foreach($query as $student){
-						array_push($students, array(
-						"student" => $student->fullname,
-						"id" => $student->id
-						));
+						array_push($students, $this->homemodel->getStudentTree($student->id));
 					}
 				}
 			}
@@ -289,4 +279,6 @@ class home extends CI_Controller {
 		}
 		return $students;
 	}
+	
+
 }

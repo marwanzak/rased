@@ -1,19 +1,24 @@
 <table >
 	<?php
-	foreach($students as $student){
+
+	foreach($students as $student)
+	{
+		
+		for($num1=$num;$num1>0;$num1--){
 		?>
 	<tr>
+
 		<td><input type="checkbox" name="notescheck[]"
 			id="<?= $student["id"] ?>" /></td>
 		<td><label><?= $student["student"] ?> </label></td>
-		<td><select id="" class="levels_select notes_levels" name="levels[]">
+					<td><select id="" class="levels_select notes_levels" name="levels[]">
 				<option value="">
 					<?= lang("choose_level")?>
 				</option>
 				<?php
 foreach($levels as $levela){?>
 				<option value="<?= $levela->id ?>"
-				<?= ($levela->id == $level)? "selected='selected'":"" ?>>
+				<?= ($levela->id == $student["level"])? "selected='selected'":"" ?>>
 					<?= $levela->level ?>
 				</option>
 				<?php }?>
@@ -26,13 +31,12 @@ foreach($levels as $levela){?>
 				<?php
 foreach($grades as $gradea){?>
 				<option value="<?= $gradea->id ?>"
-				<?= ($gradea->id == $grade)? "selected='selected'":"" ?>>
+				<?= ($gradea->id == $student["grade"])? "selected='selected'":"" ?>>
 					<?= $gradea->grade ?>
 				</option>
 				<?php }?>
 		</select>
 		</td>
-
 		<td><select id="" class="subjects_select" name="subjects[]">
 				<option value="">
 					<?= lang("choose_subject")?>
@@ -81,5 +85,5 @@ foreach($types as $typea){?>
 			</textarea>
 		</td>
 	</tr>
-	<?php } ?>
+	<?php }} ?>
 </table>
