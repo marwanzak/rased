@@ -259,5 +259,16 @@ class get extends CI_Controller {
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 
+	//get class subjects
+	public function getClassSubjects(){
+		echo json_encode($this->homemodel->getClassSubjects($_POST["class"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+	
+	//get class probs
+	public function getClassProbs(){
+		echo json_encode($this->homemodel->getClassProbs($_POST["class"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
 
 }

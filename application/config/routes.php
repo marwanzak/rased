@@ -37,7 +37,7 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-
+$route['admin/(:any)'] = 'home/index/ra_$1';
 $route['default_controller'] = "home";
 $route['404_override'] = '';
 

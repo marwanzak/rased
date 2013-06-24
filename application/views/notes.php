@@ -1,4 +1,16 @@
-<table >
+<table id = "notes_table">
+<thead>
+<tr>
+<th><input type = "checkbox" id = "notes_check_all"/></th>
+<th><?= lang("student_name") ?></th>
+<th><?= lang("subject") ?></th>
+<th><?= lang("continuas") ?></th>
+<th><?= lang("datetime") ?></th>
+<th><?= lang("note_prob") ?></th>
+<th><?= lang("note_type") ?></th>
+<th><?= lang("note") ?></th>
+</tr>
+</thead>
 	<?php
 
 	foreach($students as $student)
@@ -8,10 +20,10 @@
 		?>
 	<tr>
 
-		<td><input type="checkbox" name="notescheck[]"
+		<td><input type="checkbox" name="notescheck[]" class = "notes_check"
 			id="<?= $student["id"] ?>" /></td>
 		<td><label><?= $student["student"] ?> </label></td>
-					<td><select id="" class="levels_select notes_levels" name="levels[]">
+				<!-- <td><select id="" class="levels_select notes_levels" name="levels[]">
 				<option value="">
 					<?= lang("choose_level")?>
 				</option>
@@ -36,7 +48,7 @@ foreach($grades as $gradea){?>
 				</option>
 				<?php }?>
 		</select>
-		</td>
+		</td> -->
 		<td><select id="" class="subjects_select" name="subjects[]">
 				<option value="">
 					<?= lang("choose_subject")?>
@@ -50,7 +62,7 @@ foreach($subjects as $subjecta){?>
 				<?php }?>
 		</select>
 		</td>
-		<td><label><input type="checkbox" class="togglecheck" value="1" name="status[]" /> </label>
+		<td><label><input type="checkbox" class="togglecheck" value="1" name="status[]" /></label>
 		</td>
 		<td><input type="text" readonly value="<?= $datetime ?>" name="datetime[]" />
 		</td>

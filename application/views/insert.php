@@ -262,8 +262,9 @@ foreach($levels as $level){?>
 
 <!-- beginning values for inserting notes dialog -->
 <div id="begin_notes_dialog" class="dialog_div">
-	<form id="begin_notes_form" action="http://<?= base_url() ?>home/showNotes" method="POST">
-		<label><?= lang("level") ?> :</label><select id="begin_notes_levels"
+	<form id="begin_notes_form"
+		action="http://<?= base_url() ?>home/showNotes" method="POST">
+		<!-- <label><?= lang("level") ?> :</label><select id="begin_notes_levels"
 			class="levels_select" name="level">
 			<option value="">
 				<?= lang("choose_level")?>
@@ -279,11 +280,17 @@ foreach($levels as $level){?>
 			<option value="">
 				<?= lang("choose_grade") ?>
 			</option>
-		</select> <label><?= lang("class") ?> :</label><select
-			id="begin_notes_classes" class="classes_select" name="class">
+		</select> -->
+		<label><?= lang("class") ?> :</label><select id="begin_notes_classes"
+			class="classes_select" name="class">
 			<option value="">
 				<?= lang("choose_class") ?>
 			</option>
+			<?php foreach($classes as $class){?>
+			<option value="<?= $class->id ?>">
+				<?= $class->class ?>
+			</option>
+			<?php }?>
 		</select>
 		<div id="begin_notes_students_div">
 			<label><?= lang("student") ?> :</label><select
@@ -293,8 +300,8 @@ foreach($levels as $level){?>
 				</option>
 			</select>
 		</div>
-		<label><?= lang("notes_num") ?></label><input type = "text" name = "num" value = "1"/>
-		<label><?= lang("subject") ?> :</label><select
+		<label><?= lang("notes_num") ?> </label><input type="text" name="num"
+			value="1" /> <label><?= lang("subject") ?> :</label><select
 			id="begin_notes_subjects" class="subjects_select" name="subject">
 			<option value="">
 				<?= lang("choose_subject") ?>
@@ -318,7 +325,7 @@ foreach($levels as $level){?>
 			</option>
 		</select> <label><?= lang("note") ?>:</label>
 		<textarea id="begin_notes_note" cols="25" rows="10" name="note"></textarea>
-		<input type = "submit" value = "continue" />
+		<input type="submit" value="continue" />
 	</form>
 </div>
 

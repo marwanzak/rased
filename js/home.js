@@ -4,9 +4,10 @@ $(document).ready(function(){
 	$(".hide_modify_password").on("click", function(){
 		$(this).closest("div").hide();
 	});
-	
-	$(".togglecheck").on("click", function(){
-		$(this).parent("label").css({border: this.checked?"1px solid green":"1px solid red"});
+
+	$(".togglecheck").click(function(){
+		$(this).parent("label")
+		.css({border: this.checked?"1px solid red":"1px solid green"});
 	});
 	//hide password div in users table
 	$("#modify_user_dialog div").hide();
@@ -31,6 +32,48 @@ $(document).ready(function(){
 		$('<option/>').val('').html('اختر بند الملاحظة').appendTo('#begin_notes_types');
 		getProbs(this.value, "begin_notes_probs");
 		return false;
+	});
+	
+	//get subjects and notes probs when change classes select in begin notes dialog
+	$("#begin_notes_classes").on("change", function(){
+		$("#begin_notes_students").empty();
+		$('<option/>').val('').html('اختر الطالب').appendTo('#begin_notes_students');
+		$("#begin_notes_subjects").empty();
+		$('<option/>').val('').html('اختر المادة').appendTo('#begin_notes_subjects');
+		$("#begin_notes_types").empty();
+		$('<option/>').val('').html('اختر بند الملاحظة').appendTo('#begin_notes_types');
+		$("#begin_notes_probs").empty();
+		$('<option/>').val('').html('اختر نوع الملاحظة').appendTo('#begin_notes_probs');
+		$.ajax({
+			url:"/rased/get/getClassSubjects",
+			data:{"class":this.value},
+			type:"POST",
+			dataType:"JSON"
+		})
+		.done(function(data){
+			$("#begin_notes_subjects").empty();
+			$('<option/>').val('').html('اختر المادة').appendTo("#begin_notes_subjects");
+			for (var i = 0; i < data.length; i++) {
+				$('<option/>').val(data[i].id).html(data[i].subject).appendTo("#begin_notes_subjects");
+			}
+		});
+		
+		$.ajax({
+			url:"/rased/get/getClassProbs",
+			data:{"class":this.value},
+			type:"POST",
+			dataType:"JSON"
+		})
+		.done(function(data){
+			$("#begin_notes_probs").empty();
+			$('<option/>').val('').html('اختر نوع الملاحظة').appendTo("#begin_notes_probs");
+			for (var i = 0; i < data.length; i++) {
+				$('<option/>').val(data[i].id).html(data[i].prob).appendTo("#begin_notes_probs");
+			}
+		});
+		getClassStudents(this.value, "#begin_notes_students");
+
+		
 	});
 	//get types on change prob selector and put them in types selector
 	$("#begin_notes_probs").on("change", function(){
@@ -179,8 +222,8 @@ $(document).ready(function(){
 
 	//get students and put them in students select on class select changing.
 	$(".classes_select").on("change",function(){
-		var studentsselect = $(this).parent().parent().find(".students_select");
-		getClassStudents(this.value, studentsselect)
+		//var studentsselect = $(this).parent().find(".students_select");
+		//getClassStudents(this.value, studentsselect)
 	});
 	//get level probs for notestypes add and modify
 	$("#add_notetype_levels").on("change", function(){
@@ -308,7 +351,7 @@ function getClassStudents(thisclass, studentsselect){
 	$.ajax({
 		url:"/rased/get/getClassStudents",
 		dataType:"JSON",
-		data:{class:$(this).val()},
+		data:{"class":thisclass},
 		type:"post"
 
 	})

@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <link rel="stylesheet" href="css/style.css" type="text/css" />
-<link rel="stylesheet" href="css/login.css" type="text/css" />
 <title>Alaqsa database | login</title>
 </head>
 <body>

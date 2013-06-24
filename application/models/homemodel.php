@@ -23,6 +23,7 @@ class homeModel extends CI_Model {
 				"id" => $grade->level
 		));
 		$level = $level_query->row();
+		
 		return array(
 				"id" => $student->id,
 				"student" => $student->fullname,
@@ -709,7 +710,7 @@ class homeModel extends CI_Model {
 		$class_query = $this->db->get_where("classes", array("id" => $class));
 		$class = $class_query->row();
 		$subjects_query = $this->db->get_where("subjects", array("grade" => $class->grade));
-		return $subjects_query->restult();
+		return $subjects_query->result();
 	}
 	
 	// get user classes

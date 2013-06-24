@@ -16,7 +16,7 @@
 			<input type="hidden" value=<?= $table ?> name="table" />
 			<?php 
 			if(count($rows)==0)
-				$this->table->add_row("No inputs");
+				$this->table->add_row(lang("no_inputs"));
 			foreach($rows as $row){
 				$id = $row[0];
 				array_shift($row);
