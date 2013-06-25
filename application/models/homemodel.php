@@ -23,7 +23,7 @@ class homeModel extends CI_Model {
 				"id" => $grade->level
 		));
 		$level = $level_query->row();
-		
+
 		return array(
 				"id" => $student->id,
 				"student" => $student->fullname,
@@ -33,6 +33,8 @@ class homeModel extends CI_Model {
 		);
 
 	}
+
+
 	public function validate(){
 		// grab user input
 		$username = $this->security->xss_clean($this->input->post('username'));
@@ -50,11 +52,12 @@ class homeModel extends CI_Model {
 			$new_pass = crypt($pass,$row->salt);
 			if($new_pass == $row->password)
 			{
+				$role = $this->getRole($row->role);
 				$data = array(
 						'id' => $row->id,
 						'name' => $row->name,
 						'username' => $row->username,
-						'role' => $row->role,
+						'role' => $role->role,
 						'validated' => true,
 				);
 				$this->session->set_userdata($data);
@@ -714,11 +717,51 @@ class homeModel extends CI_Model {
 		$subjects_query = $this->db->get_where("subjects", array("grade" => $class->grade));
 		return $subjects_query->result();
 	}
-	
+
 	// get user classes
-	public function getUserClasses($user){
-		
+	public function getUserClasses($user,$return){
+		$user = $this->getUser($user);
+		$classes = "";
+		if($user->classes!=""){
+			$classes_array = explode("--", $user->classes);
+			array_shift($classes_array);
+			if($return == "array")
+			return($classes_array!="")? $classes_array:"لا سماحيات";
+			foreach($classes_array as $class){
+				$class1 = $this->getClass($class);
+				$classes = $classes . "--" . $class1->class;
+			}
+		}
+		if($return == "string")
+		return ($classes != "")?$classes:"لا سماحيات";
 	}
+	
+	// get user subjects
+	public function getUserSubjects($user, $return){
+		$user = $this->getUser($user);
+		$subjects = "";
+		if($user->subjects!=""){
+			$subjects_array = explode("--", $user->subjects);
+			array_shift($subjects_array);
+			return ($subjects_array !="" && $return == "array")? $subjects_array: "لا سماحيات";
+			foreach($subjects_array as $subject){
+				$subject1 = $this->getSubject($subject);
+				$subjects = $subjects . "--" . $subject1->subject;
+			}
+		}
+		return ($subjects!="" && $return == "string")?$subjects:"لا سماحيات";
+	}
+	
+	//get user probs 
+/*	public function getUserProbs($user){
+		$user = $this->getUser($user);
+		$probs = "";
+		if($user->classes != ""){
+			$classes = $this->getUserClasses($user->classes,"array");
+			$grade = $this->getClass($classes[0]);
+		}
+	}*/
+	
 	//Good array print function!
 	public function array_print($array = array()){
 		print "<pre>";

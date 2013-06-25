@@ -298,7 +298,7 @@ $(document).ready(function(){
 		var classes="";
 		var classes_arr = $(".user_classes_checks:checked");
 		for(var i=0; i<classes_arr.length;i++){
-			classes = classes_arr[i].value+"--"+classes;
+			classes += "--"+classes_arr[i].value;
 			}
 		$("#add_user_form #user_classes_input").val(classes);
 		$(this).parent().dialog("close");
@@ -308,7 +308,7 @@ $(document).ready(function(){
 		var subjects="";
 		var subjects_arr = $(".user_subjects_checks:checked");
 		for(var i=0; i<subjects_arr.length;i++){
-			subjects = subjects_arr[i].value+"--"+subjects;
+			subjects +=  "--" + subjects_arr[i].value;
 			}
 		$("#add_user_form #user_subjects_input").val(subjects);
 		$(this).parent().dialog("close");

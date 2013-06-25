@@ -2,6 +2,8 @@
 	<div id="body_container">
 		<div id="container">
 			<?php 
+			if($this->session->userdata("role")!="admin")
+				exit("لا توجد سماحيات لك");
 			if($rows == ""){
 				echo "What are you doing?";
 				exit();

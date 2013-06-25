@@ -27,6 +27,10 @@ class home extends CI_Controller {
 		{
 			exit("طلب خاطئ");
 		}
+		$user_classes = $this->homemodel->getUserClasses(
+				$this->session->userdata("id"), "array");
+		$user_subjects = $this->homemodel->getUsersubjects(
+				$this->session->userdata("id"), "array");
 		$this->load->view('header');
 		$table_data = $this->getTable($table);
 		$table_data["table"] = $table;
@@ -37,14 +41,14 @@ class home extends CI_Controller {
 				"classes" 	=> $this->homemodel->getAllClass(),
 				"subjects" 	=> $this->homemodel->getAllSubject(),
 				"users" 	=> $this->homemodel->getAllUser(),
-				"roles" 	=> $this->homemodel->getAllRole()
+				"roles" 	=> $this->homemodel->getAllRole(),
+				"user_classes" => $user_classes,
+				"user_subjects" => $user_subjects
 		);
 		$this->load->view('insert', $data);
 		$this->load->view('modify');
 		$this->load->view('footer');
 	}
-
-
 
 	//show notes to insert
 	public function showNotes(){
@@ -172,22 +176,12 @@ class home extends CI_Controller {
 							$grade->grade,$class->class);
 					break;
 				case "ra_users":
-					$classes_string = "";
-					if($row->classes != ""){
-					$classes = explode("--",$row->classes);
-					array_shift($classes);	
-					$this->homemodel->array_print($classes);
-						
-					foreach($classes as $class)
-					{
-						$class_query = $this->homemodel->getClass($class);
-						$classes_string += "--".$class_query->class;
-					}	
-					}			
+					$classes = $this->homemodel->getUserClasses($row->id, "string");
+					$subjects = $this->homemodel->getUserSubjects($row->id, "string");
 					$role = $this->homemodel->getRole($row->role);
 					$active = ($row->active == "1")? "YES": "NO";
 					$rows[$i] = array($row->id,$row->username,
-							$row->name,$role->role,$active,$classes_string,"");
+							$row->name,$role->role,$active,$classes,$subjects);
 					break;
 				case "ra_actions":
 					$username = $this->homemodel->getUser($row->username);
@@ -261,7 +255,7 @@ class home extends CI_Controller {
 					$query = $this->db->get_where("classes", array(
 							"grade" => $atts["grade"]
 					));
-						
+
 					if($query->num_rows()>0){
 						foreach($query->result() as $class){
 							$query = $this->db->get_where("students", array(
