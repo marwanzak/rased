@@ -109,7 +109,7 @@ class home extends CI_Controller {
 				break;
 			case "ra_users":
 				$headings = array(lang("username"),lang("fullname"),
-				lang("role"),lang("active"), lang("modify"),lang("send_code"));
+				lang("role"),lang("active"),lang("user_classes"), lang("user_subjects"), lang("modify"),lang("send_code"));
 				break;
 			case "ra_actions":
 				$headings = array(lang("username"),lang("action"),
@@ -172,10 +172,22 @@ class home extends CI_Controller {
 							$grade->grade,$class->class);
 					break;
 				case "ra_users":
+					$classes_string = "";
+					if($row->classes != ""){
+					$classes = explode("--",$row->classes);
+					array_shift($classes);	
+					$this->homemodel->array_print($classes);
+						
+					foreach($classes as $class)
+					{
+						$class_query = $this->homemodel->getClass($class);
+						$classes_string += "--".$class_query->class;
+					}	
+					}			
 					$role = $this->homemodel->getRole($row->role);
 					$active = ($row->active == "1")? "YES": "NO";
 					$rows[$i] = array($row->id,$row->username,
-							$row->name,$role->role,$active);
+							$row->name,$role->role,$active,$classes_string,"");
 					break;
 				case "ra_actions":
 					$username = $this->homemodel->getUser($row->username);

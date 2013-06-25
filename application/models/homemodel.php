@@ -166,7 +166,7 @@ class homeModel extends CI_Model {
 	}
 
 	//insert user
-	public function insertUser($username,$pass, $name, $role, $active){
+	public function insertUser($username,$pass, $name, $role, $active, $classes, $subjects){
 		$salt = rand();
 		$code = rand();
 		$password = crypt($pass,$salt);
@@ -176,7 +176,9 @@ class homeModel extends CI_Model {
 				"name" => $name,
 				"role" => $role,
 				"active" => $active,
-				"salt" => $salt
+				"salt" => $salt,
+				"subjects" => $subjects,
+				"classes" => $classes
 		));
 	}
 	//modify password for user.

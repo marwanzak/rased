@@ -70,7 +70,6 @@ $(document).ready(function(){
 
 		openDialog("begin_notes_dialog", 400);
 	});
-<<<<<<< HEAD
 	
 	$("#add_user_dialog").on("click", "#user_classes_but", function(){
 		
@@ -81,8 +80,6 @@ $(document).ready(function(){
 		
 		openDialog("user_subjects_dialog", 600);
 	});
-=======
->>>>>>> 96566b0166406863349f792a21b3d23e3b2952d0
 
 	//modify dialogs
 	//modify level
@@ -282,7 +279,6 @@ $(document).ready(function(){
 		});
 		openDialog("add_prob_dialog", 400);
 	});
-<<<<<<< HEAD
 	
 	$("#user_classes_all_check").on("click",function(){
 		if($(this).is(":checked"))
@@ -317,8 +313,6 @@ $(document).ready(function(){
 		$("#add_user_form #user_subjects_input").val(subjects);
 		$(this).parent().dialog("close");
 	});
-=======
->>>>>>> 96566b0166406863349f792a21b3d23e3b2952d0
 
 });
 //open dialog function.

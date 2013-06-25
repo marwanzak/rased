@@ -112,7 +112,6 @@ foreach($roles as $role){?>
 		<input type="radio" name="active" value="inactive"
 			id="add_user_inactive">
 		<?= lang("inactive") ?>
-<<<<<<< HEAD
 		<input type="submit" value="<?= lang("add") ?>" /> <input
 			id="user_classes_input" type="text" name="classes" /> <input
 			type="button" id="user_classes_but"
@@ -120,9 +119,7 @@ foreach($roles as $role){?>
 			id="user_subjects_input" type="text" name="subjects" /> <input
 			type="button" id="user_subjects_but"
 			value="<?= lang("user_subjects") ?>" />
-=======
 		<input type="submit" value="<?= lang("add") ?>" />
->>>>>>> 96566b0166406863349f792a21b3d23e3b2952d0
 	</form>
 </div>
 <!-- add new default numbers and emails for user -->
@@ -339,7 +336,6 @@ foreach($levels as $level){?>
 	</form>
 </div>
 
-<<<<<<< HEAD
 <!-- user classes dialog to add to user permissions -->
 <div id="user_classes_dialog" class="dialog_div">
 
@@ -367,5 +363,3 @@ foreach($subjects as $subject){?>
 	<?php }?>
 	<input type="button" value="<?= lang("continue") ?>"  />
 </div>
-=======
->>>>>>> 96566b0166406863349f792a21b3d23e3b2952d0
