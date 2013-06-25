@@ -49,6 +49,7 @@ $lang["choose_sold"] = "اختر خصم";
 $lang["repassword"] = "أعد كتابة كلمة المرور";
 $lang["no_inputs"] = "لا يوجد بيانات";
 $lang["notes_num"] = "عدد الملاحظات لكل طالب";
+<<<<<<< HEAD
 $lang["continue"] = "استمرار";
 $lang["continuas"] = "مستمرة";
 $lang["solved"] = "تم حلها";
@@ -57,3 +58,5 @@ $lang["repassword"] = "أعد كتابة كلمة المرور";
 $lang["user_classes"] = "سماحيات الفصول";
 $lang["user_subjects"] = "سماحيات المواد";
 $lang["choose_all"] = "اختر الكل";
+=======
+>>>>>>> 96566b0166406863349f792a21b3d23e3b2952d0
