@@ -1,46 +1,146 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<link rel="stylesheet" href="css/style.css" type="text/css" />
-<title>Alaqsa database | login</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<title><?= lang("rased_login") ?></title>
+<link href="<?= base_url() ?>css/main.css" rel="stylesheet"
+	type="text/css" />
+<!--[if IE]> <link href="<?= base_url() ?>css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
+
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/jquery_ui_custom.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/charts/excanvas.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/charts/jquery.sparkline.min.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.tagsinput.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.inputlimiter.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.maskedinput.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.autosize.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.ibutton.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.dualListBox.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.validate.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.uniform.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.select2.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/forms/jquery.cleditor.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/uploader/plupload.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/uploader/plupload.html4.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/uploader/plupload.html5.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/uploader/jquery.plupload.queue.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/wizard/jquery.form.wizard.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/wizard/jquery.form.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.collapsible.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.timepicker.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.jgrowl.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.pie.chart.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.fullcalendar.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.elfinder.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/ui/jquery.fancybox.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/tables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/bootstrap/bootstrap-bootbox.min.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/bootstrap/bootstrap-progressbar.js"></script>
+<script type="text/javascript"
+	src="<?= base_url() ?>js/plugins/bootstrap/bootstrap-colorpicker.js"></script>
+
+<script type="text/javascript"
+	src="<?= base_url() ?>js/functions/custom.js"></script>
+
 </head>
+
 <body>
+		<div class="login">
+		<?php if(! is_null($msg)){?>
+		<div class="notice outer closing">
+			<div class="note note-danger">
+				<button type="button" class="close">×</button>
+				<strong><?= $msg ?> </strong>
+			</div>
+		</div>
+		<?php }?>
+	<!-- Main wrapper -->
+	<div class="login-wrapper">
 
-	<div id='login_form'>
 
-		<div id="carbonForm">
-			<h1>Log in</h1>
+			<!-- Login block -->
+			<div class="well">
+				<div class="navbar">
+					<div class="navbar-inner">
+						<h6>
+							<i class="font-user"></i>
+							<?= lang("rased_login") ?>
+						</h6>
 
-			<form action='http://<?php echo base_url();?>login/process' method='post'
-				name='process'>
-
-				<div class="fieldContainer">
-					<br />
-					<?php if(! is_null($msg)) echo $msg;?>
-					<div class="inputcon">
-						<label for='username'>Username</label> <input type='text'
-							name='username' id='username' size='25' />
 					</div>
-					<div class="inputcon">
-
-						<label for='password'>Password</label> <input type='password'
-							name='password' id='password' size='25' />
+				</div>
+				<form action='<?= base_url();?>login/process' class="row-fluid"
+					method="post">
+					<div class="control-group">
+						<label class="control-label"><?= lang("username") ?>:</label>
+						<div class="controls">
+							<input class="span12" type="text" name="username"
+								placeholder="<?= lang("username") ?>" />
+						</div>
 					</div>
-					<label>Language</label> <select name="lang_select">
-						<option value="english">English</option>
-						<option value="arabic">عربي</option>
-					</select>
-				</div>
 
-				<div class="signupButton">
-					<input id='submit' type='Submit' value='Log in' />
-				</div>
+					<div class="control-group">
+						<label class="control-label"><?= lang("password") ?>:</label>
+						<div class="controls">
+							<input class="span12" type="password" name="password"
+								placeholder="<?= lang("password") ?>" />
+						</div>
+					</div>
 
-			</form>
+					<div class="login-btn">
+						<input type="submit" value="<?= lang("login") ?>"
+							class="btn btn-info btn-block btn-large" />
+					</div>
+				</form>
+			</div>
+			<!-- /login block -->
 
 		</div>
+
 	</div>
+	<!-- /main wrapper -->
 
 </body>
 </html>

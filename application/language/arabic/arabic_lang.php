@@ -1,5 +1,21 @@
 <?php
+$lang["table"] = "جدول";
+$lang["ra_levels"] = "المراحل";
+$lang["ra_grades"] = "الصفوف";
+$lang["ra_classes"] = "الفصول";
+$lang["ra_subjects"] = "المواد";
+$lang["ra_users"] = "المستخدمين";
+$lang["ra_notes"] = "الملاحظات";
+$lang["ra_roles"] = "المسميات الوظيفية";
+$lang["ra_students"] = "الطلاب";
+$lang["ra_notestypes"] = "بنود الملاحظات";
+$lang["ra_notesprob"] = "أنواع الملاحظات";
+$lang["ra_actions"] = "أعمال المستخدمين";
+$lang["ra_defaultnumemail"] = "الارقام والايميلات الافتراضية";
+$lang["ra_readymessages"] = "الرسائل الجاهزة";
 $lang["add"] = "إضافة";
+$lang["close"] = "إعلاق";
+$lang["reset"] = "تفريغ";
 $lang["choose_grade"] = "اختر الصف";
 $lang["choose_level"] = "اختر المرحلة";
 $lang["choose_class"] = "اختر الفصل";
@@ -57,3 +73,10 @@ $lang["repassword"] = "أعد كتابة كلمة المرور";
 $lang["user_classes"] = "سماحيات الفصول";
 $lang["user_subjects"] = "سماحيات المواد";
 $lang["choose_all"] = "اختر الكل";
+$lang["rased_login"] = "تسجيل دخول الراصد";
+$lang["login"] = "تسجيل دخول";
+$lang["username"] = "اسم المستخدم";
+$lang["password"] = "كلمة المرور";
+$lang["invalid_login"] = "اسم المستخدم او كلمة المرور خطأ";
+$lang["dashboard"] = "الرئيسية";
+

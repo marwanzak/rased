@@ -3,6 +3,11 @@ class login extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();
+		$this->lang->load("arabic", "arabic");
+			if($this->session->userdata('validated')){
+			redirect(base_url().'admin');
+		}
+		
 	}
 
 	public function index($msg = NULL){
@@ -18,12 +23,12 @@ class login extends CI_Controller{
 		// Now we verify the result
 		if(! $result){
 			// If user did not validate, then show them login page again
-			$msg = '<font color=red>Invalid username and/or password.</font><br />';
+			$msg = lang("invalid_login");
 			$this->index($msg);
 		}else{
 			// If user did validate,
 			// Send them to members area
-			redirect('http://'.base_url().'home');
+			redirect(base_url().'admin');
 		}
 	}
 }

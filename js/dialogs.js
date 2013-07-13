@@ -1,72 +1,72 @@
 $(document).ready(function(){
 	//add dialogs
-	$("#body_container").on("click", ".add_ra_levels",function(){
+	$(".body").on("click", ".add_ra_levels",function(){
 		$("#add_level_form").attr("action","/rased/insert/insertLevel");
 
-		openDialog("add_level_dialog", 400);
+		openDialog("add_ra_levels_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_grades",function(){
+	$(".body").on("click", ".add_ra_grades",function(){
 		$("#add_grade_dialog").attr("action","/rased/insert/insertGrade");
 
-		openDialog("add_grade_dialog", 400);
+		openDialog("add_ra_grades_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_classes",function(){
+	$(".body").on("click", ".add_ra_classes",function(){
 		$("#add_class_dialog").attr("action","/rased/insert/insertClass");
 
-		openDialog("add_class_dialog", 400);
+		openDialog("add_ra_classes_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_users",function(){
+	$(".body").on("click", ".add_ra_users",function(){
 		$("#add_user_dialog").attr("action","/rased/insert/insertUser");
 
-		openDialog("add_user_dialog", 400);
+		openDialog("add_ra_users_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_students",function(){
+	$(".body").on("click", ".add_ra_students",function(){
 		$("#add_student_dialog").attr("action","/rased/insert/insertStudent");
 
-		openDialog("add_student_dialog", 400);
+		openDialog("add_ra_students_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_defaultnumemail",function(){
+	$(".body").on("click", ".add_ra_defaultnumemail",function(){
 		$("#add_def_dialog").attr("action","/rased/insert/insertDef");
 
-		openDialog("add_def_dialog", 400);
+		openDialog("add_ra_defaultnumemail_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_notestypes",function(){
+	$(".body").on("click", ".add_ra_notestypes",function(){
 		$("#add_notetype_dialog").attr("action","/rased/insert/insertNoteType");
 
-		openDialog("add_notetype_dialog", 400);
+		openDialog("add_ra_notestypes_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_readymessages",function(){
+	$(".body").on("click", ".add_ra_readymessages",function(){
 		$("#add_ready_dialog").attr("action","/rased/insert/insertReady");
 
-		openDialog("add_ready_dialog", 400);
+		openDialog("add_ra_readymessages_dialog", 400);
 	});
 
-	$("#body_container").on("click", ".add_ra_roles",function(){
+	$(".body").on("click", ".add_ra_roles",function(){
 		$("#add_role_form").attr("action","/rased/insert/insertRole");
 
-		openDialog("add_role_dialog", 400);
+		openDialog("add_ra_roles_dialog", 400);
 	});
 	
-	$("#body_container").on("click", ".add_ra_subjects",function(){
+	$(".body").on("click", ".add_ra_subjects",function(){
 		$("#add_subject_form").attr("action","/rased/insert/insertSubject");
 
-		openDialog("add_role_dialog", 400);
+		openDialog("add_ra_subjects_dialog", 400);
 	});
 	
-	$("#body_container").on("click", ".add_ra_notesprob",function(){
+	$(".body").on("click", ".add_ra_notesprob",function(){
 		$("#add_prob_form").attr("action","/rased/insert/insertProb");
 
-		openDialog("add_prob_dialog", 400);
+		openDialog("add_ra_notesprob_dialog", 400);
 	});
 	
-	$("#body_container").on("click", ".add_ra_notes",function(){
+	$(".body").on("click", ".add_ra_notes",function(){
 
 		openDialog("begin_notes_dialog", 400);
 	});
@@ -83,7 +83,7 @@ $(document).ready(function(){
 
 	//modify dialogs
 	//modify level
-	$("#container").on("click", ".modify_ra_levels",function(){
+	$(".body").on("click", ".modify_ra_levels",function(){
 		$("#hidden_ra_levels").val(this.id);
 		$("#add_level_form").attr("action","/rased/modify/modifyLevel");
 		$.ajax({
@@ -95,10 +95,10 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_level_input").val(data.level);
 		});
-		openDialog("add_level_dialog", 400);
+		
 	});
 	//modify grade
-	$("#container").on("click", ".modify_ra_grades",function(){
+	$(".body").on("click", ".modify_ra_grades",function(){
 		$("#hidden_ra_grades").val(this.id);
 		$("#add_grade_form").attr("action","/rased/modify/modifyGrade");
 		$.ajax({
@@ -111,28 +111,27 @@ $(document).ready(function(){
 			$("#add_grade_input").val(data.grade);
 			$("#grade_levels").val(data.level).select();
 		});
-		openDialog("add_grade_dialog", 400);
 	});
 	//modify class
-	$("#container").on("click", ".modify_ra_classes",function(){
+	$(".body").on("click", ".modify_ra_classes",function(){
 		$("#hidden_ra_classes").val(this.id);
 		$("#add_class_form").attr("action","/rased/modify/modifyClass");
 		$.ajax({
 			url:"/rased/get/getClass",
 			data:{id:this.id},
 			type:"post",
-			dataType:"json"
+			dataType:"json",
+			async:false
 		})
 		.done(function(data){
 			$("#add_class_input").val(data.class);
 			$("#class_levels").val(data.level).select();
-			getGrades(data.level);
+			getGrades(data.level,"#class_grades");
 			$("#class_grades").val(data.grade).select();
 		});
-		openDialog("add_class_dialog", 400);
 	});
 //modify user
-	$("#container").on("click", ".modify_ra_users",function(){
+	$(".body").on("click", ".modify_ra_users",function(){
 		$("#hidden_ra_users").val(this.id);
 		$(".modify_password").prop("id",this.id);
 		$.ajax({
@@ -149,10 +148,9 @@ $(document).ready(function(){
 			(data.active == "1")?$("#modify_user_active").prop("checked",true):$("#modify_user_inactive").prop("checked",true);
 		});
 
-		openDialog("modify_user_dialog", 400);
 	});
 	//modify subject
-	$("#container").on("click", ".modify_ra_subjects",function(){
+	$(".body").on("click", ".modify_ra_subjects",function(){
 		$("#hidden_ra_subjects").val(this.id);
 		$("#add_subject_form").attr("action","/rased/modify/modifySubject");
 		$.ajax({
@@ -164,13 +162,12 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_subject_input").val(data.subject);
 			$("#subject_levels").val(data.level).select();
-			getGrades(data.level);
+			getGrades(data.level,"#subject_grades");
 			$("#subject_grades").val(data.grade).select();
 		});
-		openDialog("add_subject_dialog", 400);
 	});
 //modify student
-	$("#container").on("click", ".modify_ra_students",function(){
+	$(".body").on("click", ".modify_ra_students",function(){
 		$("#hidden_ra_students").val(this.id);
 		$("#add_student_form").attr("action","/rased/modify/modifyStudent");
 		$.ajax({
@@ -191,10 +188,9 @@ $(document).ready(function(){
 
 
 		});
-		openDialog("add_student_dialog", 400);
 	});
 	//modify default numbers and emails for a user
-	$("#container").on("click", ".modify_ra_defaultnumemail",function(){
+	$(".body").on("click", ".modify_ra_defaultnumemail",function(){
 		$("#hidden_ra_defaultnumemail").val(this.id);
 		$("#add_def_form").attr("action","/rased/modify/modifyDef");
 		$.ajax({
@@ -210,10 +206,9 @@ $(document).ready(function(){
 			$("#add_def_dialog input[name='email1']").val(data.email1);
 			$("#add_def_users").val(data.username).select();
 		});
-		openDialog("add_def_dialog", 400);
 	});
 	//modify note type
-	$("#container").on("click", ".modify_ra_notestypes",function(){
+	$(".body").on("click", ".modify_ra_notestypes",function(){
 		$("#hidden_ra_notestypes").val(this.id);
 		$("#add_notetype_form").attr("action","/rased/modify/modifyNoteType");
 		$.ajax({
@@ -230,10 +225,9 @@ $(document).ready(function(){
 
 
 		});
-		openDialog("add_notetype_dialog", 400);
 	});
 
-	$("#container").on("click", ".modify_ra_readymessages",function(){
+	$(".body").on("click", ".modify_ra_readymessages",function(){
 		$("#hidden_ra_readymessages").val(this.id);
 		$("#add_ready_form").attr("action","/rased/modify/modifyReady");
 		$.ajax({
@@ -245,10 +239,9 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_ready_dialog textarea[name='message']").val(data.message);
 		});
-		openDialog("add_ready_dialog", 400);
 	});
 
-	$("#container").on("click", ".modify_ra_roles",function(){
+	$(".body").on("click", ".modify_ra_roles",function(){
 		$("#hidden_ra_roles").val(this.id);
 		$("#add_role_form").attr("action","/rased/modify/modifyRole");
 		$.ajax({
@@ -260,10 +253,9 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_role_dialog input[name='role']").val(data.role);
 		});
-		openDialog("add_role_dialog", 400);
 	});
 	
-	$("#container").on("click", ".modify_ra_notesprob",function(){
+	$(".body").on("click", ".modify_ra_notesprob",function(){
 		$("#hidden_ra_notesprob").val(this.id);
 		$("#add_prob_form").attr("action","/rased/modify/modifyProb");
 		$.ajax({
@@ -277,7 +269,6 @@ $(document).ready(function(){
 			$("#add_prob_dialog input[name='prob']").val(data.prob);
 
 		});
-		openDialog("add_prob_dialog", 400);
 	});
 	
 	$("#user_classes_all_check").on("click",function(){

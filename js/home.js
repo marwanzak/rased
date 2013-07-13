@@ -87,8 +87,8 @@ $(document).ready(function(){
 		getTypes(this.value, notes_types);
 	});
 	//put astrix after required inputs.
-	$($(".required"))
-	.after("<label class = 'ast'>*</label>");
+	//$($(".required"))
+	//.after("<label class = 'ast'>*</label>");
 	//verify required select elements.
 	$( "form :not('#begin_notes_form')" ).on( "submit", function( event ) {
 		var sele = $(this).find("select");
@@ -138,7 +138,7 @@ $(document).ready(function(){
 		getSubjects(this.value, subjects_select);
 	});
 	// make check all check box for tables.
-	$("#container").on("click","#all_check",function(){
+	$(".body").on("click","#all_check",function(){
 		if($(this).is(":checked"))
 			$(".table_checks").prop("checked",true);
 		else
@@ -210,7 +210,7 @@ $(document).ready(function(){
 
 	//get grades and put them in grades select on level select changing.
 	$(".levels_select").on("change",function(){
-		var gradeselect = $(this).parent().parent().find(".grades_select");
+		var gradeselect = $(".grades_select");
 		getGrades(this.value,gradeselect);
 	});
 
