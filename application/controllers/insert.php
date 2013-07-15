@@ -23,7 +23,7 @@ class insert extends CI_Controller {
 	public function insertUser(){
 		echo $this->homemodel->insertUser($_POST["username"], $_POST["password"],
 				$_POST["name"],$_POST["role"],
-				($_POST["active"]=="active")?"1":"0", $_POST["classes"], $_POST["subjects"]);
+				$_POST["active"], $_POST["classes"], $_POST["subjects"]);
 	}
 	public function insertPermissions(){
 		echo $this->homemodel->insertPermissions($_POST["username"],

@@ -1,3 +1,45 @@
+<!-- add level dialog  -->
+<div id="add_ra_levels_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="add_level_label" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("add")." ".lang("level") ?>
+		</h5>
+	</div>
+	<form id="add_level_form" action="<?= base_url() ?>insert/insertLevel"
+		method="post">
+		<div class="modal-body">
+			<div class="row-fluid">
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("level") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<input type="text" class="required span12" name="level"
+							id="add_level_input" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="hidden_ra_levels" name="id" />
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<?= lang("add")?>
+			</button>
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
+	</form>
+</div>
+
 <!-- add grade dialog -->
 <div id="add_ra_grades_dialog" class="modal hide fade" tabindex="-1"
 	role="dialog" aria-labelledby="add_level_label" aria-hidden="true">
@@ -214,6 +256,7 @@ foreach($levels as $level){?>
 	</div>
 	<form id="add_user_form" action="<?= base_url() ?>insert/insertUser"
 		method="post">
+		<input type="hidden" id="hidden_ra_users" name="id" />
 		<div class="modal-body flow_dialog">
 			<div class="row-fluid">
 				<div class="control-group">
@@ -229,23 +272,25 @@ foreach($levels as $level){?>
 						class="req">*</span> </label>
 					<div class="controls">
 						<input type="text" class="required span12" id="add_user_name"
-							name="fullname" />
+							name="name" />
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label"><?= lang("password") ?> :<span
-						class="req">*</span> </label>
-					<div class="controls">
-						<input type="password" class="required span12"
-							id="add_user_password" name="password" />
+				<div id="password_container">
+					<div class="control-group">
+						<label class="control-label"><?= lang("password") ?> :<span
+							class="req">*</span> </label>
+						<div class="controls">
+							<input type="password" class="required span12"
+								id="add_user_password" name="password" />
+						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label"><?= lang("repassword") ?> :<span
-						class="req">*</span> </label>
-					<div class="controls">
-						<input type="password" class="required span12"
-							id="add_user_repassword" name="" />
+					<div class="control-group">
+						<label class="control-label"><?= lang("repassword") ?> :<span
+							class="req">*</span> </label>
+						<div class="controls">
+							<input type="password" class="required span12"
+								id="add_user_repassword" name="" />
+						</div>
 					</div>
 				</div>
 				<div class="control-group">
@@ -265,19 +310,45 @@ foreach($roles as $role){?>
 
 					</div>
 				</div>
+
 				<div class="control-group">
-					<label class="control-label"><?= lang("user_status") ?>:</label>
-					<div class="controls on_off">
-						<div class="checkbox inline">
-							<input type="checkbox" checked="checked" name="active" id="add_user_active" />
-						</div>
+					<label class="for control-label"><?= lang("user_status") ?>:</label>
+					<div class="controls">
+						<label class="radio inline"><input type="radio" name="active"
+							id="user_active_radio" value="active" class="style"
+							checked="checked"> <?= lang("active") ?> </label> <label
+							class="radio inline"><input type="radio" id="user_inactive_radio"
+							name="active" value="inactive" class="style"> <?= lang("inactive") ?>
+						</label>
 					</div>
 				</div>
 
 
+				<div class="control-group">
+					<input type="hidden" id="hidden_user_classes" name="classes" /> <label
+						class="control-label"><?= lang("user_classes") ?> :<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<a href="#user_classes_dialog" class="btn btn-primary"
+							data-toggle="modal" id="user_classes_but"><b class="icon-comment"></b>
+							<?= lang("user_classes") ?> </a>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<input type="hidden" id="hidden_user_subjects" name="subjects" /> <label
+						class="control-label"><?= lang("user_subjects") ?> :<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<a href="#user_subjects_dialog" class="btn btn-primary"
+							data-toggle="modal" id="user_subjects_but"> <b
+							class="icon-comment"></b> <?= lang("user_subjects") ?>
+						</a>
+
+					</div>
+				</div>
 
 			</div>
-			<input type="hidden" id="hidden_ra_subjects" name="id" />
 
 		</div>
 		<div class="modal-footer">
@@ -286,6 +357,49 @@ foreach($roles as $role){?>
 			</button>
 			<button type="submit" class="btn btn-primary">
 				<?= lang("add")?>
+			</button>
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
+	</form>
+</div>
+
+<!-- modify user password dialog  -->
+<div id="modify_user_password_dialog" class="modal hide fade"
+	tabindex="-1" role="dialog" aria-labelledby="add_level_label"
+	aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("modify")." ".lang("password") ?>
+		</h5>
+	</div>
+	<form id="" action="<?= base_url() ?>modify/modifyPassword"
+		method="post">
+		<div class="modal-body">
+			<div class="row-fluid">
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("password") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<input type="password" class="required span12" name="password"
+							id="add_level_input" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="hidden_user_password_id" name="id" />
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<?= lang("modify")?>
 			</button>
 			<button type="reset" class="btn">
 				<?= lang("reset")?>
@@ -397,47 +511,118 @@ foreach($levels as $level){?>
 	</form>
 </div>
 
-<!-- add new student -->
-<div id="add_student_dialog" class="dialog_div">
-	<form id="add_student_form"
-		action="http://<?= base_url() ?>insert/insertStudent" method="post">
-		<input type="hidden" id="hidden_ra_students" name="id" /> <label><?= lang("user") ?>
-			:</label><select id="add_student_users" class="users_select"
-			name="username">
-			<option value="">
-				<?= lang("without")?>
-			</option>
-			<?php
+
+
+<!-- add new student dialog  -->
+<div id="add_ra_students_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("add")." ".lang("student") ?>
+		</h5>
+	</div>
+	<form id="add_student_form" action="<?= base_url() ?>insert/insertStudent"
+		method="post">
+		<div class="modal-body flow_dialog">
+			<div class="row-fluid">
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("username") ?> </label>
+					<div class="controls">
+						<select name="username" class="users_select"
+							id="add_student_users">
+							<option value="">
+								<?= lang("without")?>
+							</option>
+							<?php
 foreach($users as $user){?>
-			<option value="<?= $user->id ?>">
-				<?= $user->username ?>
-			</option>
-			<?php }?>
-		</select> <label><?= lang("level") ?> :</label><select
-			id="add_student_levels" class="levels_select" name="">
-			<option value="">
-				<?= lang("choose_level")?>
-			</option>
-			<?php
+							<option value=<?= $user->id ?>>
+								<?= $user->username ?>
+							</option>
+							<?php }?>
+						</select>
+
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("level") ?> </label>
+					<div class="controls">
+						<select name="" class="levels_select" id="add_student_levels">
+							<option value="">
+								<?= lang("choose_level")?>
+							</option>
+							<?php
 foreach($levels as $level){?>
-			<option value="<?= $level->id ?>">
-				<?= $level->level ?>
-			</option>
-			<?php }?>
-		</select> <label><?= lang("grade") ?> :</label><select
-			id="add_student_grades" class="grades_select" name="">
-			<option value="">
-				<?= lang("choose_grade") ?>
-			</option>
-		</select> <label><?= lang("class") ?> :</label><select
-			id="add_student_classes" class="classes_select" name="class">
-			<option value="">
-				<?= lang("choose_class") ?>
-			</option>
-		</select> <label><?= lang("idnum") ?> :</label><input type="text"
-			name="idnum" onkeypress="return isNumberKey(event)" class="required" />
-		<label><?= lang("fullname") ?> :</label><input type="text"
-			name="fullname" /> <input type="submit" value="<?= lang("add")?>" />
+							<option value=<?= $level->id ?>>
+								<?= $level->level ?>
+							</option>
+							<?php }?>
+						</select>
+
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("grade") ?> </label>
+					<div class="controls">
+						<select name="" class="grades_select" id="add_student_grades">
+							<option value="">
+								<?= lang("choose_grade")?>
+							</option>
+
+						</select>
+
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("class") ?> </label>
+					<div class="controls">
+						<select name="class" class="classes_select"
+							id="add_student_classes">
+							<option value="">
+								<?= lang("choose_class")?>
+							</option>
+
+						</select>
+
+					</div>
+				</div>
+
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("idnum") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<input type="text" class="required span12" name="idnum"
+							onkeypress="return isNumberKey(event)" id="add_student_idnum" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("fullname") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<input type="text" class="required span12" name="fullname"
+							id="add_student_fullname" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="hidden_ra_students" name="id" />
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<?= lang("add")?>
+			</button>
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
 	</form>
 </div>
 
@@ -511,7 +696,7 @@ foreach($levels as $level){?>
 </div>
 
 <!-- user classes dialog to add to user permissions -->
-<div id="user_classes_dialog" class="dialog_div">
+<div id="" class="dialog_div">
 
 	<input type="checkbox" id="user_classes_all_check" />
 	<?= lang("choose_all") ?>
@@ -524,61 +709,103 @@ foreach($classes as $class){?>
 	<input type="button" value="<?= lang("continue") ?>" />
 </div>
 
+
+
+<!-- user classes dialog to add to user permissions -->
+<div id="user_classes_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="add_user_classes_label"
+	aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("user_classes") ?>
+		</h5>
+	</div>
+
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="control-group">
+				<div class="controls">
+					<?php 
+foreach($classes as $class){?>
+					<label class="checkbox"><input type="checkbox"
+						class="style user_classes_checks" value="<?= $class->id ?>"
+						checked=""> <?= $class->class ?> </label>
+					<?php }?>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">
+			<?= lang("close") ?>
+		</button>
+		<button type="submit" class="btn btn-primary" id="user_classes_ok"
+			data-dismiss="modal">
+			<?= lang("continue")?>
+		</button>
+
+	</div>
+</div>
+
 <!-- user subjects dialog to add to user permissions -->
-<div id="user_subjects_dialog" class="dialog_div">
+<div id="user_subjects_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="">
+			<?= lang("user_subjects") ?>
+		</h5>
+	</div>
+
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="control-group">
+				<div class="controls">
+					<?php 
+foreach($subjects as $subject){?>
+					<label class="checkbox"><input type="checkbox"
+						class="style user_subjects_checks" value="<?= $subject->id ?>" />
+						<?= $subject->subject ?> </label>
+					<?php }?>
+
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">
+			<?= lang("close") ?>
+		</button>
+		<button type="submit" class="btn btn-primary" id="user_subjects_ok"
+			data-dismiss="modal">
+			<?= lang("continue")?>
+		</button>
+
+	</div>
+</div>
+
+<!-- user subjects dialog to add to user permissions -->
+<div id="" class="dialog_div">
 
 	<input type="checkbox" id="user_subjects_all_check" />
 	<?= lang("choose_all") ?>
 	<?php 
 foreach($subjects as $subject){?>
-	<input type="checkbox" value="<?= $subject->id ?>"
-		class="user_subjects_checks" />
+	<input type="checkbox" value="<?= $subject->id ?>" class="" />
 	<?= $subject->subject ?>
 	<?php }?>
 	<input type="button" value="<?= lang("continue") ?>" />
 </div>
 
-<!-- add level dialog  -->
-<div id="add_ra_levels_dialog" class="modal hide fade" tabindex="-1"
-	role="dialog" aria-labelledby="add_level_label" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal"
-			aria-hidden="true">&times;</button>
-		<h5 id="myModalLabel">
-			<?= lang("add")." ".lang("level") ?>
-		</h5>
-	</div>
-	<form id="add_level_form" action="<?= base_url() ?>insert/insertLevel"
-		method="post">
-		<div class="modal-body">
-			<div class="row-fluid">
 
-				<div class="control-group">
-					<label class="control-label"><?= lang("level") ?>:<span class="req">*</span>
-					</label>
-					<div class="controls">
-						<input type="text" class="required span12" name="level"
-							id="add_level_input" />
-					</div>
-				</div>
-			</div>
-			<input type="hidden" id="hidden_ra_levels" name="id" />
-
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal">
-				<?= lang("close") ?>
-			</button>
-			<button type="submit" class="btn btn-primary">
-				<?= lang("add")?>
-			</button>
-			<button type="reset" class="btn">
-				<?= lang("reset")?>
-			</button>
-
-		</div>
-	</form>
-</div>
 <!-- /dialog content -->
 
 
@@ -707,3 +934,48 @@ foreach($roles as $role){?>
 		</form>
 	</div>
 </div>
+
+<!-- add new student -->
+<div id="" class="dialog_div">
+	<form id="add_student_form"
+		action="http://<?= base_url() ?>insert/insertStudent" method="post">
+		<input type="hidden" id="hidden_ra_students" name="id" /> <label><?= lang("user") ?>
+			:</label><select id="add_student_users" class="users_select"
+			name="username">
+			<option value="">
+				<?= lang("without")?>
+			</option>
+			<?php
+foreach($users as $user){?>
+			<option value="<?= $user->id ?>">
+				<?= $user->username ?>
+			</option>
+			<?php }?>
+		</select> <label><?= lang("level") ?> :</label><select
+			id="add_student_levels" class="levels_select" name="">
+			<option value="">
+				<?= lang("choose_level")?>
+			</option>
+			<?php
+foreach($levels as $level){?>
+			<option value="<?= $level->id ?>">
+				<?= $level->level ?>
+			</option>
+			<?php }?>
+		</select> <label><?= lang("grade") ?> :</label><select
+			id="add_student_grades" class="grades_select" name="">
+			<option value="">
+				<?= lang("choose_grade") ?>
+			</option>
+		</select> <label><?= lang("class") ?> :</label><select
+			id="add_student_classes" class="classes_select" name="class">
+			<option value="">
+				<?= lang("choose_class") ?>
+			</option>
+		</select> <label><?= lang("idnum") ?> :</label><input type="text"
+			name="idnum" onkeypress="return isNumberKey(event)" class="required" />
+		<label><?= lang("fullname") ?> :</label><input type="text"
+			name="fullname" /> <input type="submit" value="<?= lang("add")?>" />
+	</form>
+</div>
+

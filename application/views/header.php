@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-<title>Amsterdam - premium responsive admin template by Eugene Kopyov</title>
+<title><?= lang("rased") ?></title>
 <link href="<?= base_url() ?>css/main.css" rel="stylesheet" type="text/css" />
 <link href="<?= base_url() ?>css/style.css" rel="stylesheet" type="text/css" />
 <!--[if IE]> <link href="<?= base_url() ?>css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->

@@ -195,13 +195,15 @@ class homeModel extends CI_Model {
 		));
 	}
 	//modify user.
-	public function modifyUser($id,$username, $name, $role, $active){
+	public function modifyUser($id,$username, $name, $role, $active, $classes, $subjects){
 		$this->db->where("id",$id);
 		return $this->db->update("users", array(
 				"username" => $username,
 				"name" => $name,
 				"role" => $role,
-				"active" => $active
+				"active" => $active,
+				"classes" => $classes,
+				"subjects" => $subjects
 		));
 	}
 	//get user by id.
@@ -726,42 +728,44 @@ class homeModel extends CI_Model {
 			$classes_array = explode("--", $user->classes);
 			array_shift($classes_array);
 			if($return == "array")
-			return($classes_array!="")? $classes_array:"لا سماحيات";
+				return($classes_array!="")? $classes_array:"لا سماحيات";
 			foreach($classes_array as $class){
 				$class1 = $this->getClass($class);
 				$classes = $classes . "--" . $class1->class;
 			}
 		}
 		if($return == "string")
-		return ($classes != "")?$classes:"لا سماحيات";
+			return ($classes != "")?$classes:"لا سماحيات";
 	}
-	
-	// get user subjects
+
+	// get user subjects return string or array
 	public function getUserSubjects($user, $return){
 		$user = $this->getUser($user);
 		$subjects = "";
 		if($user->subjects!=""){
 			$subjects_array = explode("--", $user->subjects);
 			array_shift($subjects_array);
-			return ($subjects_array !="" && $return == "array")? $subjects_array: "لا سماحيات";
+			if($return == "array")
+				return ($subjects_array!="")?$subjects_array:"لا سماحيات";
 			foreach($subjects_array as $subject){
 				$subject1 = $this->getSubject($subject);
 				$subjects = $subjects . "--" . $subject1->subject;
 			}
 		}
-		return ($subjects!="" && $return == "string")?$subjects:"لا سماحيات";
+		if($return =="string")
+			return ($subjects!="")?$subjects:"لا سماحيات";
 	}
-	
-	//get user probs 
-/*	public function getUserProbs($user){
-		$user = $this->getUser($user);
-		$probs = "";
-		if($user->classes != ""){
-			$classes = $this->getUserClasses($user->classes,"array");
-			$grade = $this->getClass($classes[0]);
-		}
+
+	//get user probs
+	/*	public function getUserProbs($user){
+	 $user = $this->getUser($user);
+	$probs = "";
+	if($user->classes != ""){
+	$classes = $this->getUserClasses($user->classes,"array");
+	$grade = $this->getClass($classes[0]);
+	}
 	}*/
-	
+
 	//Good array print function!
 	public function array_print($array = array()){
 		print "<pre>";

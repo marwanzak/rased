@@ -3,7 +3,7 @@
     <div class="top-wrapper">
         <ul class="topnav">
             <li class="topuser">
-                <a title="" data-toggle="dropdown"><img src="<?=base_url() ?>images/user.png" alt="" /><span>Eugene Kopyov</span><i class="caret"></i></a>
+                <a title="" data-toggle="dropdown"><img src="<?=base_url() ?>images/user.png" alt="" /><span><?= $this->session->userdata("name")?></span><i class="caret"></i></a>
                 <ul class="dropdown-menu">
                     <li><a href="#" title=""><span class="user-profile"></span>My profile</a></li>
                     <li><a href="#" title=""><span class="user-stats"></span>Statistics <strong>2</strong></a></li>

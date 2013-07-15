@@ -1,22 +1,6 @@
-#container {
-	overflow: auto;
-	max-height: 500px;
-}
 .flow_dialog{
 	height:400px;
 	overflow: scroll-y;
-}
-body {
-	
-}
-
-label {
-	width: 150px;
-	float: right;
-}
-
-input:not([type="radio"]),select {
-	display: block;
 }
 
 .dialog_div {
@@ -32,13 +16,6 @@ input:not([type="radio"]),select {
 	border: 1px solid green;
 }
 
-.unchecked {
-	border: 1px solid red;
-}
-
-.checked {
-	border: 1px solid green;
-}
 .togglecheck{
 	visibility: hidden;
 }

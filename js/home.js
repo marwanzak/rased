@@ -216,7 +216,7 @@ $(document).ready(function(){
 
 	//get classes and put them in classes select on grade select changing.
 	$(".grades_select").on("change",function(){
-		var classesselect = $(this).parent().parent().find(".classes_select");
+		var classesselect = $(".classes_select");
 		getClasses(this.value, classesselect);
 	});
 

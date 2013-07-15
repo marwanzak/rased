@@ -28,7 +28,7 @@
 
 				<input type="hidden" value=<?= $table ?> name="table" />
 				<a data-toggle="modal" href="#add_<?= $table ?>_dialog"
-					class="btn btn-success"><i class="icon-plus"></i> <?= lang("add") ?></a>
+					class="btn btn-success add_<?= $table?>"><i class="icon-plus"></i> <?= lang("add") ?></a>
 
 
 
@@ -62,7 +62,8 @@
 									array_shift($row);
 									array_unshift($row,"<input type = 'checkbox' id ='".$id."' name = 'checks[]' class = 'table_checks style'/>");
 									array_push($row,'<a id='.$id.' data-toggle="modal" href="#add_'.$table.'_dialog" class="btn btn-primary modify_'.$table.'"><i class="icon-wrench"></i></a>');
-									
+									if($table=="ra_users")
+										array_push($row,"<a id=".$id." data-toggle='modal' href='#modify_user_password_dialog' class='btn btn-inverse modify_user_password_but'><i class='icon-lock'></i></a>");
 									?>
 
 								<tr>

@@ -28,8 +28,8 @@ class modify extends CI_Controller {
 	}
 	public function modifyUser(){
 		echo $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
-				$_POST["name"],
-				$_POST["role"], ($_POST["active"]=="active")?"1":"0");
+				$_POST["name"],	$_POST["role"], ($_POST["active"]=="active")?1:0,
+				$_POST["classes"], $_POST["subjects"]);
 	}
 	public function modifyPermissions(){
 		echo $this->homemodel->modifyPermissions($_POST["id"],
@@ -78,8 +78,5 @@ class modify extends CI_Controller {
 				$_POST["note"],$_POST["status"], $_POST["datetime"],
 				$_POST["sold"],$_POST["agreed"], $_POST["username"]);
 	}
-
-
-
 
 }

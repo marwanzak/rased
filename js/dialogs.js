@@ -1,88 +1,78 @@
 $(document).ready(function(){
-	//add dialogs
+	// add dialogs
 	$(".body").on("click", ".add_ra_levels",function(){
 		$("#add_level_form").attr("action","/rased/insert/insertLevel");
 
-		openDialog("add_ra_levels_dialog", 400);
+
 	});
 
 	$(".body").on("click", ".add_ra_grades",function(){
-		$("#add_grade_dialog").attr("action","/rased/insert/insertGrade");
+		$("#add_grade_form").attr("action","/rased/insert/insertGrade");
 
-		openDialog("add_ra_grades_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_classes",function(){
-		$("#add_class_dialog").attr("action","/rased/insert/insertClass");
+		$("#add_class_form").attr("action","/rased/insert/insertClass");
 
-		openDialog("add_ra_classes_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_users",function(){
-		$("#add_user_dialog").attr("action","/rased/insert/insertUser");
+		$("#add_user_form").attr("action","/rased/insert/insertUser");
+		$("#password_container").show();
 
-		openDialog("add_ra_users_dialog", 400);
+
 	});
 
 	$(".body").on("click", ".add_ra_students",function(){
-		$("#add_student_dialog").attr("action","/rased/insert/insertStudent");
+		$("#add_student_form").attr("action","/rased/insert/insertStudent");
 
-		openDialog("add_ra_students_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_defaultnumemail",function(){
-		$("#add_def_dialog").attr("action","/rased/insert/insertDef");
+		$("#add_def_form").attr("action","/rased/insert/insertDef");
 
-		openDialog("add_ra_defaultnumemail_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_notestypes",function(){
-		$("#add_notetype_dialog").attr("action","/rased/insert/insertNoteType");
+		$("#add_notetype_form").attr("action","/rased/insert/insertNoteType");
 
-		openDialog("add_ra_notestypes_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_readymessages",function(){
-		$("#add_ready_dialog").attr("action","/rased/insert/insertReady");
+		$("#add_ready_form").attr("action","/rased/insert/insertReady");
 
-		openDialog("add_ra_readymessages_dialog", 400);
 	});
 
 	$(".body").on("click", ".add_ra_roles",function(){
 		$("#add_role_form").attr("action","/rased/insert/insertRole");
 
-		openDialog("add_ra_roles_dialog", 400);
 	});
-	
+
 	$(".body").on("click", ".add_ra_subjects",function(){
 		$("#add_subject_form").attr("action","/rased/insert/insertSubject");
 
-		openDialog("add_ra_subjects_dialog", 400);
 	});
-	
+
 	$(".body").on("click", ".add_ra_notesprob",function(){
 		$("#add_prob_form").attr("action","/rased/insert/insertProb");
 
-		openDialog("add_ra_notesprob_dialog", 400);
 	});
-	
+
 	$(".body").on("click", ".add_ra_notes",function(){
 
-		openDialog("begin_notes_dialog", 400);
-	});
-	
-	$("#add_user_dialog").on("click", "#user_classes_but", function(){
-		
-		openDialog("user_classes_dialog", 600);
-	});
-	
-	$("#add_user_dialog").on("click", "#user_subjects_but", function(){
-		
-		openDialog("user_subjects_dialog", 600);
 	});
 
-	//modify dialogs
-	//modify level
+	$("#add_ra_users_dialog").on("click", "#user_classes_but", function(){
+
+	});
+
+	$("#add_ra_users_dialog").on("click", "#user_subjects_but", function(){
+
+	});
+
+
+	// modify dialogs
+	// modify level
 	$(".body").on("click", ".modify_ra_levels",function(){
 		$("#hidden_ra_levels").val(this.id);
 		$("#add_level_form").attr("action","/rased/modify/modifyLevel");
@@ -95,9 +85,9 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_level_input").val(data.level);
 		});
-		
+
 	});
-	//modify grade
+	// modify grade
 	$(".body").on("click", ".modify_ra_grades",function(){
 		$("#hidden_ra_grades").val(this.id);
 		$("#add_grade_form").attr("action","/rased/modify/modifyGrade");
@@ -112,7 +102,7 @@ $(document).ready(function(){
 			$("#grade_levels").val(data.level).select();
 		});
 	});
-	//modify class
+	// modify class
 	$(".body").on("click", ".modify_ra_classes",function(){
 		$("#hidden_ra_classes").val(this.id);
 		$("#add_class_form").attr("action","/rased/modify/modifyClass");
@@ -130,10 +120,11 @@ $(document).ready(function(){
 			$("#class_grades").val(data.grade).select();
 		});
 	});
-//modify user
+//	modify user
 	$(".body").on("click", ".modify_ra_users",function(){
 		$("#hidden_ra_users").val(this.id);
-		$(".modify_password").prop("id",this.id);
+		$("#add_user_form").attr("action","/rased/modify/modifyUser");
+		$(".modify_password").attr("id",this.id);
 		$.ajax({
 			url:"/rased/get/getUser",
 			data:{id:this.id},
@@ -141,15 +132,61 @@ $(document).ready(function(){
 			dataType:"json"
 		})
 		.done(function(data){
-			$("#modify_user_username").val(data.username);
+			$("#password_container").hide();
+			$("#add_user_username").val(data.username);
 			$("#hidden_ra_users_username").val(data.username);
-			$("#modify_user_name").val(data.name);
-			$("#modify_user_roles").val(data.role).select();
-			(data.active == "1")?$("#modify_user_active").prop("checked",true):$("#modify_user_inactive").prop("checked",true);
+			$("#add_user_name").val(data.name);
+			$("#add_user_roles").val(data.role).select();
+			if(data.active == "1"){
+				$("#user_active_radio").prop("checked",true);
+				$("#user_active_radio").parent().addClass("checked");
+				$("#user_inactive_radio").parent().removeClass("checked");
+			}else{
+				$("#user_inactive_radio").prop("checked",true);
+				$("#user_inactive_radio").parent().addClass("checked");
+				$("#user_active_radio").parent().removeClass("checked");
+			}
+			$("#hidden_user_classes").val(data.classes);
+			$("#hidden_user_subjects").val(data.subjects);
+			var sub_array = strToArray(data.subjects);
+			var sub_checks = $(".user_subjects_checks");
+			
+			for(var i=0;i<sub_checks.length;i++){
+				for(var j=0; j<sub_array.length; j++){
+					sub_checks[i].checked=false;
+					sub_checks[i].parentNode.className="";					
+					if(sub_checks[i].value==sub_array[j]){
+						sub_checks[i].checked=true;
+						sub_checks[i].parentNode.className="checked";
+						break;
+					}
+				}
+			}
+			
+			var class_array = strToArray(data.classes);
+			var class_checks = $(".user_classes_checks");
+			
+			for(var i=0;i<class_checks.length;i++){
+				for(var j=0; j<class_array.length; j++){
+					class_checks[i].checked=false;
+					class_checks[i].parentNode.className="";					
+					if(class_checks[i].value==class_array[j]){
+						class_checks[i].checked=true;
+						class_checks[i].parentNode.className="checked";
+						break;
+					}
+				}
+			}
 		});
 
 	});
-	//modify subject
+	
+	//modify user password
+	$(".body").on("click", ".modify_user_password_but", function(){
+		$("#hidden_user_password_id").val(this.id);
+	});
+
+	// modify subject
 	$(".body").on("click", ".modify_ra_subjects",function(){
 		$("#hidden_ra_subjects").val(this.id);
 		$("#add_subject_form").attr("action","/rased/modify/modifySubject");
@@ -166,7 +203,7 @@ $(document).ready(function(){
 			$("#subject_grades").val(data.grade).select();
 		});
 	});
-//modify student
+//	modify student
 	$(".body").on("click", ".modify_ra_students",function(){
 		$("#hidden_ra_students").val(this.id);
 		$("#add_student_form").attr("action","/rased/modify/modifyStudent");
@@ -178,18 +215,18 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			$("#add_student_users").val(data.username).select();
-			$("#add_student_dialog input[name='idnum']").val(data.idnum);
+			$("#add_ra_students_dialog input[name='idnum']").val(data.idnum);
 			$("#add_student_levels").val(data.level).select();
-			getGrades(data.level);
+			getGrades(data.level, ".grades_select");
 			$("#add_student_grades").val(data.grade).select();
-			getClasses(data.grade);
+			getClasses(data.grade,".classes_select");
 			$("#add_student_classes").val(data.class).select();
-			$("#add_student_dialog input[name='fullname']").val(data.fullname);
+			$("#add_ra_students_dialog input[name='fullname']").val(data.fullname);
 
 
 		});
 	});
-	//modify default numbers and emails for a user
+	// modify default numbers and emails for a user
 	$(".body").on("click", ".modify_ra_defaultnumemail",function(){
 		$("#hidden_ra_defaultnumemail").val(this.id);
 		$("#add_def_form").attr("action","/rased/modify/modifyDef");
@@ -207,7 +244,7 @@ $(document).ready(function(){
 			$("#add_def_users").val(data.username).select();
 		});
 	});
-	//modify note type
+	// modify note type
 	$(".body").on("click", ".modify_ra_notestypes",function(){
 		$("#hidden_ra_notestypes").val(this.id);
 		$("#add_notetype_form").attr("action","/rased/modify/modifyNoteType");
@@ -254,7 +291,7 @@ $(document).ready(function(){
 			$("#add_role_dialog input[name='role']").val(data.role);
 		});
 	});
-	
+
 	$(".body").on("click", ".modify_ra_notesprob",function(){
 		$("#hidden_ra_notesprob").val(this.id);
 		$("#add_prob_form").attr("action","/rased/modify/modifyProb");
@@ -270,39 +307,37 @@ $(document).ready(function(){
 
 		});
 	});
-	
+
 	$("#user_classes_all_check").on("click",function(){
 		if($(this).is(":checked"))
 			$(this).parent().find(".user_classes_checks").prop("checked",true);
 		else
 			$(this).parent().find(".user_classes_checks").prop("checked",false);
 	});
-	
+
 	$("#user_subjects_all_check").on("click",function(){
 		if($(this).is(":checked"))
 			$(this).parent().find(".user_subjects_checks").prop("checked",true);
 		else
 			$(this).parent().find(".user_subjects_checks").prop("checked",false);
 	});
-	
-	$("#user_classes_dialog input[type='button']").click(function(){
+
+	$("#user_classes_ok").click(function(){
 		var classes="";
 		var classes_arr = $(".user_classes_checks:checked");
 		for(var i=0; i<classes_arr.length;i++){
 			classes += "--"+classes_arr[i].value;
-			}
-		$("#add_user_form #user_classes_input").val(classes);
-		$(this).parent().dialog("close");
+		}
+		$("#hidden_user_classes").val(classes);
 	});
-	
-	$("#user_subjects_dialog input[type='button']").click(function(){
+
+	$("#user_subjects_ok").click(function(){
 		var subjects="";
 		var subjects_arr = $(".user_subjects_checks:checked");
 		for(var i=0; i<subjects_arr.length;i++){
 			subjects +=  "--" + subjects_arr[i].value;
-			}
-		$("#add_user_form #user_subjects_input").val(subjects);
-		$(this).parent().dialog("close");
+		}
+		$("#hidden_user_subjects").val(subjects);
 	});
 
 });
@@ -313,4 +348,9 @@ function openDialog(dialog,dwidth){
 		show: { effect: 'drop', direction: "up" } ,
 		width: dwidth } );	
 	$("#"+dialog).dialog("open");
+}
+
+function strToArray(str){
+	var new_array = str.split("--");
+	return new_array;
 }

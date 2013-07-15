@@ -1,4 +1,5 @@
 <?php
+$lang["rased"] = "موقع الراصد";
 $lang["table"] = "جدول";
 $lang["ra_levels"] = "المراحل";
 $lang["ra_grades"] = "الصفوف";
@@ -75,7 +76,6 @@ $lang["user_subjects"] = "سماحيات المواد";
 $lang["choose_all"] = "اختر الكل";
 $lang["rased_login"] = "تسجيل دخول الراصد";
 $lang["login"] = "تسجيل دخول";
-$lang["username"] = "اسم المستخدم";
 $lang["password"] = "كلمة المرور";
 $lang["invalid_login"] = "اسم المستخدم او كلمة المرور خطأ";
 $lang["dashboard"] = "الرئيسية";
