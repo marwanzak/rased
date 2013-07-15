@@ -288,7 +288,7 @@ $(document).ready(function(){
 			dataType:"json"
 		})
 		.done(function(data){
-			$("#add_role_dialog input[name='role']").val(data.role);
+			$("#add_ra_roles_dialog input[name='role']").val(data.role);
 		});
 	});
 
@@ -303,7 +303,7 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			$("#add_notesprob_levels").val(data.level).select();
-			$("#add_prob_dialog input[name='prob']").val(data.prob);
+			$("#add_ra_notesprob_dialog input[name='prob']").val(data.prob);
 
 		});
 	});

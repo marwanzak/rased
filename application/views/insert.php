@@ -480,8 +480,67 @@ foreach($probs as $prob){?>
 	</form>
 </div>
 
+<!-- add note prob dialog  -->
+<div id="add_ra_notesprob_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("add")." ".lang("note_prob") ?>
+		</h5>
+	</div>
+	<form id="add_prob_form" action="<?= base_url() ?>insert/insertProb"
+		method="post">
+		<input type="hidden" id="hidden_ra_notesprob" name="id" />
+		<div class="modal-body">
+			<div class="row-fluid">
+				<div class="control-group">
+					<label class="control-label"><?= lang("ra_levels") ?> </label>
+					<div class="controls">
+						<select name="level" class="levels_select"
+							id="add_notesprob_levels">
+							<option value="">
+								<?= lang("choose_level")?>
+							</option>
+							<?php
+foreach($levels as $level){?>
+							<option value=<?= $level->id ?>>
+								<?= $level->level ?>
+							</option>
+							<?php }?>
+						</select>
+
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("prob") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<input type="text" class="required span12" name="prob"
+							id="add_level_input" />
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<?= lang("add")?>
+			</button>
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
+	</form>
+</div>
+
 <!-- add note prob dialog -->
-<div id="add_prob_dialog" class="dialog_div">
+<div id="" class="dialog_div">
 	<form id="add_prob_form"
 		action="http://<?= base_url() ?>insert/insertProb" method="post">
 		<input type="hidden" id="hidden_ra_notesprob" name="id" /> <label><?= lang("level") ?>
@@ -501,13 +560,45 @@ foreach($levels as $level){?>
 			value="<?= lang("add") ?>" />
 	</form>
 </div>
-<!-- add user role dialog -->
-<div id="add_role_dialog" class="dialog_div">
-	<form id="add_role_form"
-		action="http://<?= base_url() ?>insert/insertRole" method="post">
-		<input type="hidden" id="hidden_ra_roles" name="id" /> <label><?= lang("role") ?>
-		</label><input type="text" name="role" class="required" /> <input
-			type="submit" value="<?= lang("add") ?>" />
+
+<!-- add role dialog  -->
+<div id="add_ra_roles_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("add")." ".lang("role") ?>
+		</h5>
+	</div>
+	<form id="add_role_form" action="<?= base_url() ?>insert/insertRole"
+		method="post">
+		<div class="modal-body">
+			<div class="row-fluid">
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("role") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<input type="text" class="required span12" name="role" id="" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="hidden_ra_roles" name="id" />
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<button type="submit" class="btn btn-primary">
+				<?= lang("add")?>
+			</button>
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
 	</form>
 </div>
 
@@ -523,8 +614,8 @@ foreach($levels as $level){?>
 			<?= lang("add")." ".lang("student") ?>
 		</h5>
 	</div>
-	<form id="add_student_form" action="<?= base_url() ?>insert/insertStudent"
-		method="post">
+	<form id="add_student_form"
+		action="<?= base_url() ?>insert/insertStudent" method="post">
 		<div class="modal-body flow_dialog">
 			<div class="row-fluid">
 
@@ -978,4 +1069,15 @@ foreach($levels as $level){?>
 			name="fullname" /> <input type="submit" value="<?= lang("add")?>" />
 	</form>
 </div>
+
+<!-- add user role dialog -->
+<div id="" class="dialog_div">
+	<form id="add_role_form"
+		action="http://<?= base_url() ?>insert/insertRole" method="post">
+		<input type="hidden" id="hidden_ra_roles" name="id" /> <label><?= lang("role") ?>
+		</label><input type="text" name="role" class="required" /> <input
+			type="submit" value="<?= lang("add") ?>" />
+	</form>
+</div>
+
 
