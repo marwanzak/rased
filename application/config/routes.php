@@ -38,6 +38,7 @@
 |
 */
 $route['admin/(:any)'] = 'admin/index/ra_$1';
+$route['admin/delete'] = 'admin/delete';
 $route['admin/do_logout'] = 'admin/do_logout';
 $route['default_controller'] = "admin";
 $route['404_override'] = '';

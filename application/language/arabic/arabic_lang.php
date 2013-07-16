@@ -1,4 +1,9 @@
 <?php
+$lang["success"] = "تمت العملية بنجاح";
+$lang["error"] = "حدث خطأ أثناء العملية";
+$lang["confirm"] = "تأكيد";
+$lang["delete"] = "حذف";
+$lang["delete_error"] = "حدث خطأ في عدد من العمليات";
 $lang["rased"] = "موقع الراصد";
 $lang["table"] = "جدول";
 $lang["ra_levels"] = "المراحل";

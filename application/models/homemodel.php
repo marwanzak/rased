@@ -628,6 +628,8 @@ class homeModel extends CI_Model {
 
 	//delete rows from a table
 	public function delete($related , $table, $rows = array()){
+				
+		/*
 		if( ! empty ( $rows ) )
 		{
 			switch($related){
@@ -685,6 +687,7 @@ class homeModel extends CI_Model {
 
 			}
 		}
+		*/
 	}
 	//get level grades
 	public function getLevelGrades($level){

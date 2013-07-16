@@ -9,74 +9,108 @@ class modify extends CI_Controller {
 
 	}
 	public function modifyPassword(){
-		echo $this->homemodel->modifyPassword($_POST["id"], $_POST["password"]);
+		$query= $this->homemodel->modifyPassword($_POST["id"], $_POST["password"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyLevel(){
-		echo $this->homemodel->modifyLevel($_POST["id"], $_POST["level"]);
+		$query= $this->homemodel->modifyLevel($_POST["id"], $_POST["level"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyGrade(){
-		echo $this->homemodel->modifyGrade($_POST["id"], $_POST["grade"],
+		$query= $this->homemodel->modifyGrade($_POST["id"], $_POST["grade"],
 				$_POST["level"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyClass(){
-		echo $this->homemodel->modifyClass($_POST["id"], $_POST["grade"],
+		$query= $this->homemodel->modifyClass($_POST["id"], $_POST["grade"],
 				$_POST["class"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifySubject(){
-		echo $this->homemodel->modifySubject($_POST["id"], $_POST["grade"],
+		$query= $this->homemodel->modifySubject($_POST["id"], $_POST["grade"],
 				$_POST["subject"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyUser(){
-		echo $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
+		$query= $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
 				$_POST["name"],	$_POST["role"], ($_POST["active"]=="active")?1:0,
 				$_POST["classes"], $_POST["subjects"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyPermissions(){
-		echo $this->homemodel->modifyPermissions($_POST["id"],
+		$query= $this->homemodel->modifyPermissions($_POST["id"],
 				$_POST["username"],	$_POST["permissions"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyDef(){
-		echo $this->homemodel->modifyDef($_POST["id"], $_POST["username"],
+		$query= $this->homemodel->modifyDef($_POST["id"], $_POST["username"],
 				$_POST["number1"], $_POST["number2"], $_POST["email1"], $_POST["email2"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyNotify(){
-		echo $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
+		$query= $this->homemodel->modifyUser($_POST["id"], $_POST["username"],
 				$_POST["number"], $_POST["email"],
 				$_POST["datetime"], $_POST["message"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyNoteType(){
-		echo $this->homemodel->modifyNoteType($_POST["id"], $_POST["prob"],
+		$query= $this->homemodel->modifyNoteType($_POST["id"], $_POST["prob"],
 				$_POST["body"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyReady(){
-		echo $this->homemodel->modifyReady($_POST["id"], $_POST["message"]);
+		$query= $this->homemodel->modifyReady($_POST["id"], $_POST["message"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 
 	public function modifyProb(){
-		echo $this->homemodel->modifyProb($_POST["id"], $_POST["level"], $_POST["prob"]);
+		$query= $this->homemodel->modifyProb($_POST["id"], $_POST["level"], $_POST["prob"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyMorning(){
-		echo $this->homemodel->modifyMorning($_POST["id"], $_POST["student"],
+		$query= $this->homemodel->modifyMorning($_POST["id"], $_POST["student"],
 				$_POST["datetime"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyStudent(){
-		echo $this->homemodel->modifyStudent($_POST["id"], $_POST["username"],
+		$query= $this->homemodel->modifyStudent($_POST["id"], $_POST["username"],
 				$_POST["fullname"], $_POST["class"],
 				$_POST["idnum"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyRole(){
-		echo $this->homemodel->modifyRole($_POST["id"], $_POST["role"]);
+		$query= $this->homemodel->modifyRole($_POST["id"], $_POST["role"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifySettings(){
-		echo $this->homemodel->modifySettings($_POST["id"],
+		$query= $this->homemodel->modifySettings($_POST["id"],
 				$_POST["smsusername"], $_POST["smspassword"],
 				$_POST["year"],	$_POST["semester"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyNote(){
-		echo $this->homemodel->modifyNote($_POST["id"], $_POST["type"],
+		$query= $this->homemodel->modifyNote($_POST["id"], $_POST["type"],
 				$_POST["student"], $_POST["subject"],
 				$_POST["note"],$_POST["status"], $_POST["datetime"],
 				$_POST["sold"],$_POST["agreed"], $_POST["username"]);
+		$this->session->set_userdata("msg",$query);
+		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 
 }

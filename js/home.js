@@ -1,5 +1,10 @@
 $(document).ready(function(){
-
+	
+	//delete main table rows
+	$("#confirm_delete_but").on("click", function(){
+		$("#main_table_form").submit();
+	});
+		
 	//hide password modify div
 	$(".hide_modify_password").on("click", function(){
 		$(this).closest("div").hide();

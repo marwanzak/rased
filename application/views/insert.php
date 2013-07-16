@@ -1,3 +1,26 @@
+<!-- confirm delete tables row  -->
+<div id="confirm_delete_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="">
+			<?= lang("confirm")." ".lang("delete") ?>
+		</h5>
+	</div>
+	<div class="modal-body">
+		<div class="row-fluid"></div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">
+			<?= lang("close") ?>
+		</button>
+		<button type="submit" class="btn btn-primary" id="confirm_delete_but">
+			<?= lang("confirm")?>
+		</button>
+	</div>
+</div>
+
 <!-- add level dialog  -->
 <div id="add_ra_levels_dialog" class="modal hide fade" tabindex="-1"
 	role="dialog" aria-labelledby="add_level_label" aria-hidden="true">
@@ -29,9 +52,7 @@
 			<button class="btn" data-dismiss="modal">
 				<?= lang("close") ?>
 			</button>
-			<button type="submit" class="btn btn-primary">
-				<?= lang("add")?>
-			</button>
+			<input value="<?= lang("add")?>" type="submit" class="btn btn-primary"/>
 			<button type="reset" class="btn">
 				<?= lang("reset")?>
 			</button>
@@ -514,8 +535,8 @@ foreach($levels as $level){?>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label"><?= lang("prob") ?>:<span class="req">*</span>
-					</label>
+					<label class="control-label"><?= lang("note_prob") ?>:<span
+						class="req">*</span> </label>
 					<div class="controls">
 						<input type="text" class="required span12" name="prob"
 							id="add_level_input" />
@@ -787,22 +808,6 @@ foreach($levels as $level){?>
 </div>
 
 <!-- user classes dialog to add to user permissions -->
-<div id="" class="dialog_div">
-
-	<input type="checkbox" id="user_classes_all_check" />
-	<?= lang("choose_all") ?>
-	<?php 
-foreach($classes as $class){?>
-	<input type="checkbox" value="<?= $class->id ?>"
-		class="user_classes_checks" />
-	<?= $class->class ?>
-	<?php }?>
-	<input type="button" value="<?= lang("continue") ?>" />
-</div>
-
-
-
-<!-- user classes dialog to add to user permissions -->
 <div id="user_classes_dialog" class="modal hide fade" tabindex="-1"
 	role="dialog" aria-labelledby="add_user_classes_label"
 	aria-hidden="true">
@@ -883,18 +888,6 @@ foreach($subjects as $subject){?>
 	</div>
 </div>
 
-<!-- user subjects dialog to add to user permissions -->
-<div id="" class="dialog_div">
-
-	<input type="checkbox" id="user_subjects_all_check" />
-	<?= lang("choose_all") ?>
-	<?php 
-foreach($subjects as $subject){?>
-	<input type="checkbox" value="<?= $subject->id ?>" class="" />
-	<?= $subject->subject ?>
-	<?php }?>
-	<input type="button" value="<?= lang("continue") ?>" />
-</div>
 
 
 <!-- /dialog content -->

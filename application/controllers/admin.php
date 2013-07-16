@@ -21,6 +21,8 @@ class admin extends CI_Controller {
 	}
 	public function index($table="")
 	{
+		$this->session->set_userdata('refered_from', uri_string());
+
 		$table1['table']=$table;
 		$this->load->view('header');
 		$this->load->view('top-nav');
@@ -31,7 +33,7 @@ class admin extends CI_Controller {
 				$this->session->userdata("id"), "array");
 
 		if($table!="")
-		$table_data = $this->getTable($table);
+			$table_data = $this->getTable($table);
 		$table_data["table"] = $table;
 		$this->load->view('body',$table_data);
 		$data = array(
@@ -227,8 +229,27 @@ class admin extends CI_Controller {
 
 	//delete rows from a table
 	public function delete(){
-		$this->getNotes(array("class" => "", "grade" => "", "level" => ""));
+		$table = $_POST['table'];
+		$count =0;
+		if(!empty($_POST['checks']))
+		{
+			foreach($_POST['checks'] as $check)
+			{
+				$this->db->where("id", $check);
+				$delete = $this->db->delete($table);
+				if($delete!="1")
+					$count++;
+			}
+		}
+		if($count==0){
+			$this->session->set_userdata("msg","1");
+		}else{
+			$this->session->set_userdata("msg","-1");
+			$this->session->set_userdata("message", lang("delete_error").": ".$count);
+		}
+		redirect($this->session->userdata("refered_from"), 'refresh');
 	}
+
 
 	//get notes as the properities form begin notes form to insert.
 	public function getNotes($atts = array()){
