@@ -32,10 +32,12 @@ class admin extends CI_Controller {
 		$user_subjects = $this->homemodel->getUsersubjects(
 				$this->session->userdata("id"), "array");
 
+
 		if($table!="")
 			$table_data = $this->getTable($table);
 		$table_data["table"] = $table;
 		$this->load->view('body',$table_data);
+		$prio = $this->homemodel->getPriorities();
 		$data = array(
 				"levels" 	=> $this->homemodel->getAllLevel(),
 				"grades" 	=> $this->homemodel->getAllGrade(),
@@ -44,7 +46,11 @@ class admin extends CI_Controller {
 				"users" 	=> $this->homemodel->getAllUser(),
 				"roles" 	=> $this->homemodel->getAllRole(),
 				"user_classes" => $user_classes,
-				"user_subjects" => $user_subjects
+				"user_subjects" => $user_subjects,
+				"settings" => $this->homemodel->getSettings(),
+				"days" => $this->homemodel->getDays(),
+				"monthes" => $this->homemodel->getMonthes(),
+				"prios" => $prio
 		);
 		$this->load->view('insert', $data);
 		$this->load->view('modify');
@@ -53,40 +59,53 @@ class admin extends CI_Controller {
 
 	//show notes to insert
 	public function showNotes(){
+		$monthes = $this->homemodel->getMonthes();
+		$prios = $this->homemodel->getPriorities();
+		$days = $this->homemodel->getDays();
+		$table1['table']="";
+		$this->load->view('header');
+		$this->load->view('top-nav');
+		$this->load->view('menu-bar', $table1);
 		$students = $this->getNotes(array(
 				"level" => '',
 				"grade" => '',
 				"class" => $_POST["class"],
 				"student" => $_POST["student"]
 		));
+		$status = (isset($_POST["status"]))?"checked":"";
 		//	$query = $this->db->get_where("grades", array("level" => $_POST['level']));
 		//	$grades = $query->result();
 		//	$query = $this->db->get_where("classes", array("grade" => $_POST["grade"]));
 		//	$classes = $query->result();
-		$subjects = $this->homemodel->getClassSubjects($_POST["class"]);
-		$probs = $this->homemodel->getClassProbs($_POST["class"]);
-		$query = $this->db->get_where("notestypes", array("prob" => $_POST["prob"]));
-		$types = $query->result();
+		//$subjects = $this->homemodel->getUserClassSubjects($this->session->userdata("id"),$_POST["class"]);
+
+		$types = $this->homemodel->getProbTypes($_POST["prob"]);
+		//$query = $this->db->get_where("notestypes", array("prob" => $_POST["prob"]));
+		//$types = $query->result();
 		$data = array(
 				"subject" => $_POST["subject"],
-				"status" => $_POST["status"],
-				"datetime" => $_POST["datetime"],
+				"status" => $status,
+				"month" => $_POST["month"],
+				"day" => $_POST["day"],
 				"prob" => $_POST["prob"],
 				"type" => $_POST["type"],
 				"note" => $_POST["note"],
+				"days" => $days,
+				"monthes" => $monthes,
 				//			"level" => $_POST["level"],
 				//			"grade" => $_POST["grade"],
 				"class" => $_POST["class"],
 				"students" => $students,
 				//			"grades" => $grades,
 				//			"classes" => $classes,
-				"subjects" => $subjects,
-				"probs" => $probs,
+				//"subjects" => $subjects,
+				//"probs" => $probs,
 				"types" => $types,
-				"levels" 	=> $this->homemodel->getAllLevel(),
-				"num" => $_POST["num"]
+				//"levels" 	=> $this->homemodel->getAllLevel(),
+				"num" => $_POST["num"],
+				"prio" => $_POST["priority"],
+				"prios" => $prios
 		);
-		$this->load->view('header');
 		$this->load->view("notes", $data);
 		$this->load->view("footer");
 
@@ -100,21 +119,21 @@ class admin extends CI_Controller {
 
 		switch($table){
 			case "ra_levels":
-				$headings = array(lang("level", lang("modify")));
+				$headings = array(lang("level", lang("actions")));
 				break;
 			case "ra_grades":
-				$headings = array(lang("level"),lang("grade"), lang("modify"));
+				$headings = array(lang("level"),lang("grade"), lang("actions"));
 				break;
 			case "ra_classes":
-				$headings = array(lang("level"),lang("grade"),lang("class"), lang("modify"));
+				$headings = array(lang("level"),lang("grade"),lang("class"), lang("actions"));
 				break;
 			case "ra_students":
 				$headings = array(lang("gaurd"),lang("fullname"),
-				lang("idnum"),lang("level"),lang("grade"),lang("class"), lang("modify"));
+				lang("idnum"),lang("level"),lang("grade"),lang("class"), lang("actions"));
 				break;
 			case "ra_users":
 				$headings = array(lang("username"),lang("fullname"),
-				lang("role"),lang("active"),lang("user_classes"), lang("user_subjects"), lang("modify"),lang("send_code"));
+				lang("role"), lang("active"), lang("user_classes"), lang("user_subjects"), lang("actions"));
 				break;
 			case "ra_actions":
 				$headings = array(lang("username"),lang("action"),
@@ -122,32 +141,30 @@ class admin extends CI_Controller {
 				break;
 			case "ra_defaultnumemail":
 				$headings = array(lang("username"),lang("email")." 1",
-				lang("email")." 2",lang("phone"). " 1", lang("phone"). " 2", lang("modify"));
+				lang("email")." 2",lang("phone"). " 1", lang("phone"). " 2", lang("actions"));
 				break;
 			case "ra_notesprob":
-				$headings = array(lang("level"),lang("type"), lang("modify"));
+				$headings = array(lang("level"),lang("prob"), lang("color"), lang("actions"));
 				break;
 			case "ra_notestypes":
-				$headings = array(lang("level"),lang("type"), lang("body"), lang("modify"));
+				$headings = array(lang("level"),lang("prob"), lang("sold"), lang("body"), lang("actions"));
 				break;
 			case "ra_readymessages":
-				$headings = array(lang("message"), lang("modify"));
+				$headings = array(lang("message"), lang("actions"));
 				break;
 			case "ra_roles":
-				$headings = array(lang("role"), lang("modify"));
+				$headings = array(lang("role"), lang("actions"));
 				break;
 			case "ra_subjects":
 				$headings = array(lang("level"),
-				lang("grade"), lang("subject"), lang("modify"));
+				lang("grade"), lang("subject"), lang("actions"));
 				break;
 			case "ra_notes":
-				$headings = array(lang("type"), lang("student"), lang("subject"),
-				lang("note"), lang("status"), lang("datetime"),
-				lang("sold"), lang("agreed"), lang("username"));
+				$headings = array(lang("student"), lang("class"), lang("subject"), lang("prob"), lang("type"),
+				lang("status"), lang("priority"), lang("note"), lang("sold"), lang("username"), lang("date"),
+				lang("agreed"), lang('actions'));
 				break;
 			default:
-				echo "طلب خاطئ";
-				exit();
 				break;
 		}
 		$i=0;
@@ -197,13 +214,14 @@ class admin extends CI_Controller {
 					break;
 				case "ra_notesprob":
 					$level = $this->homemodel->getLevel($row->level);
-					$rows[$i] = array($row->id,$level->level, $row->prob);
+					$rows[$i] = array($row->id,$level->level, $row->prob,
+							"<div class='color_div' style='background-color:".$row->color."'></div>");
 					break;
 				case "ra_notestypes":
 					$type = $this->homemodel->getProb($row->prob);
 					$level = $this->homemodel->getLevel($type->level);
 					$rows[$i] = array($row->id,$level->level,
-							$type->prob, $row->body);
+							$type->prob, $row->sold, $row->body);
 					break;
 				case "ra_readymessages":
 					$rows[$i] = array($row->id,$row->message);
@@ -217,8 +235,38 @@ class admin extends CI_Controller {
 					$rows[$i] = array($row->id,$level->level,
 							$grade->grade, $row->subject);
 					break;
+				case "ra_notes":
+					$class = $this->homemodel->getStudentClass($row->student);
+					$student = $this->homemodel->getStudent($row->student);
+					$subject=lang("without");
+					if($row->subject!="0"){
+						$subject = $this->homemodel->getSubject($row->subject);
+						$subject=$subject->subject;
+					}
+					$type=lang("without");
+					if($row->type!="0"){
+						$type = $this->homemodel->getNoteType($row->type);
+						$type = $type->body;
+					}
+					$prob =lang("without");
+					if($row->prob!="0"){
+						$prob = $this->homemodel->getProb($row->prob);
+						$prob = $prob->prob;
+					}
+					$prio = $this->homemodel->getPriority($row->priority);
+					$prio = ($row->priority==2)? "<div style='font-weight:bold; color:red;'>".$prio."</div>": $prio;
+					$set = $this->homemodel->getSettings();
+					$date = $set->date."-الفصل:".$set->semester."-".$row->day."-".$row->month;
+					$username = $this->homemodel->getUser($row->username);
+					$status = ($row->status==1)?"<div style='color:red; font-weight:bold;'>".lang("continue")."</div>"
+							:"<div style='color:green; font-weight:bold;'>".lang("solved")."</div>";
+					$rows[$i] = array($row->id, $student->fullname, $class, $subject, $prob, $type,
+							$status, $prio,
+							$row->note, $row->sold, $username->name, $date,
+							($row->agreed==1)?lang("yes"):lang("no"));
+					break;
 				default:
-					echo "طلب خاطئ";
+					echo lang("wrong_request");
 					exit();
 					break;
 			}
@@ -229,23 +277,28 @@ class admin extends CI_Controller {
 
 	//delete rows from a table
 	public function delete(){
-		$table = $_POST['table'];
-		$count =0;
-		if(!empty($_POST['checks']))
-		{
-			foreach($_POST['checks'] as $check)
+		if(isset($_POST['checks'])){
+			$table = $_POST['table'];
+			$count =0;
+			if(!empty($_POST['checks']))
 			{
-				$this->db->where("id", $check);
-				$delete = $this->db->delete($table);
-				if($delete!="1")
-					$count++;
+				foreach($_POST['checks'] as $check)
+				{
+					$this->db->where("id", $check);
+					$delete = $this->db->delete($table);
+					if($delete!="1")
+						$count++;
+				}
 			}
-		}
-		if($count==0){
-			$this->session->set_userdata("msg","1");
+			if($count==0){
+				$this->session->set_userdata("msg","1");
+			}else{
+				$this->session->set_userdata("msg","-1");
+				$this->session->set_userdata("message", lang("delete_error").": ".$count);
+			}
 		}else{
 			$this->session->set_userdata("msg","-1");
-			$this->session->set_userdata("message", lang("delete_error").": ".$count);
+			$this->session->set_userdata("message", lang("no_select"));
 		}
 		redirect($this->session->userdata("refered_from"), 'refresh');
 	}

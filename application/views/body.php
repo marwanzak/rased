@@ -55,8 +55,8 @@
 			<!-- /page header -->
 
 			<div class="body">
-				<?php if($table!=""){?>
-				<?php array_unshift($headings,"<input type = 'checkbox' id = 'all_check' class='style'/>");?>
+				<?php if($table!="" && $table!="showNotes"){?>
+				<?php array_unshift($headings,"<input type = 'checkbox' id = '' class='style'/>");?>
 
 				<div class="well-smoke body">
 					<input type="hidden" value=<?= $table ?> name="table" /> <a
@@ -99,9 +99,11 @@
 										$id = $row[0];
 										array_shift($row);
 										array_unshift($row,"<input type = 'checkbox' id ='".$id."' value='".$id."' name = 'checks[]' class = 'table_checks style'/>");
-										array_push($row,'<a id='.$id.' data-toggle="modal" href="#add_'.$table.'_dialog" class="btn btn-primary modify_'.$table.'"><i class="icon-wrench"></i></a>');
+										if($table!="ra_users")
+											array_push($row,"<a title='".lang("modify")."' id=".$id." data-toggle='modal' href='#add_".$table."_dialog' class='btn btn-primary modify_".$table."'><i class='icon-wrench'></i></a>");
 										if($table=="ra_users")
-											array_push($row,"<a id=".$id." data-toggle='modal' href='#modify_user_password_dialog' class='btn btn-inverse modify_user_password_but'><i class='icon-lock'></i></a>");
+											array_push($row,"<a title='".lang("modify")."' id=".$id." data-toggle='modal' href='#add_".$table."_dialog' class='btn btn-primary modify_".$table."'><i class='icon-wrench'></i></a>
+													<a title='".lang("change_password")."' id=".$id." data-toggle='modal' href='#modify_user_password_dialog' class='btn btn-inverse modify_user_password_but'><i class='icon-lock'></i></a>");
 										?>
 
 									<tr>
@@ -124,6 +126,8 @@
 					</div>
 				</form>
 				<!-- /table with checkboxes -->
+				<?php }elseif($table=="showNotes"){?>
+				<?php echo "showNotes";?>
 				<?php }?>
 
 			</div>

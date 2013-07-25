@@ -19,3 +19,39 @@
 .togglecheck{
 	visibility: hidden;
 }
+
+.datestyle{
+	width:100px;
+	
+}
+
+.width50{
+	width:50px;
+}
+
+*{
+	
+	font-size:14px;
+}
+
+button.green{
+	background-color:green;
+	
+}
+
+.color_div{
+	width:100px;
+	height:20px;	
+}
+.btnc.active, .btnc:active { 
+	background: #ff0000; /* Old browsers */
+background: -moz-linear-gradient(top,  #ffb2ad 0%, #ff0000 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffb2ad), color-stop(100%,#ff0000)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #ffb2ad 0%,#ff0000 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #ffb2ad 0%,#ff0000 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #ffb2ad 0%,#ff0000 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #ffb2ad 0%,#ff0000 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb2ad', endColorstr='#ff0000',GradientType=0 ); /* IE6-9 */
+border-color: #D80000;	
+	
+}

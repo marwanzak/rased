@@ -130,10 +130,13 @@ class get extends CI_Controller {
 		echo $this->homemodel->getSettings();
 	}
 	public function getNote(){
-		echo $this->homemodel->getNote($_POST["id"]);
+		echo json_encode($this->homemodel->getNote($_POST["id"]),
+				JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllNote(){
 		echo $this->homemodel->getAllNote();
+
 	}
 	//get level grades json data type
 	public function getLevelGrades(){
@@ -264,7 +267,15 @@ class get extends CI_Controller {
 		echo json_encode($this->homemodel->getClassSubjects($_POST["class"]), JSON_HEX_TAG | JSON_HEX_APOS |
 				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
-	
+
+	//get user class subjects
+	public function getUserClassSubjects(){
+		echo json_encode($this->homemodel->getUserClassSubjects(
+				$this->session->userdata('id'),$_POST["class"]),
+				JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+
 	//get class probs
 	public function getClassProbs(){
 		echo json_encode($this->homemodel->getClassProbs($_POST["class"]), JSON_HEX_TAG | JSON_HEX_APOS |

@@ -7,6 +7,7 @@ class homeModel extends CI_Model {
 
 	//get students tree
 	public function getStudentTree($student){
+		$user = $this->session->userdata("id");
 		$student_query = $this->db->get_where("students" ,array(
 				"id" => $student
 		));
@@ -23,13 +24,20 @@ class homeModel extends CI_Model {
 				"id" => $grade->level
 		));
 		$level = $level_query->row();
-
+		$probs_query = $this->db->get_where("notesprob", array(
+				"level" => $level->id
+		));
+		$probs = $probs_query->result();
+		$subjects = $this->getUserClassSubjects($user, $class->id);
 		return array(
 				"id" => $student->id,
 				"student" => $student->fullname,
 				"level" => $level->id,
 				"grade" => $grade->id,
-				"class" => $class->id
+				"class" => $class->id,
+				"subjects" => $subjects,
+				"probs" => $probs
+
 		);
 
 	}
@@ -332,18 +340,20 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert notes type
-	public function insertNoteType($prob,$body){
+	public function insertNoteType($prob,$sold,$body){
 		return $this->db->insert("notestypes", array(
 				"prob" => $prob,
-				"body" => $body
+				"body" => $body,
+				"sold" => $sold
 		));
 	}
 	//modify note type.
-	public function modifyNoteType($id,$prob, $body){
+	public function modifyNoteType($id,$prob,$sold, $body){
 		$this->db->where("id",$id);
 		return $this->db->update("notestypes", array(
 				"prob" => $prob,
-				"body" => $body
+				"body" => $body,
+				"sold" => $sold
 		));
 	}
 	//get note type by id.
@@ -380,18 +390,20 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert note prob message
-	public function insertProb($level,$prob){
+	public function insertProb($level,$prob,$color){
 		return $this->db->insert("notesprob", array(
 				"level" => $level,
-				"prob" => $prob
+				"prob" => $prob,
+				"color" => $color
 		));
 	}
 	//modify note prob message.
-	public function modifyProb($id,$level, $prob){
+	public function modifyProb($id,$level, $prob, $color){
 		$this->db->where("id",$id);
 		return $this->db->update("notesprob", array(
 				"level" => $level,
-				"prob" => $prob
+				"prob" => $prob,
+				"color" => $color
 		));
 	}
 	//get note prob by id.
@@ -528,41 +540,63 @@ class homeModel extends CI_Model {
 		$query = $this->db->get("sitesettings");
 		return $query->row();
 	}
+
 	//insert note.
 	public function insertNote($type, $student, $subject, $note, $status,
-			$datetime, $sold, $agreed, $username){
+			$day,$month,$prob, $agreed, $prio){
 		$set = $this->getSettings();
+		$type_sold="";
+		$student1 = $this->getStudent($student);
+		if($type!=""){
+			$type_sold = $this->getNoteType($type);
+			$type_sold= $type_sold->sold;
+		}
 		return $this->db->insert("notes", array(
 				"type" 		=> $type,
-				"student" 	=> $sudent,
+				"student" 	=> $student,
 				"subject" 	=> $subject,
 				"note" 		=> $note,
 				"status" 	=> $status,
-				"datetime" 	=> $datetime,
+				"day" 		=> $day,
+				"month" 	=> $month,
 				"semester" 	=> $set->semester,
-				"sold"		=> $sold,
+				"sold"		=> $type_sold,
 				"agreed" 	=> $agreed,
-				"username" 	=> $username,
-				"year" 		=> $set->year
+				"username" 	=> $this->session->userdata("id"),
+				"year" 		=> $set->date,
+				"prob"		=> $prob,
+				"class"		=> $student1->class,
+				"priority" 	=> $prio
 		));
 	}
 	//modify note.
 	public function modifyNote($id, $type, $student, $subject, $note, $status,
-			$datetime, $sold, $agreed, $username){
+			$month, $day ,$prob, $prio){
 		$set = $this->getSettings();
+		$type_sold="";
+		$student1 = $this->getStudent($student);
+		if($type!=""){
+			$type_sold = $this->getNoteType($type);
+			$type_sold= $type_sold->sold;
+		}
 		$this->db->where("id",$id);
 		return $this->db->update("notes", array(
 				"type" 		=> $type,
-				"student" 	=> $sudent,
+				"student" 	=> $student,
 				"subject" 	=> $subject,
 				"note" 		=> $note,
 				"status" 	=> $status,
-				"datetime" 	=> $datetime,
+				"month" 	=> $month,
+				"day" 		=> $day,
 				"semester" 	=> $set->semester,
-				"sold"		=> $sold,
-				"agreed" 	=> $agreed,
-				"username" 	=> $username,
-				"year" 		=> $set->year
+				"agreed" 	=> "0",
+				"year" 		=> $set->date,
+				"class" 	=> $student1->class,
+				"username" 	=> $this->session->userdata("id"),
+				"sold" 		=> $type_sold,
+				"prob"		=> $prob,
+				"priority" 	=> $prio
+				
 		));
 	}
 	//get note by id.
@@ -628,64 +662,64 @@ class homeModel extends CI_Model {
 
 	//delete rows from a table
 	public function delete($related , $table, $rows = array()){
-				
-		/*
-		if( ! empty ( $rows ) )
-		{
-			switch($related){
-				case "delete":
-					switch($table)
-					{
-						case "ra_levels":
-							break;
-						case "ra_grades":
-							break;
-						case "ra_classes":
-							break;
-						case "ra_users":
-							break;
-						case "ra_students":
-							break;
-						case "ra_notesprob":
-							break;
-					}
-					break;
-				case "replace":
-					switch($table)
-					{
-						case "ra_levels":
-							break;
-						case "ra_grades":
-							break;
-						case "ra_classes":
-							break;
-						case "ra_users":
-							break;
-						case "ra_students":
-							break;
-						case "ra_notesprob":
-							break;
-					}
-					break;
-				case "null":
-					switch($table)
-					{
-						case "ra_levels":
-							break;
-						case "ra_grades":
-							break;
-						case "ra_classes":
-							break;
-						case "ra_users":
-							break;
-						case "ra_students":
-							break;
-						case "ra_notesprob":
-							break;
-					}
-					break;
 
-			}
+		/*
+		 if( ! empty ( $rows ) )
+		 {
+		switch($related){
+		case "delete":
+		switch($table)
+		{
+		case "ra_levels":
+		break;
+		case "ra_grades":
+		break;
+		case "ra_classes":
+		break;
+		case "ra_users":
+		break;
+		case "ra_students":
+		break;
+		case "ra_notesprob":
+		break;
+		}
+		break;
+		case "replace":
+		switch($table)
+		{
+		case "ra_levels":
+		break;
+		case "ra_grades":
+		break;
+		case "ra_classes":
+		break;
+		case "ra_users":
+		break;
+		case "ra_students":
+		break;
+		case "ra_notesprob":
+		break;
+		}
+		break;
+		case "null":
+		switch($table)
+		{
+		case "ra_levels":
+		break;
+		case "ra_grades":
+		break;
+		case "ra_classes":
+		break;
+		case "ra_users":
+		break;
+		case "ra_students":
+		break;
+		case "ra_notesprob":
+		break;
+		}
+		break;
+
+		}
 		}
 		*/
 	}
@@ -723,40 +757,131 @@ class homeModel extends CI_Model {
 		return $subjects_query->result();
 	}
 
+	//get user class subjects
+	public function getUserClassSubjects($user, $class, $type=""){
+		$subjects_array = $this->getUserSubjects($user, "array");
+		$class_query = $this->db->get_where("classes", array("id" => $class));
+		$class = $class_query->row();
+		$subjects_query = $this->db->get_where("subjects", array("grade" => $class->grade));
+		$subjects_out = array();
+		foreach($subjects_query->result() as $subject)
+			foreach($subjects_array as $user_subject){
+			if($user_subject['id']==$subject->id)
+				array_push($subjects_out, array("id" => $subject->id, "subject" => $subject->subject));
+		}
+		if($type=="object")
+			return (object)$subjects_out;
+		else
+			return $subjects_out;
+	}
+
+	//get prob types to add note
+	public function getProbTypes($prob){
+		$query = $this->db->get_where("notestypes", array("prob" => $prob));
+		return $query->result();
+	}
+
+	//get student class
+	public function getStudentClass($student){
+		$query = $this->db->get_where("students", array("id" => $student));
+		$student = $query->row();
+		$query = $this->db->get_where("classes", array("id" => $student->class));
+		$class = $query->row();
+		return $class->class;
+	}
+
 	// get user classes
 	public function getUserClasses($user,$return){
 		$user = $this->getUser($user);
 		$classes = "";
+		$full_classes = array();
 		if($user->classes!=""){
 			$classes_array = explode("--", $user->classes);
 			array_shift($classes_array);
-			if($return == "array")
-				return($classes_array!="")? $classes_array:"لا سماحيات";
+			if($return == "array"){
+				foreach($classes_array as $class){
+					$query = $this->getClass($class);
+					array_push($full_classes,array("id" => $query->id, "class" => $query->class));
+				}
+				return($classes_array!="")? $full_classes:lang("no_permissions");
+			}
 			foreach($classes_array as $class){
 				$class1 = $this->getClass($class);
 				$classes = $classes . "--" . $class1->class;
 			}
 		}
 		if($return == "string")
-			return ($classes != "")?$classes:"لا سماحيات";
+			return ($classes != "")?$classes:lang("no_permissions");
 	}
 
 	// get user subjects return string or array
 	public function getUserSubjects($user, $return){
 		$user = $this->getUser($user);
 		$subjects = "";
+		$full_subjects = array();
 		if($user->subjects!=""){
 			$subjects_array = explode("--", $user->subjects);
 			array_shift($subjects_array);
-			if($return == "array")
-				return ($subjects_array!="")?$subjects_array:"لا سماحيات";
+			if($return == "array"){
+				foreach($subjects_array as $subject){
+					$query = $this->getSubject($subject);
+					array_push($full_subjects, array("id" => $query->id, "subject" => $query->subject));
+				}
+				return ($subjects_array!="")?$full_subjects:lang("no_permissions");
+
+			}
 			foreach($subjects_array as $subject){
 				$subject1 = $this->getSubject($subject);
 				$subjects = $subjects . "--" . $subject1->subject;
 			}
 		}
 		if($return =="string")
-			return ($subjects!="")?$subjects:"لا سماحيات";
+			return ($subjects!="")?$subjects:lang("no_permissions");
+	}
+	//get days for hijri date
+	public function getDays(){
+		$days=array();
+		for($i=1;$i<31;$i++){
+			array_push($days,$i);
+		}
+		return $days;
+	}
+
+	//get monthes for hijri date
+	public function getMonthes(){
+		return array(
+				lang("moharam"),
+				lang("safar"),
+				lang("rabie_awal"),
+				lang("rabie_thani"),
+				lang("jumada_awal"),
+				lang("jumada_thani"),
+				lang("rajab"),
+				lang("shaban"),
+				lang("ramadan"),
+				lang("shawal"),
+				lang("zo_elkida"),
+				lang("zo_elhija")
+		);
+	}
+	
+	//get priorities
+	public function getPriorities(){
+		return array(
+				lang("normal"),
+				lang("important"),
+				lang("very_imp")
+		);
+	}
+	
+	//get priority name.
+	public function getPriority($id){
+		$prio = array(
+				lang("normal"),
+				lang("important"),
+				lang("very_imp")
+		);
+		return $prio[$id]; 
 	}
 
 	//get user probs

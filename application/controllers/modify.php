@@ -63,7 +63,7 @@ class modify extends CI_Controller {
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyNoteType(){
-		$query= $this->homemodel->modifyNoteType($_POST["id"], $_POST["prob"],
+		$query= $this->homemodel->modifyNoteType($_POST["id"], $_POST["prob"],$_POST["sold"],
 				$_POST["body"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
@@ -75,7 +75,7 @@ class modify extends CI_Controller {
 	}
 
 	public function modifyProb(){
-		$query= $this->homemodel->modifyProb($_POST["id"], $_POST["level"], $_POST["prob"]);
+		$query= $this->homemodel->modifyProb($_POST["id"], $_POST["level"], $_POST["prob"], $_POST["color"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
@@ -107,8 +107,9 @@ class modify extends CI_Controller {
 	public function modifyNote(){
 		$query= $this->homemodel->modifyNote($_POST["id"], $_POST["type"],
 				$_POST["student"], $_POST["subject"],
-				$_POST["note"],$_POST["status"], $_POST["datetime"],
-				$_POST["sold"],$_POST["agreed"], $_POST["username"]);
+				$_POST["note"],isset($_POST["status"])?1:0, $_POST["month"],
+				$_POST["day"],$_POST["prob"], $_POST["priority"]
+				);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}

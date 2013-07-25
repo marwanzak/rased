@@ -35,6 +35,7 @@ $(document).ready(function(){
 
 	$(".body").on("click", ".add_ra_notestypes",function(){
 		$("#add_notetype_form").attr("action","/rased/insert/insertNoteType");
+		
 
 	});
 
@@ -59,6 +60,9 @@ $(document).ready(function(){
 	});
 
 	$(".body").on("click", ".add_ra_notes",function(){
+		$("#begin_notes_form input[name=num]").parent().parent().show();
+		$("#begin_notes_form").attr("action","/rased/admin/showNotes");
+
 
 	});
 
@@ -237,10 +241,10 @@ $(document).ready(function(){
 			dataType:"json"
 		})
 		.done(function(data){
-			$("#add_def_dialog input[name='number1']").val(data.number1);
-			$("#add_def_dialog input[name='number2']").val(data.number2);
-			$("#add_def_dialog input[name='email2']").val(data.email2);
-			$("#add_def_dialog input[name='email1']").val(data.email1);
+			$("#add_def_form input[name='number1']").val(data.number1);
+			$("#add_def_form input[name='number2']").val(data.number2);
+			$("#add_def_form input[name='email2']").val(data.email2);
+			$("#add_def_form input[name='email1']").val(data.email1);
 			$("#add_def_users").val(data.username).select();
 		});
 	});
@@ -256,14 +260,55 @@ $(document).ready(function(){
 		})
 		.done(function(data){
 			$("#add_notetype_levels").val(data.level).select();
-			getProbs(data.level,"add_notetype_probs");
+			getProbs(data.level,"#add_notetype_probs");
 			$("#add_notetype_probs").val(data.prob).select();
-			$("#add_notetype_dialog textarea[name='body']").val(data.body);
+			$("#add_ra_notestypes_dialog input[name='body']").val(data.body);
+			$("#add_ra_notestypes_dialog input[name='sold']").val(data.sold);
 
 
 		});
 	});
+	
+	//modify note
+	$(".body").on("click", ".modify_ra_notes",function(){
+		$("#begin_notes_form input[name=num]").parent().parent().hide();
+		$("#hidden_ra_notes").val(this.id);
+		$("#begin_notes_form").attr("action","/rased/modify/modifyNote");
+		$.ajax({
+			url:"/rased/get/getNote",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#begin_notes_form select[name=priority]").val(data.priority).select();				
+			$("#begin_notes_classes").val(data.class).select();
+			getClassStudents(data.class, $("#begin_notes_students"));
+			$("#begin_notes_students").val(data.student).select();
+			getUserClassSubjects(data.class, $("#begin_notes_subjects"));
+			$("#begin_notes_subjects").val(data.subject).select();
+			getClassProbs(data.class, $("#begin_notes_probs"));
+			$("#begin_notes_probs").val(data.prob).select();	
+			getTypes(data.prob, $("#begin_notes_types"));
+			$("#begin_notes_types").val(data.type).select();
+			$("#begin_notes_form select[name=month]").val(data.month).select();
+			$("#begin_notes_form select[name=day]").val(data.day).select();
+			$("#begin_notes_form textarea[name=note]").val(data.note);
+			if(data.status==1){
+				$("#begin_notes_form #begin_status").addClass("active");
+				$("#begin_notes_form #begin_status").val("مستمرة");
+				$("#begin_notes_form input[name=status]").prop("checked",true);
+			}else{
+				$("#begin_notes_form #begin_status").removeClass("active");
+				$("#begin_notes_form #begin_status").val("تم حلها");
+				$("#begin_notes_form input[name=status]").prop("checked",false);				
+			}
+			
+			
+		});
+	});	
 
+	//modify ready message
 	$(".body").on("click", ".modify_ra_readymessages",function(){
 		$("#hidden_ra_readymessages").val(this.id);
 		$("#add_ready_form").attr("action","/rased/modify/modifyReady");
@@ -274,10 +319,11 @@ $(document).ready(function(){
 			dataType:"json"
 		})
 		.done(function(data){
-			$("#add_ready_dialog textarea[name='message']").val(data.message);
+			$("#add_ra_readymessages_dialog textarea[name='message']").val(data.message);
 		});
 	});
 
+	//modify role
 	$(".body").on("click", ".modify_ra_roles",function(){
 		$("#hidden_ra_roles").val(this.id);
 		$("#add_role_form").attr("action","/rased/modify/modifyRole");
@@ -292,6 +338,7 @@ $(document).ready(function(){
 		});
 	});
 
+	//modify note prob
 	$(".body").on("click", ".modify_ra_notesprob",function(){
 		$("#hidden_ra_notesprob").val(this.id);
 		$("#add_prob_form").attr("action","/rased/modify/modifyProb");
@@ -304,10 +351,12 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_notesprob_levels").val(data.level).select();
 			$("#add_ra_notesprob_dialog input[name='prob']").val(data.prob);
+			$("#add_ra_notesprob_dialog input[name='color']").val(data.color);
 
 		});
 	});
-
+	
+	//check all checks in table
 	$("#user_classes_all_check").on("click",function(){
 		if($(this).is(":checked"))
 			$(this).parent().find(".user_classes_checks").prop("checked",true);

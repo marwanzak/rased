@@ -55,7 +55,7 @@ class insert extends CI_Controller {
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function insertNoteType(){
-		$query = $this->homemodel->insertNoteType($_POST["prob"],$_POST["body"]);
+		$query = $this->homemodel->insertNoteType($_POST["prob"],$_POST["sold"],$_POST["body"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
@@ -65,7 +65,7 @@ class insert extends CI_Controller {
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function insertProb(){
-		$query = $this->homemodel->insertProb($_POST["level"],$_POST["prob"]);
+		$query = $this->homemodel->insertProb($_POST["level"],$_POST["prob"], $_POST["color"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
@@ -99,13 +99,20 @@ class insert extends CI_Controller {
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function insertNote(){
-		$set = $this->homemodel->getSettings();
-		$query = $this->homemodel->insertNote($_POST["type"],$_POST["student"],
-				$_POST["subject"], $_POST["note"],
-				$_POST["status"],$_POST["datetime"], $set->semester,
-				$_POST["sold"],$_POST["agreed"], $_POST["username"],$set->year
-		);
-		$this->session->set_userdata("msg",$query);
+		foreach($_POST["notescheck"] as $key => $check){
+			if($check!="0")
+			$query = $this->homemodel->insertNote($_POST["types"][$key],$check,
+					$_POST["subjects"][$key], $_POST["notes"][$key],
+					$_POST["status"][$key],$_POST["day"][$key], $_POST["month"][$key],
+					$_POST["probs"][$key], "0", $_POST["priority"][$key]
+			);
+		}
+		if(isset($query))
+		$this->session->set_userdata("msg","1");
+		else{
+			$this->session->set_userdata("msg","-1");
+			$this->session->set_userdata("message", lang("note_insert_error"));
+		}
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 
