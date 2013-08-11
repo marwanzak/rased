@@ -42,6 +42,13 @@ class homeModel extends CI_Model {
 
 	}
 
+	//get user by username
+	public function getUserByUsername($username){
+		$query = $this->db->get_where("users", array("username"=>$username));
+		if($query->num_rows()>0)
+			return false;
+		return true;
+	}
 
 	public function validate(){
 		// grab user input
@@ -57,6 +64,12 @@ class homeModel extends CI_Model {
 		{
 			// If there is a user, then create session data
 			$row = $query->row();
+			//get permissions of user
+			$query = $this->db->get_where("permissions", array("role" => $row->role));
+			$permissions=$query->row();
+			if($permissions->admin_login!="1")
+				exit("no_permissions");
+
 			$new_pass = crypt($pass,$row->salt);
 			if($new_pass == $row->password)
 			{
@@ -232,12 +245,9 @@ class homeModel extends CI_Model {
 		));
 	}
 	//modify permissions.
-	public function modifyPermissions($id,$username,$permissions){
-		$this->db->where("id",$id);
-		return $this->db->update("permissions", array(
-				"username" => $username,
-				"permissions" => $permissions
-		));
+	public function modifyPermissions($id, $atts = array()){
+		$this->db->where("role",$id);
+		return $this->db->update("permissions", $atts);
 	}
 	//get permissions by id.
 	public function getPermissions($id){
@@ -248,6 +258,14 @@ class homeModel extends CI_Model {
 	public function getAllPermissions(){
 		$query = $this->db->get("permissions");
 		return $query->result();
+	}
+
+	//get user permissions
+	public function getUserPermissions($id){
+		$query = $this->db->get_where("users", array("id"=>$id));
+		$user = $query->row();
+		$query = $this->db->get_where("permissions", array("role" => $user->role));
+		return $query->row();
 	}
 
 	//get sold by id
@@ -357,9 +375,12 @@ class homeModel extends CI_Model {
 		));
 	}
 	//get note type by id.
-	public function getNoteType($id){
+	public function getNoteType($id,$name=""){
 		$query = $this->db->get_where("notestypes", array("id"=>$id));
-		return $query->row();
+		$type = $query->row();
+		if($name!="")
+			return $type->type;
+		else return $query->row();
 	}
 	//get all Notes types.
 	public function getAllNoteType(){
@@ -407,9 +428,12 @@ class homeModel extends CI_Model {
 		));
 	}
 	//get note prob by id.
-	public function getProb($id){
+	public function getProb($id,$name=""){
 		$query = $this->db->get_where("notesprob", array("id"=>$id));
-		return $query->row();
+		$prob = $query->row();
+		if($name!="")
+			return $prob->prob;
+		else return $query->row();
 	}
 	//get all notes probs.
 	public function getAllProb(){
@@ -472,9 +496,10 @@ class homeModel extends CI_Model {
 	}
 	//insert role.
 	public function insertRole($role){
-		return $this->db->insert("roles", array(
+		$query = $this->db->insert("roles", array(
 				"role" => $role
 		));
+		return $this->db->insert_id();
 	}
 	//modify Role.
 	public function modifyRole($id, $role){
@@ -596,7 +621,7 @@ class homeModel extends CI_Model {
 				"sold" 		=> $type_sold,
 				"prob"		=> $prob,
 				"priority" 	=> $prio
-				
+
 		));
 	}
 	//get note by id.
@@ -864,7 +889,7 @@ class homeModel extends CI_Model {
 				lang("zo_elhija")
 		);
 	}
-	
+
 	//get priorities
 	public function getPriorities(){
 		return array(
@@ -873,7 +898,13 @@ class homeModel extends CI_Model {
 				lang("very_imp")
 		);
 	}
-	
+
+	//modify agreement of note
+	public function modifyAgree($id, $agree){
+		$this->db->where("id", $id);
+		return $this->db->update("notes", array("agreed" => $agree));
+	}
+
 	//get priority name.
 	public function getPriority($id){
 		$prio = array(
@@ -881,7 +912,7 @@ class homeModel extends CI_Model {
 				lang("important"),
 				lang("very_imp")
 		);
-		return $prio[$id]; 
+		return $prio[$id];
 	}
 
 	//get user probs
@@ -893,6 +924,636 @@ class homeModel extends CI_Model {
 	$grade = $this->getClass($classes[0]);
 	}
 	}*/
+
+	//check permissions
+	public function checkSeePermissions($table){
+		$permissions = $this->getUserPermissions($this->session->userdata("id"));
+		switch($table){
+			case "ra_levels":
+				if($permissions->level_see!=1)
+					return false;
+				break;
+			case "ra_grades":
+				if($permissions->grade_see!=1)
+					return false;
+				break;
+			case "ra_classes":
+				if($permissions->class_see!=1)
+					return false;
+				break;
+			case "ra_subjects":
+				if($permissions->subject_see!=1)
+					return false;
+				break;
+			case "ra_users":
+				if($permissions->user_see!=1)
+					return false;
+				break;
+			case "ra_students":
+				if($permissions->student_see!=1)
+					return false;
+				break;
+			case "ra_roles":
+				if($permissions->role_see!=1)
+					return false;
+				break;
+			case "ra_notesprob":
+				if($permissions->prob_see!=1)
+					return false;
+				break;
+			case "ra_notestypes":
+				if($permissions->type_see!=1)
+					return false;
+				break;
+			case "ra_notes":
+				if($permissions->note_see!=1)
+					return false;
+				break;
+			case "ra_readymessages":
+				if($permissions->ready_see!=1)
+					return false;
+				break;
+			case "ra_defaultnumemail":
+				if($permissions->def_see!=1)
+					return false;
+				break;
+			case "ra_actions":
+				if($permissions->action_see!=1)
+					return false;
+				break;
+		}
+		return true;
+	}
+
+	//check delete permissions
+	public function checkDeletePermissions($table){
+		$permissions = $this->getUserPermissions($this->session->userdata("id"));
+		switch($table){
+			case "ra_levels":
+				if($permissions->level_delete!=1)
+					return false;
+				break;
+			case "ra_grades":
+				if($permissions->grade_delete!=1)
+					return false;
+				break;
+			case "ra_classes":
+				if($permissions->class_delete!=1)
+					return false;
+				break;
+			case "ra_subjects":
+				if($permissions->subject_delete!=1)
+					return false;
+				break;
+			case "ra_users":
+				if($permissions->user_delete!=1)
+					return false;
+				break;
+			case "ra_students":
+				if($permissions->student_delete!=1)
+					return false;
+				break;
+			case "ra_roles":
+				if($permissions->role_delete!=1)
+					return false;
+				break;
+			case "ra_notesprob":
+				if($permissions->prob_delete!=1)
+					return false;
+				break;
+			case "ra_notestypes":
+				if($permissions->type_delete!=1)
+					return false;
+				break;
+			case "ra_notes":
+				if($permissions->note_delete!=1)
+					return false;
+				break;
+			case "ra_readymessages":
+				if($permissions->ready_delete!=1)
+					return false;
+				break;
+			case "ra_defaultnumemail":
+				if($permissions->def_delete!=1)
+					return false;
+				break;
+			case "ra_actions":
+				if($permissions->action_delete!=1)
+					return false;
+				break;
+		}
+		return true;
+	}
+
+	//check create permissions
+	public function checkCreatePermissions($table){
+		$permissions = $this->getUserPermissions($this->session->userdata("id"));
+		switch($table){
+			case "ra_levels":
+				if($permissions->level_create!=1)
+					return false;
+				break;
+			case "ra_grades":
+				if($permissions->grade_create!=1)
+					return false;
+				break;
+			case "ra_classes":
+				if($permissions->class_create!=1)
+					return false;
+				break;
+			case "ra_subjects":
+				if($permissions->subject_create!=1)
+					return false;
+				break;
+			case "ra_users":
+				if($permissions->user_create!=1)
+					return false;
+				break;
+			case "ra_students":
+				if($permissions->student_create!=1)
+					return false;
+				break;
+			case "ra_roles":
+				if($permissions->role_create!=1)
+					return false;
+				break;
+			case "ra_notesprob":
+				if($permissions->prob_create!=1)
+					return false;
+				break;
+			case "ra_notestypes":
+				if($permissions->type_create!=1)
+					return false;
+				break;
+			case "ra_notes":
+				if($permissions->note_create!=1)
+					return false;
+				break;
+			case "ra_readymessages":
+				if($permissions->ready_create!=1)
+					return false;
+				break;
+			case "ra_defaultnumemail":
+				if($permissions->def_create!=1)
+					return false;
+				break;
+		}
+		return true;
+	}
+
+	//check modify permissions
+	public function checkModifyPermissions($table){
+		$permissions = $this->getUserPermissions($this->session->userdata("id"));
+		switch($table){
+			case "ra_levels":
+				if($permissions->level_modify!=1)
+					return false;
+				break;
+			case "ra_grades":
+				if($permissions->grade_modify!=1)
+					return false;
+				break;
+			case "ra_classes":
+				if($permissions->class_modify!=1)
+					return false;
+				break;
+			case "ra_subjects":
+				if($permissions->subject_modify!=1)
+					return false;
+				break;
+			case "ra_users":
+				if($permissions->user_modify!=1)
+					return false;
+				break;
+			case "ra_students":
+				if($permissions->student_modify!=1)
+					return false;
+				break;
+			case "ra_roles":
+				if($permissions->role_modify!=1)
+					return false;
+				break;
+			case "ra_notesprob":
+				if($permissions->prob_modify!=1)
+					return false;
+				break;
+			case "ra_notestypes":
+				if($permissions->type_modify!=1)
+					return false;
+				break;
+			case "ra_notes":
+				if($permissions->note_modify!=1)
+					return false;
+				break;
+			case "ra_readymessages":
+				if($permissions->ready_modify!=1)
+					return false;
+				break;
+			case "ra_defaultnumemail":
+				if($permissions->def_modify!=1)
+					return false;
+				break;
+		}
+		return true;
+	}
+
+	//get table headers
+	public function getHeaders($table){
+		$headings = array();
+		switch($table){
+			case "ra_levels":
+				$headings = array(lang("level", lang("actions")));
+				break;
+			case "ra_grades":
+				$headings = array(lang("level"),lang("grade"), lang("actions"));
+				break;
+			case "ra_classes":
+				$headings = array(lang("level"),lang("grade"),lang("class"), lang("actions"));
+				break;
+			case "ra_students":
+				$headings = array(lang("gaurd"),lang("fullname"),
+				lang("idnum"),lang("level"),lang("grade"),lang("class"), lang("actions"));
+				break;
+			case "ra_users":
+				$headings = array(lang("username"),lang("fullname"),
+				lang("role"), lang("active"), lang("user_classes"), lang("user_subjects"), lang("actions"));
+				break;
+			case "ra_actions":
+				$headings = array(lang("username"),lang("action"),
+				lang("datetime"),lang("type"));
+				break;
+			case "ra_defaultnumemail":
+				$headings = array(lang("username"),lang("email")." 1",
+				lang("email")." 2",lang("phone"). " 1", lang("phone"). " 2", lang("actions"));
+				break;
+			case "ra_notesprob":
+				$headings = array(lang("level"),lang("prob"), lang("color"), lang("actions"));
+				break;
+			case "ra_notestypes":
+				$headings = array(lang("level"),lang("prob"), lang("sold"), lang("body"), lang("actions"));
+				break;
+			case "ra_readymessages":
+				$headings = array(lang("message"), lang("actions"));
+				break;
+			case "ra_roles":
+				$headings = array(lang("role"), lang("actions"));
+				break;
+			case "ra_subjects":
+				$headings = array(lang("level"),
+				lang("grade"), lang("subject"), lang("actions"));
+				break;
+			case "ra_notes":
+				$headings = array(lang("student"), lang("class"), lang("subject"), lang("prob"), lang("type"),
+				lang("status"), lang("priority"), lang("note"), lang("sold"), lang("username"), lang("date"),
+				lang("agreed"), lang('actions'));
+				break;
+			default:
+				break;
+		}
+		return $headings;
+	}
+
+	//get table contents for the BIG SHOW!!
+	public function getTable($table,$note="",$atts=array()){
+		$rows = array();
+		$query = $this->db->get($table);
+		if($note!=""){
+			$month1 = (isset($atts["month1"]))?$atts["month1"]:"";
+			$month2 = (isset($atts["month2"]))?$atts["month2"]:"";
+			$day1 = (isset($atts["day1"]))?$atts["day1"]:"";
+			$day2 = (isset($atts["day2"]))?$atts["day2"]:"";
+			unset($atts["day1"]);
+			unset($atts["day2"]);
+			unset($atts["month1"]);
+			unset($atts["month2"]);
+			if($month1!="") $this->db->where("month >=",$month1);
+			if($month2!="") $this->db->where("month <=",$month2);
+			if($day1!="") $this->db->where("day >=",$day1);
+			if($day2!="") $this->db->where("day <=",$day2);
+			$this->db->where($atts);
+			$query = $this->db->get("ra_notes");
+		}
+		$i=0;
+		foreach($query->result() as $row)
+		{
+			switch($table){
+				case "ra_levels":
+					$rows[$i] = array($row->id,$row->level);
+					break;
+				case "ra_grades":
+					$level = $this->homemodel->getLevel($row->level);
+					$rows[$i] = array($row->id,$level->level, $row->grade);
+					break;
+				case "ra_classes":
+					$grade = $this->homemodel->getGrade($row->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					$rows[$i] = array($row->id,$level->level,
+							$grade->grade,$row->class);
+					break;
+				case "ra_students":
+					$username = $this->homemodel->getUser($row->username);
+					$class = $this->homemodel->getClass($row->class);
+					$grade = $this->homemodel->getGrade($class->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					$rows[$i] = array($row->id,$username->username,$row->fullname,
+							$row->idnum,$level->level,
+							$grade->grade,$class->class);
+					break;
+				case "ra_users":
+					$classes = $this->homemodel->getUserClasses($row->id, "string");
+					$subjects = $this->homemodel->getUserSubjects($row->id, "string");
+					$role = $this->homemodel->getRole($row->role);
+					$active = ($row->active == "1")? "YES": "NO";
+					$rows[$i] = array($row->id,$row->username,
+							$row->name,$role->role,$active,$classes,$subjects);
+					break;
+				case "ra_actions":
+					$username = $this->homemodel->getUser($row->username);
+					$rows[$i] = array($row->id,$username->username,
+							$row->action,$row->datetime,$row->type);
+					break;
+				case "ra_defaultnumemail":
+					$username = $this->homemodel->getUser($row->username);
+					$rows[$i] = array($row->id,$username->username,
+							$row->email1,$row->email2,
+							$row->number1,$row->number2);
+					break;
+				case "ra_notesprob":
+					$level = $this->homemodel->getLevel($row->level);
+					$rows[$i] = array($row->id,$level->level, $row->prob,
+							"<div class='color_div' style='background-color:".$row->color."'></div>");
+					break;
+				case "ra_notestypes":
+					$type = $this->homemodel->getProb($row->prob);
+					$level = $this->homemodel->getLevel($type->level);
+					$rows[$i] = array($row->id,$level->level,
+							$type->prob, $row->sold, $row->body);
+					break;
+				case "ra_readymessages":
+					$rows[$i] = array($row->id,$row->message);
+					break;
+				case "ra_roles":
+					$rows[$i] = array($row->id,$row->role);
+					break;
+				case "ra_subjects":
+					$grade = $this->homemodel->getGrade($row->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					$rows[$i] = array($row->id,$level->level,
+							$grade->grade, $row->subject);
+					break;
+				case "ra_notes":
+					$agreed="";
+					$class = $this->homemodel->getStudentClass($row->student);
+					$student = $this->homemodel->getStudent($row->student);
+					$subject=lang("without");
+					if($row->subject!="0"){
+						$subject = $this->homemodel->getSubject($row->subject);
+						$subject=$subject->subject;
+					}
+					$type=lang("without");
+					if($row->type!="0"){
+						$type = $this->homemodel->getNoteType($row->type);
+						$type = $type->body;
+					}
+					$prob =lang("without");
+					if($row->prob!="0"){
+						$prob = $this->homemodel->getProb($row->prob);
+						$prob = $prob->prob;
+					}
+					$prio = $this->homemodel->getPriority($row->priority);
+					$prio = ($row->priority==2)? "<div style='font-weight:bold; color:red;'>".$prio."</div>": $prio;
+					$set = $this->homemodel->getSettings();
+					$date = $set->date."-الفصل:".$set->semester."-".$row->day."-".$this->getMonth($row->month);
+					$username = $this->homemodel->getUser($row->username);
+					$perm = $this->homemodel->getUserPermissions($this->session->userdata("id"));
+					if($perm->modify_agree==1){
+						if($row->agreed==1){
+							$agreed='<div><input
+									type="button" id="'.$row->id.'"
+											class="btn btn-success btnc modify_agree" data-toggle="button"
+											value="'.lang("agree").'"/> <input type="checkbox"
+													name="" checked="checked" style="display:none;" /></div>
+													';
+						}else{
+							$agreed='<div><input
+									type="button" id="'.$row->id.'"
+											class="btn btn-success btnc modify_agree active" data-toggle="button"
+											value="'.lang("not_agree").'"/> <input type="checkbox"
+													name=""  style="display:none;" /></div>
+													';
+						}
+					}else{
+						$agreed=($row->agreed==1)?"<div style='color:green; font-weight:bold;'>".lang("agree")."</div>"
+								:"<div style='color:red; font-weight:bold;'>".lang("not_agree")."</div>";
+					}
+
+					$status = ($row->status==1)?"<div style='color:red; font-weight:bold;'>".lang("continue")."</div>"
+							:"<div style='color:green; font-weight:bold;'>".lang("solved")."</div>";
+					$rows[$i] = array($row->id, $student->fullname, $class, $subject, $prob, $type,
+							$status, $prio,
+							$row->note, $row->sold, $username->name, $date,
+							$agreed);
+					break;
+				default:
+					echo lang("wrong_request");
+					exit();
+					break;
+			}
+			$i++;
+		}
+		$headings = $this->getHeaders($table);
+		return array("headings" => $headings, "rows" => $rows);
+	}
+
+	//get disagreed notes
+	public function getClassDisagreedNotes($user){
+		$notes = array();
+		$classes = $this->getUserClasses($user,"array");
+		foreach($classes as $class){
+			$query = $this->db->get_where("notes", array("class" => $class['id'], "agreed" => 0));
+			array_push($notes, $query->result_array());
+		}
+		return $notes;
+	}
+
+	//search notes
+	public function searchWord($table,$word){
+		$rows = array();
+		$query = $this->db->get($table);
+		$i=0;
+		foreach($query->result() as $row)
+		{
+			switch($table){
+				case "ra_levels":
+					if($row->level==$word)
+						$rows[$i] = array($row->id,$row->level);
+					break;
+				case "ra_grades":
+					$level = $this->homemodel->getLevel($row->level);
+					if($level->level == $word || $row->grade == $word)
+						$rows[$i] = array($row->id,$level->level, $row->grade);
+					break;
+				case "ra_classes":
+					$grade = $this->homemodel->getGrade($row->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					$rows[$i] = array($row->id,$level->level,
+							$grade->grade,$row->class);
+					break;
+				case "ra_students":
+					$username = $this->homemodel->getUser($row->username);
+					$class = $this->homemodel->getClass($row->class);
+					$grade = $this->homemodel->getGrade($class->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					if($username->username==$word || $row->fullname==$word ||
+							$row->idnum==$word || $level->level==$word||
+							$grade->grade==$word || $class->class==$word)
+						$rows[$i] = array($row->id,$username->username,$row->fullname,
+								$row->idnum,$level->level,
+								$grade->grade,$class->class);
+					break;
+				case "ra_users":
+					$classes = $this->homemodel->getUserClasses($row->id, "string");
+					$subjects = $this->homemodel->getUserSubjects($row->id, "string");
+					$role = $this->homemodel->getRole($row->role);
+					$active = ($row->active == "1")? "YES": "NO";
+					if($row->username==$word||$row->name==$word||
+							$role->role==$word||$active==$word||
+							strpos($classes,$word)!=false||
+							strpos($subjects,$word)!=false)
+						$rows[$i] = array($row->id,$row->username,
+								$row->name,$role->role,$active,$classes,$subjects);
+					break;
+				case "ra_actions":
+					$username = $this->homemodel->getUser($row->username);
+					if($username->username==$word||$row->action==$word||$row->datetime==$word||$row->type==$word)
+						$rows[$i] = array($row->id,$username->username,
+								$row->action,$row->datetime,$row->type);
+					break;
+				case "ra_defaultnumemail":
+					$username = $this->homemodel->getUser($row->username);
+					if($username->username==$word||$row->email1==$word||$row->email2==$word||$row->number1==$word||$row->number2==$word)
+						$rows[$i] = array($row->id,$username->username,
+								$row->email1,$row->email2,
+								$row->number1,$row->number2);
+					break;
+				case "ra_notesprob":
+					$level = $this->homemodel->getLevel($row->level);
+					if($level->level==$word||$row->prob==$word)
+						$rows[$i] = array($row->id,$level->level, $row->prob,
+								"<div class='color_div' style='background-color:".$row->color."'></div>");
+					break;
+				case "ra_notestypes":
+					$type = $this->homemodel->getProb($row->prob);
+					$level = $this->homemodel->getLevel($type->level);
+					if($level->level==$word||$type->prob==$word||$row->sold==$word||$row->body==$word)
+						$rows[$i] = array($row->id,$level->level,
+								$type->prob, $row->sold, $row->body);
+					break;
+				case "ra_readymessages":
+					if($row->message==$word)
+						$rows[$i] = array($row->id,$row->message);
+					break;
+				case "ra_roles":
+					if($row->role==$word)
+						$rows[$i] = array($row->id,$row->role);
+					break;
+				case "ra_subjects":
+					$grade = $this->homemodel->getGrade($row->grade);
+					$level = $this->homemodel->getLevel($grade->level);
+					if($level->level==$word||$grade->grade==$word||$row->subject==$word)
+						$rows[$i] = array($row->id,$level->level,
+								$grade->grade, $row->subject);
+					break;
+				case "ra_notes":
+					$agreed="";
+					$class = $this->homemodel->getStudentClass($row->student);
+					$student = $this->homemodel->getStudent($row->student);
+					$subject=lang("without");
+					if($row->subject!="0"){
+						$subject = $this->homemodel->getSubject($row->subject);
+						$subject=$subject->subject;
+					}
+					$type=lang("without");
+					if($row->type!="0"){
+						$type = $this->homemodel->getNoteType($row->type);
+						$type = $type->body;
+					}
+					$prob =lang("without");
+					if($row->prob!="0"){
+						$prob = $this->homemodel->getProb($row->prob);
+						$prob = $prob->prob;
+					}
+					$prio = $this->homemodel->getPriority($row->priority);
+					$prio = ($row->priority==2)? "<div style='font-weight:bold; color:red;'>".$prio."</div>":$prio;
+					$set = $this->homemodel->getSettings();
+					$date = $set->date."-الفصل:".$set->semester."-".$row->day."-".$this->getMonth($row->month);
+					$username = $this->homemodel->getUser($row->username);
+					$perm = $this->homemodel->getUserPermissions($this->session->userdata("id"));
+					if($perm->modify_agree==1){
+						if($row->agreed==1){
+							$agreed='<div><input
+									type="button" id="'.$row->id.'"
+											class="btn btn-success btnc modify_agree" data-toggle="button"
+											value="'.lang("agree").'"/> <input type="checkbox"
+													name="" checked="checked" style="display:none;" /></div>
+													';
+						}else{
+							$agreed='<div><input
+									type="button" id="'.$row->id.'"
+											class="btn btn-success btnc modify_agree active" data-toggle="button"
+											value="'.lang("not_agree").'"/> <input type="checkbox"
+													name=""  style="display:none;" /></div>
+													';
+						}
+					}else{
+						$agreed=($row->agreed==1)?"<div style='color:green; font-weight:bold;'>".lang("agree")."</div>"
+								:"<div style='color:red; font-weight:bold;'>".lang("not_agree")."</div>";
+					}
+
+					$status = ($row->status==1)?"<div style='color:red; font-weight:bold;'>".lang("continue")."</div>"
+							:"<div style='color:green; font-weight:bold;'>".lang("solved")."</div>";
+					if($student->fullname==$word||$class==$word||$subject==$word||
+							$prob==$word||$type==$word||$row->note==$word||
+							$row->sold==$word||$username->name==$word||
+							strpos($prio,$word)!=false||
+							strpos($status,$word)!=false||
+							$prio==$word||strpos($date,$word)!=false||strpos($agreed,$word)!=false)
+						$rows[$i] = array($row->id, $student->fullname, $class, $subject, $prob, $type,
+								$status, $prio,
+								$row->note, $row->sold, $username->name, $date,
+								$agreed);
+					break;
+				default:
+					echo lang("wrong_request");
+					exit();
+					break;
+			}
+			$i++;
+		}
+		$headings = $this->getHeaders($table);
+		return array("headings" => $headings, "rows" => $rows);
+	}
+
+	//show choosen notes in search notes
+	public function showSearchNotes($atts=array()){
+		$month1 = ($atts["month1"]!=null)?$atts["month1"]:"";
+		$month2 = ($atts["month2"]!=null)?$atts["month2"]:"";
+		$day1 = ($atts["day1"]!=null)?$atts["day1"]:"";
+		$day2 = ($atts["day2"]!=null)?$atts["day2"]:"";
+		unset($atts["day1"]);
+		unset($atts["day2"]);
+		unset($atts["month1"]);
+		unset($atts["month2"]);
+		$query = $this->db->get_where("notes", $atts);
+		return $query->result();
+	}
+
+	//get month name
+	public function getMonth($key){
+		$monthes = $this->getMonthes();
+		return $monthes[$key];
+	}
+
 
 	//Good array print function!
 	public function array_print($array = array()){

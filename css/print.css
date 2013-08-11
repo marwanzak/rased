@@ -1,0 +1,73 @@
+body {
+	height: 297mm;
+	width: 210mm;
+	/* to centre page on screen*/
+	margin-left: auto;
+	margin-right: auto;
+}
+
+img {
+	top: 0;
+	border-bottom: 2px solid black;
+	text-align: center;
+	width:800px;
+}
+
+#pre {
+	text-align: right;
+	font-size: 18px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+.NoPrint {
+	visibility: hidden;
+	display: none
+}
+
+a {
+display:none;
+}
+
+input{
+	display:none;
+	
+}
+@page{
+	size:auto;
+	margin:20px;
+	
+}
+.report-student-table
+{
+	border-color:#585858;
+    min-width:700px;
+	max-width:700px;
+	width:700px;
+    border-collapse: collapse;
+    text-align: center;
+    margin-top:10px;
+	border-width:0px;
+ 
+}
+.report-student-table td{
+	text-align:center;
+	border-width:0px;
+}
+.report-student-table tr{
+	border-width:0px;
+
+}
+.report-student-table tr:nth-child(odd) {
+    background-color: #E0E0E0;
+    color:#003;
+}
+.report-student-table tr:nth-child(even){
+    background-color:#F0F0F0;
+    color:#303;
+}
+.report-student-table th,.content_table th {
+	background: #99BEFF; /* Old browsers */
+
+}

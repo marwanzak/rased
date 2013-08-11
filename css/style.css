@@ -55,3 +55,43 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffb2ad', end
 border-color: #D80000;	
 	
 }
+
+.report-student-table tr:nth-child(odd),.content_table tr:nth-child(odd) {
+	background-color: #E0E0E0;
+	color: #003;
+}
+
+.report-student-table tr:nth-child(even),.content_table tr:nth-child(even) {
+	background-color: #F0F0F0;
+	color: #303;
+}
+
+.report-student-table th,.content_table th {
+	background: #99BEFF; /* Old browsers */
+	font-size: 12px;
+	padding: 5px;
+
+}
+
+.report-student-table tr:hover,.content_table tr:hover {
+	background: #A0BCD9; /* Old browsers */
+}
+#send_student_name{
+	float:none;
+	width:500px;
+}
+.report-student-table,.content_table {
+	border-color: #585858;
+	min-width: 1000px;
+	width: 1000px;
+	max-width: 1000px;
+	border-collapse: collapse;
+	text-align: center;
+	margin-top: 10px;
+	border-width: 0px;
+}
+
+.report-student-table td,.content_table td {
+	text-align: center !important;
+	border-width: 0px;
+}

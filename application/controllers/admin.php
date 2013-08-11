@@ -21,21 +21,32 @@ class admin extends CI_Controller {
 	}
 	public function index($table="")
 	{
+		$user_disagreed_notes = $this->homemodel->getClassDisagreedNotes($this->session->userdata("id"));
 		$this->session->set_userdata('refered_from', uri_string());
-
+		$table_permissions = $this->homemodel->checkSeePermissions($table);
+		if($table_permissions==false)
+			exit("no_permissions");
 		$table1['table']=$table;
 		$this->load->view('header');
-		$this->load->view('top-nav');
+		$this->load->view('top-nav', $table1);
 		$this->load->view('menu-bar', $table1);
 		$user_classes = $this->homemodel->getUserClasses(
 				$this->session->userdata("id"), "array");
 		$user_subjects = $this->homemodel->getUsersubjects(
 				$this->session->userdata("id"), "array");
+		$role_query = $this->db->get_where("users", array("id" => $this->session->userdata("id")));
+		$role = $role_query->row();
+		$permissions_query = $this->db->get_where("permissions", array("role" => $role->role ));
+		$permissions = $permissions_query->row();
 
-
-		if($table!="")
-			$table_data = $this->getTable($table);
+		if($table!="" && !$_POST){
+			$table_data = $this->homemodel->getTable($table);
+		}elseif($table!="" && $_POST["word"]!=null){
+			$table_data = $this->homemodel->searchWord($table,$_POST['word']);
+		}
 		$table_data["table"] = $table;
+		$table_data["permissions"] = $permissions;
+		$table_data["disagreed_notes"] = $user_disagreed_notes;
 		$this->load->view('body',$table_data);
 		$prio = $this->homemodel->getPriorities();
 		$data = array(
@@ -111,169 +122,116 @@ class admin extends CI_Controller {
 
 	}
 
-	//get table contents for the BIG SHOW!!
-	public function getTable($table){
-		$headings = array();
-		$rows = array();
-		$query = $this->db->get($table);
+	//show roles permissions
+	public function showPermissions(){
+		$table1['table']="";
+		$this->load->view('header');
+		$this->load->view('top-nav');
+		$this->load->view('menu-bar', $table1);
+		$query = $this->db->get_where("permissions", array("role" => $_GET["id"]));
+		$permissions = $query->row();
+		$permissions_array = array(
+				"ra_levels" => array(
+						"level_see" =>	$permissions->level_see,
+						"level_create" =>	$permissions->level_create,
+						"level_modify" => $permissions->level_modify,
+						"level_delete" => $permissions->level_delete
+				),
+				"ra_grades" => array(
+						"grade_see" => $permissions->grade_see,
+						"grade_create" => $permissions->grade_create,
+						"grade_modify" => $permissions->grade_modify,
+						"grade_delete" => $permissions->grade_delete
+				),
+				"ra_classes" => array(
+						"class_see" => $permissions->class_see,
+						"class_create" => $permissions->class_create,
+						"class_modify" => $permissions->class_modify,
+						"class_delete" => $permissions->class_delete
+				),
+				"ra_subjects" => array(
+						"subject_see" => $permissions->subject_see,
+						"subject_create" => $permissions->subject_create,
+						"subject_modify" => $permissions->subject_modify,
+						"subject_delete" => $permissions->subject_delete
+				),
+				"ra_students" => array(
+						"student_see" => $permissions->student_see,
+						"student_create" => $permissions->student_create,
+						"student_modify" => $permissions->student_modify,
+						"student_delete" => $permissions->student_delete
+				),
+				"ra_readymessages" => array(
+						"ready_see" => $permissions->ready_see,
+						"ready_create" => $permissions->ready_create,
+						"ready_modify" => $permissions->ready_modify,
+						"ready_delete" => $permissions->ready_delete
+				),
+				"ra_defaultnumemail" => array(
+						"def_see" => $permissions->def_see,
+						"def_create" => $permissions->def_create,
+						"def_modify" => $permissions->def_modify,
+						"def_delete" => $permissions->def_delete
+				),
+				"ra_notes" => array(
+						"note_see" => $permissions->note_see,
+						"note_create" => $permissions->note_create,
+						"note_modify" => $permissions->note_modify,
+						"note_delete" => $permissions->note_delete
+				),
+				"ra_notesprob" => array(
+						"prob_see" => $permissions->prob_see,
+						"prob_create" => $permissions->prob_create,
+						"prob_modify" => $permissions->prob_modify,
+						"prob_delete" => $permissions->prob_delete
+				),
+				"ra_notestypes" => array(
+						"type_see" => $permissions->type_see,
+						"type_create" => $permissions->type_create,
+						"type_modify" => $permissions->type_modify,
+						"type_delete" => $permissions->type_delete
+				),
+				"ra_roles" => array(
+						"role_see" => $permissions->role_see,
+						"role_create" => $permissions->role_create,
+						"role_modify" => $permissions->role_modify,
+						"role_delete" => $permissions->role_delete
+				),
+				"ra_users" => array(
+						"user_see" => $permissions->user_see,
+						"user_create" => $permissions->user_create,
+						"user_modify" => $permissions->user_modify,
+						"user_delete" => $permissions->user_delete
+				),
+				"ra_actions" => array(
+						"action_see" => $permissions->action_see,
+						"",
+						"",
+						"action_delete" => $permissions->action_delete
+				),
+				"admin_login" => array(
+						"admin_login" => $permissions->admin_login,
+						"",
+						"",
+						""
+				),
+				"modify_agree" => array(
+						"modify_agree" => $permissions->modify_agree,
+						"",
+						"",
+						""
+				)
+		);
+		$data = array(
+				"id" => $_GET["id"],
+				"permissions" => $permissions_array
+		);
 
-		switch($table){
-			case "ra_levels":
-				$headings = array(lang("level", lang("actions")));
-				break;
-			case "ra_grades":
-				$headings = array(lang("level"),lang("grade"), lang("actions"));
-				break;
-			case "ra_classes":
-				$headings = array(lang("level"),lang("grade"),lang("class"), lang("actions"));
-				break;
-			case "ra_students":
-				$headings = array(lang("gaurd"),lang("fullname"),
-				lang("idnum"),lang("level"),lang("grade"),lang("class"), lang("actions"));
-				break;
-			case "ra_users":
-				$headings = array(lang("username"),lang("fullname"),
-				lang("role"), lang("active"), lang("user_classes"), lang("user_subjects"), lang("actions"));
-				break;
-			case "ra_actions":
-				$headings = array(lang("username"),lang("action"),
-				lang("datetime"),lang("type"));
-				break;
-			case "ra_defaultnumemail":
-				$headings = array(lang("username"),lang("email")." 1",
-				lang("email")." 2",lang("phone"). " 1", lang("phone"). " 2", lang("actions"));
-				break;
-			case "ra_notesprob":
-				$headings = array(lang("level"),lang("prob"), lang("color"), lang("actions"));
-				break;
-			case "ra_notestypes":
-				$headings = array(lang("level"),lang("prob"), lang("sold"), lang("body"), lang("actions"));
-				break;
-			case "ra_readymessages":
-				$headings = array(lang("message"), lang("actions"));
-				break;
-			case "ra_roles":
-				$headings = array(lang("role"), lang("actions"));
-				break;
-			case "ra_subjects":
-				$headings = array(lang("level"),
-				lang("grade"), lang("subject"), lang("actions"));
-				break;
-			case "ra_notes":
-				$headings = array(lang("student"), lang("class"), lang("subject"), lang("prob"), lang("type"),
-				lang("status"), lang("priority"), lang("note"), lang("sold"), lang("username"), lang("date"),
-				lang("agreed"), lang('actions'));
-				break;
-			default:
-				break;
-		}
-		$i=0;
-		foreach($query->result() as $row)
-		{
-			switch($table){
-				case "ra_levels":
-					$rows[$i] = array($row->id,$row->level);
-					break;
-				case "ra_grades":
-					$level = $this->homemodel->getLevel($row->level);
-					$rows[$i] = array($row->id,$level->level, $row->grade);
-					break;
-				case "ra_classes":
-					$grade = $this->homemodel->getGrade($row->grade);
-					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$level->level,
-							$grade->grade,$row->class);
-					break;
-				case "ra_students":
-					$username = $this->homemodel->getUser($row->username);
-					$class = $this->homemodel->getClass($row->class);
-					$grade = $this->homemodel->getGrade($class->grade);
-					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$username->username,$row->fullname,
-							$row->idnum,$level->level,
-							$grade->grade,$class->class);
-					break;
-				case "ra_users":
-					$classes = $this->homemodel->getUserClasses($row->id, "string");
-					$subjects = $this->homemodel->getUserSubjects($row->id, "string");
-					$role = $this->homemodel->getRole($row->role);
-					$active = ($row->active == "1")? "YES": "NO";
-					$rows[$i] = array($row->id,$row->username,
-							$row->name,$role->role,$active,$classes,$subjects);
-					break;
-				case "ra_actions":
-					$username = $this->homemodel->getUser($row->username);
-					$rows[$i] = array($row->id,$username->username,
-							$row->action,$row->datetime,$row->type);
-					break;
-				case "ra_defaultnumemail":
-					$username = $this->homemodel->getUser($row->username);
-					$rows[$i] = array($row->id,$username->username,
-							$row->email1,$row->email2,
-							$row->number1,$row->number2);
-					break;
-				case "ra_notesprob":
-					$level = $this->homemodel->getLevel($row->level);
-					$rows[$i] = array($row->id,$level->level, $row->prob,
-							"<div class='color_div' style='background-color:".$row->color."'></div>");
-					break;
-				case "ra_notestypes":
-					$type = $this->homemodel->getProb($row->prob);
-					$level = $this->homemodel->getLevel($type->level);
-					$rows[$i] = array($row->id,$level->level,
-							$type->prob, $row->sold, $row->body);
-					break;
-				case "ra_readymessages":
-					$rows[$i] = array($row->id,$row->message);
-					break;
-				case "ra_roles":
-					$rows[$i] = array($row->id,$row->role);
-					break;
-				case "ra_subjects":
-					$grade = $this->homemodel->getGrade($row->grade);
-					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$level->level,
-							$grade->grade, $row->subject);
-					break;
-				case "ra_notes":
-					$class = $this->homemodel->getStudentClass($row->student);
-					$student = $this->homemodel->getStudent($row->student);
-					$subject=lang("without");
-					if($row->subject!="0"){
-						$subject = $this->homemodel->getSubject($row->subject);
-						$subject=$subject->subject;
-					}
-					$type=lang("without");
-					if($row->type!="0"){
-						$type = $this->homemodel->getNoteType($row->type);
-						$type = $type->body;
-					}
-					$prob =lang("without");
-					if($row->prob!="0"){
-						$prob = $this->homemodel->getProb($row->prob);
-						$prob = $prob->prob;
-					}
-					$prio = $this->homemodel->getPriority($row->priority);
-					$prio = ($row->priority==2)? "<div style='font-weight:bold; color:red;'>".$prio."</div>": $prio;
-					$set = $this->homemodel->getSettings();
-					$date = $set->date."-الفصل:".$set->semester."-".$row->day."-".$row->month;
-					$username = $this->homemodel->getUser($row->username);
-					$status = ($row->status==1)?"<div style='color:red; font-weight:bold;'>".lang("continue")."</div>"
-							:"<div style='color:green; font-weight:bold;'>".lang("solved")."</div>";
-					$rows[$i] = array($row->id, $student->fullname, $class, $subject, $prob, $type,
-							$status, $prio,
-							$row->note, $row->sold, $username->name, $date,
-							($row->agreed==1)?lang("yes"):lang("no"));
-					break;
-				default:
-					echo lang("wrong_request");
-					exit();
-					break;
-			}
-			$i++;
-		}
-		return array("headings" => $headings, "rows" => $rows);
+		$this->load->view("permissions", $data);
+		$this->load->view("footer");
 	}
+
+
 
 	//delete rows from a table
 	public function delete(){
@@ -288,7 +246,12 @@ class admin extends CI_Controller {
 					$delete = $this->db->delete($table);
 					if($delete!="1")
 						$count++;
+					if($table =="ra_roles"){
+						$this->db->where("role", $check);
+						$this->db->delete("ra_permissions");
+					}
 				}
+
 			}
 			if($count==0){
 				$this->session->set_userdata("msg","1");
@@ -379,5 +342,107 @@ class admin extends CI_Controller {
 		return $students;
 	}
 
+	//search word
+	public function searchNotes(){
+		$table1["table"]="search_note";
+		$user = $this->session->userdata("id");
+		$classes = $this->homemodel->getUserClasses($user, "array");
+		$subjects = $this->homemodel->getUserSubjects($user, "array");
+		$priority = $this->homemodel->getPriorities();
+		$data = array(
+				"classes" => $classes,
+				"subjects" => $subjects,
+				"priority" => $priority,
+				"monthes" => $this->homemodel->getMonthes(),
+				"days" => $this->homemodel->getDays()
+		);
+		$this->load->view('header');
+		$this->load->view('top-nav', $table1);
+		$this->load->view('menu-bar', $table1);
+		$this->load->view("searchnotes", $data);
+		$this->load->view("footer");
+	}
 
+	//show notes choosen in search notes page
+	public function showSearchNotes(){
+		if($_POST){
+			foreach($_POST as $key => $value){
+				if($value==""){
+					unset($_POST[$key]);
+				}
+			}
+			$table1['table']="ra_notes";
+			$this->load->view('header');
+			$this->load->view('top-nav', $table1);
+			$this->load->view('menu-bar', $table1);
+			$table_data = $this->homemodel->getTable("ra_notes", "1", $_POST);
+			$table_data["print"]="1";
+			$table_data["table"] = "ra_notes";
+			$role_query = $this->db->get_where("users", array("id" => $this->session->userdata("id")));
+			$role = $role_query->row();
+			$permissions_query = $this->db->get_where("permissions", array("role" => $role->role ));
+			$permissions = $permissions_query->row();
+			$table_data["permissions"] = $permissions;
+			$user_classes = $this->homemodel->getUserClasses(
+					$this->session->userdata("id"), "array");
+			$user_subjects = $this->homemodel->getUsersubjects(
+					$this->session->userdata("id"), "array");
+			$prio = $this->homemodel->getPriorities();
+			$this->load->view('body',$table_data);
+			$data = array(
+					"levels" 		=> $this->homemodel->getAllLevel(),
+					"grades" 		=> $this->homemodel->getAllGrade(),
+					"classes" 		=> $this->homemodel->getAllClass(),
+					"subjects" 		=> $this->homemodel->getAllSubject(),
+					"users" 		=> $this->homemodel->getAllUser(),
+					"roles" 		=> $this->homemodel->getAllRole(),
+					"user_classes" 	=> $user_classes,
+					"user_subjects" => $user_subjects,
+					"settings" 		=> $this->homemodel->getSettings(),
+					"days" 			=> $this->homemodel->getDays(),
+					"monthes" 		=> $this->homemodel->getMonthes(),
+					"prios" 		=> $prio
+			);
+			$this->load->view('insert', $data);
+			$this->load->view('modify');
+			$this->load->view('footer');
+		}
+	}
+
+	//set notes page to print
+	public function setNotesPage(){
+		if($_POST){
+			$data["notes"] = array();
+			$subject=lang("without");
+			foreach($_POST["checks"] as $id){
+				$query = $this->db->get_where("notes", array("id" => $id));
+				$note = $query->row();
+				$student = $this->homemodel->getStudent($note->student);
+				if(!isset($data["notes"][$note->student]))
+					$data["notes"][$note->student]=array();
+				if($note->subject!=0){
+					$subject1 = $this->homemodel->getSubject($note->subject);
+					$note->subject = $subject1->subject;
+				}else{
+					$note->subject = $subject;
+				}
+				array_push($data["notes"][$note->student],$note);
+			}
+			$this->load->view("notesprint", $data);
+		}
+	}
+
+	//export to pdf
+	public function exportPdf(){
+		$stylesheet = file_get_contents(base_url().'css/style.css');
+		$this->load->library("MPDF56/mpdf.php","UTF-8");
+		$this->mpdf->SetDirectionality('rtl');
+		$html = $_POST["page"];
+		$html = str_replace("\\\"","\"",$html);
+		$this->mpdf->useLang = true;
+		$this->mpdf->WriteHTML($stylesheet,1);
+		$this->mpdf->WriteHTML($html,2);
+		$this->mpdf->Output();
+		exit;
+	}
 }

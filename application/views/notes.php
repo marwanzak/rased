@@ -108,7 +108,7 @@ foreach($prios as $key1 => $prioa){?>
 										<td>
 											<div class="control-group">
 												<input type="button"
-													class="btn btn-success btnc <?= ($status=="checked")?"active":"" ?>"
+													class="btn btn-success btnc status-btn<?= ($status=="checked")?"active":"" ?>"
 													data-toggle="button"
 													value="<?= ($status=="checked")?lang("continue"):lang("solved") ?>" />
 													<input type="hidden" value="0" name="status[<?= $key ?>]"/>
@@ -120,9 +120,9 @@ foreach($prios as $key1 => $prioa){?>
 										<td><select name="month[<?= $key ?>]" class="datestyle">
 
 												<?php
-foreach($monthes as $montha){?>
-												<option value="<?= $montha ?>"
-												<?= ($montha == $month)? "selected='selected'":"" ?>>
+foreach($monthes as $key1 => $montha){?>
+												<option value="<?= $key1 ?>"
+												<?= ($key1 == $month)? "selected='selected'":"" ?>>
 													<?= $montha?>
 												</option>
 												<?php }?>

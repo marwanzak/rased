@@ -13,13 +13,15 @@
             </li>
             <li><a href="#" title=""><b class="settings"></b></a></li>
             <li><a href="#" title=""><b class="mail"></b></a></li>
+            <?php if($table!="search_note"){?>
             <li class="search">
                 <a title=""><b class="search"></b></a>
-                <form class="top-search" action="#">
-                    <input type="text" placeholder="Search..." />
+                <form class="top-search" action="<?= base_url() ?>admin/show/<?= str_replace("ra_","",$table)?>" method="POST">
+                    <input type="text" placeholder="<?= lang("search")?>" name="word" />
                     <input type="submit" value="" />
                 </form>
             </li>
+            <?php }?>
             <li class="sidebar-button"><a href="#" title=""><b class="responsive-nav"></b></a></li>
             <li><a href="<?= base_url() ?>admin/do_logout" title=""><b class="logout"></b></a></li>
         </ul>

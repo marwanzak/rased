@@ -84,6 +84,7 @@ class insert extends CI_Controller {
 	public function insertRole(){
 		$query = $this->homemodel->insertRole($_POST["role"]);
 		$this->session->set_userdata("msg",$query);
+		$this->db->insert("permissions", array("role" => $query));
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function insertAction(){

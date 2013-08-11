@@ -44,10 +44,14 @@ class modify extends CI_Controller {
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function modifyPermissions(){
-		$query= $this->homemodel->modifyPermissions($_POST["id"],
-				$_POST["username"],	$_POST["permissions"]);
+		if($_POST!=null){
+			$role = $_POST["role"];
+			unset($_POST["role"]);
+				
+		$query= $this->homemodel->modifyPermissions($role,$_POST);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
+		}
 	}
 	public function modifyDef(){
 		$query= $this->homemodel->modifyDef($_POST["id"], $_POST["username"],
@@ -109,9 +113,16 @@ class modify extends CI_Controller {
 				$_POST["student"], $_POST["subject"],
 				$_POST["note"],isset($_POST["status"])?1:0, $_POST["month"],
 				$_POST["day"],$_POST["prob"], $_POST["priority"]
-				);
+		);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
+	}
+
+	public function modifyAgree(){
+		if($_POST!=null){
+			echo $this->homemodel->modifyAgree($_POST["id"], $_POST["agree"]);
+		}
+		else echo false;
 	}
 
 }

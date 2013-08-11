@@ -971,7 +971,7 @@ foreach($user_classes as $class){?>
 				<div class="control-group">
 					<label class="control-label"><?= lang("status")?> </label> <input
 						type="button" id="begin_status"
-						class="btn btn-success btnc active" data-toggle="button"
+						class="btn btn-success btnc status-btn active" data-toggle="button"
 						value="<?= lang("continue") ?>" /> <input type="checkbox"
 						name="status" checked="checked" style="display: none;" />
 				</div>
@@ -985,8 +985,8 @@ foreach($user_classes as $class){?>
 							class="datestyle" /> <input type="text" disabled
 							value="<?= $settings->date ?>" class="datestyle" /> <select
 							class="required datestyle" id="" name="month">
-							<?php foreach($monthes as $month){?>
-							<option value="<?= $month ?>">
+							<?php foreach($monthes as $key1 => $month){?>
+							<option value="<?= $key1 ?>">
 								<?= $month ?>
 							</option>
 							<?php }?>

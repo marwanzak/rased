@@ -37,8 +37,7 @@
 | in the URL cannot be matched to a valid route.
 |
 */
-
-$route['admin/(:any)'] = 'admin/index/ra_$1';
+$route['admin/show/(:any)'] = 'admin/index/ra_$1';
 $route['admin/showNotes'] = 'admin/showNotes';
 
 $route['admin/delete'] = 'admin/delete';

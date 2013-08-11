@@ -1,6 +1,5 @@
-
 <!-- Main content -->
-<div class="content">
+<div class="content" id="main_content_div">
 	<?php 
 	if($this->session->userdata("msg")){
 		$msg = $this->session->userdata("msg");
@@ -56,15 +55,16 @@
 
 			<div class="body">
 				<?php if($table!="" && $table!="showNotes"){?>
-				<?php array_unshift($headings,"<input type = 'checkbox' id = '' class='style'/>");?>
-
+				<?php array_unshift($headings,"<input type = 'checkbox' id = 'main_check_all' class='style'/>");?>
+				<?php $delete = $this->homemodel->checkCreatePermissions($table);?>
+				<?php if($delete && $table!="ra_actions"){?>
 				<div class="well-smoke body">
 					<input type="hidden" value=<?= $table ?> name="table" /> <a
 						data-toggle="modal" href="#add_<?= $table ?>_dialog"
 						class="btn btn-success add_<?= $table?>"><i class="icon-plus"></i>
 						<?= lang("add") ?> </a>
 				</div>
-
+				<?php }?>
 				<form id="main_table_form" method="post"
 					action="<?= base_url()?>admin/delete">
 					<input type="hidden" name="table" value="<?= $table ?>" />
@@ -78,8 +78,8 @@
 							</div>
 						</div>
 						<div class="table-overflow">
-							<table class="table table-block table-bordered table-checks"
-								id="select-all">
+							<table class="table table-checks table-hover table-striped"
+								id="data-table">
 								<thead>
 									<tr>
 										<?php foreach($headings as $heading){?>
@@ -99,12 +99,18 @@
 										$id = $row[0];
 										array_shift($row);
 										array_unshift($row,"<input type = 'checkbox' id ='".$id."' value='".$id."' name = 'checks[]' class = 'table_checks style'/>");
-										if($table!="ra_users")
+										$delete = $this->homemodel->checkCreatePermissions($table);
+										if($delete){
+										if($table!="ra_users" && $table!="ra_roles")
 											array_push($row,"<a title='".lang("modify")."' id=".$id." data-toggle='modal' href='#add_".$table."_dialog' class='btn btn-primary modify_".$table."'><i class='icon-wrench'></i></a>");
 										if($table=="ra_users")
 											array_push($row,"<a title='".lang("modify")."' id=".$id." data-toggle='modal' href='#add_".$table."_dialog' class='btn btn-primary modify_".$table."'><i class='icon-wrench'></i></a>
 													<a title='".lang("change_password")."' id=".$id." data-toggle='modal' href='#modify_user_password_dialog' class='btn btn-inverse modify_user_password_but'><i class='icon-lock'></i></a>");
-										?>
+										if($table=="ra_roles")
+											array_push($row,"<a title='".lang("modify")."' id=".$id." data-toggle='modal' href='#add_".$table."_dialog' class='btn btn-primary modify_".$table."'><i class='icon-wrench'></i></a>
+													<a title='".lang("change_permissions")."' id=".$id." href='".base_url()."admin/showPermissions?id=".$id."' class='btn btn-inverse modify_role_permissions'><i class='icon-cog'></i></a>");
+}
+?>
 
 									<tr>
 										<?php foreach($row as $field){ ?>
@@ -117,19 +123,24 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="well-smoke body">
-							<input type="hidden" value=<?= $table ?> name="table" /> <a
-								data-toggle="modal" href="#confirm_delete_dialog"
-								class="btn btn-danger" id="table_delete_but"><i
-								class="icon-remove"></i> <?= lang("delete") ?> </a>
-						</div>
+						<?php $this->load->view("buttons");?>
 					</div>
 				</form>
+				<?php if(isset($print)){?>
+					<div class="well-smoke body">
+						<button type="submit" class="btn btn-primary" id="set_print_notes">
+							<i class=" icon-print"></i>
+							<?= lang("print_setup") ?>
+						</button>
+					</div>
+
+				<?php }?>
 				<!-- /table with checkboxes -->
 				<?php }elseif($table=="showNotes"){?>
 				<?php echo "showNotes";?>
+				<?php }elseif($table==""){?>
+				<?php //$this->homemodel->array_print($disagreed_notes);?>
 				<?php }?>
-
 			</div>
 		</div>
 	</div>
