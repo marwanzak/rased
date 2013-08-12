@@ -16,6 +16,7 @@ class newUser extends CI_Controller{
 		$ver = $this->usermodel->getStudentByIdnum($_POST["idnum"]);
 		if($ver==0){
 			$data["msg"] = lang("no_idnum");
+			$data["color"] = "note-danger";
 			$this->load->view("userlogin",$data);
 		}else{
 			$data["idnum"]=$_POST["idnum"];
@@ -48,7 +49,7 @@ class newUser extends CI_Controller{
 				$data["message"]=$msg;
 				$data["msg"] = "-1";
 				$this->load->view("newuser",$data);
-					
+			}
 				$query = $this->usermodel->insertUser(array(
 						"username" => $_POST["username"],
 						"password" => $_POST["password"],
@@ -58,7 +59,7 @@ class newUser extends CI_Controller{
 						"number1" => $_POST["number1"],
 						"number2" => $_POST["number2"],
 				));
-			}
+			
 			$data["color"]="note-success";
 			$data["msg"] = lang("success");
 			$this->load->view("userlogin",$data);

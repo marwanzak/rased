@@ -91,7 +91,7 @@
 	<div class="login">
 		<?php if(! is_null($msg)){?>
 		<div class="notice outer closing">
-			<div class="note <?= $color?>">
+			<div class="note <?=$color?>">
 				<button type="button" class="close">×</button>
 				<strong><?= $msg ?> </strong>
 			</div>

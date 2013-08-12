@@ -445,4 +445,39 @@ class admin extends CI_Controller {
 		$this->mpdf->Output();
 		exit;
 	}
+	
+	//insert site settings
+	public function insertSiteSettings(){
+		$data=array();
+		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"");
+		$data["msg"]="";
+		$data["message"]="";
+		if($_POST!=null){
+			$query = $this->homemodel->insertSettings($_POST["smsusername"],
+					$_POST["smspassword"],$_POST["date"],$_POST["semester"]);
+			if($query==1){
+				$data["msg"]=1;
+			}else{
+				$data["msg"]=-1;
+				$data["message"]=lang("error");
+			}
+		}
+		$set = $this->homemodel->getSettings();
+		if($set!=false){
+			$password = $this->homemodel->dePassword($set->smspassword, $set->smssalt);
+			$data["username"] = $set->smsusername;
+			$data["password"] = $password;
+			$data["date"] = $set->date;
+			$data["semester"] = $set->semester;
+		}
+		$table1['table']="sitesettings";
+		$this->load->view('header');
+		$this->load->view('top-nav', $table1);
+		$this->load->view('menu-bar', $table1);
+		$this->load->view('settings',$data);
+		$this->load->view('footer');
+		
+		
+		
+	}
 }

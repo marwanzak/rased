@@ -77,6 +77,11 @@
 				href="<?=base_url() ?>admin/show/readymessages" title=""><?= lang("ra_readymessages") ?>
 			</a></li>
 			<?php }?>
+			<?php if($permissions->sitesettings==1){?>
+			<li class=<?= ($table=="sitesettings")? "active":"standard"?>><a
+				href="<?=base_url() ?>admin/insertSiteSettings" title=""><?= lang("site_settings") ?>
+			</a></li>
+			<?php }?>
 
 			<li class="active"><a href="#" title="" class="expand" id="current"><img
 					src="<?=base_url() ?>images/icons/mainnav/page-layouts.png" alt="" />Page

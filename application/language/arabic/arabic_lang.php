@@ -1,4 +1,7 @@
 <?php
+$lang["sms_username"] = "اسم مستخدم سكربت الرسائل";
+$lang["sms_password"] = "كلمة مرور سكربت الرسائل";
+$lang["site_settings"] = "اعدادات الموقع";
 $lang["back"] = "عودة";
 $lang["user_exist"] = "اسم المستخدم موجود مسبقاً";
 $lang["enter_username"] = "ادخل اسم مستخدم";

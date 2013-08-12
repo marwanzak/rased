@@ -536,13 +536,14 @@ class homeModel extends CI_Model {
 
 	//insert sitesettings.
 	public function insertSettings($smsusername, $smspassword, $year, $semester){
+		$this->db->empty_table("sitesettings");
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
 		return $this->db->insert("sitesettings", array(
 				"smsusername" => $smsusername,
 				"smspassword" => $password,
 				"smssalt" => $salt,
-				"year" => $year,
+				"date" => $year,
 				"semester" => $semester
 		));
 	}
@@ -560,10 +561,12 @@ class homeModel extends CI_Model {
 				"semester" => $semester
 		));
 	}
-	//get sitesettings by id.
+	//get sitesettings
 	public function getSettings(){
 		$query = $this->db->get("sitesettings");
-		return $query->row();
+		if($query->num_rows()>0)
+			return $query->row();
+		return false;
 	}
 
 	//insert note.
