@@ -449,12 +449,12 @@ class admin extends CI_Controller {
 	//insert site settings
 	public function insertSiteSettings(){
 		$data=array();
-		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"");
+		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"","sender"=>"");
 		$data["msg"]="";
 		$data["message"]="";
 		if($_POST!=null){
 			$query = $this->homemodel->insertSettings($_POST["smsusername"],
-					$_POST["smspassword"],$_POST["date"],$_POST["semester"]);
+					$_POST["smspassword"],$_POST["date"],$_POST["semester"],$_POST["sender"]);
 			if($query==1){
 				$data["msg"]=1;
 			}else{
@@ -469,6 +469,7 @@ class admin extends CI_Controller {
 			$data["password"] = $password;
 			$data["date"] = $set->date;
 			$data["semester"] = $set->semester;
+			$data["sender"] = $set->sendername;
 		}
 		$table1['table']="sitesettings";
 		$this->load->view('header');

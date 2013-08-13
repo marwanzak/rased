@@ -1,5 +1,11 @@
 <!-- Main content -->
 <div class="content" id="main_content_div">
+	<?php 
+	if($this->session->userdata("msg")){
+		$msg = $this->session->userdata("msg");
+		$this->session->set_userdata('msg',"");
+	}
+	?>
 	<?php
 	if(isset($msg)){
 				if($msg=="1"){?>
@@ -22,7 +28,7 @@
 		<div class="alert alert-block">
 			<button type="button" class="close" data-dismiss="alert">×</button>
 			<img alt="" src="<?= base_url() ?>images/icons/warning.png">
-			<?= $message ?>
+			<?= $this->session->userdata("message") ?>
 		</div>
 	</div>
 	<?php }

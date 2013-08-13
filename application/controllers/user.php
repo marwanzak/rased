@@ -7,7 +7,9 @@ class user extends CI_Controller {
 		$this->lang->load("arabic", "arabic");
 	}
 	public function index(){
-		$this->load->view("user");
+		$user = $this->homemodel->getUser($this->session->userdata("id"));
+		$data["activated"]=$user->activated;
+		$this->load->view("user",$data);
 	}
 	
 	//check login validation username and password

@@ -95,7 +95,7 @@ class insert extends CI_Controller {
 	}
 	public function insertSettings(){
 		$query = $this->homemodel->insertSettings($_POST["smsusername"],
-				$_POST["smspassword"],$_POST["year"], $_POST["semester"]);
+				$_POST["smspassword"],$_POST["year"], $_POST["semester"],$_POST["sender"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}

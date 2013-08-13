@@ -14,7 +14,11 @@ class newUser extends CI_Controller{
 	//check idnum in new user creating
 	public function checkIdnum(){
 		$ver = $this->usermodel->getStudentByIdnum($_POST["idnum"]);
-		if($ver==0){
+		if(isset($ver->username) && $ver->username!=0){
+			$data["msg"] = lang("student_token");
+			$data["color"] = "note-danger";
+			$this->load->view("userlogin",$data);
+		}elseif($ver==0){
 			$data["msg"] = lang("no_idnum");
 			$data["color"] = "note-danger";
 			$this->load->view("userlogin",$data);
@@ -25,7 +29,6 @@ class newUser extends CI_Controller{
 		}
 	}
 
-
 	//create new user
 	public function newUser(){
 		if($_POST!=null){
@@ -33,6 +36,7 @@ class newUser extends CI_Controller{
 			if($_POST["username"]=="") $msg.=lang("enter_username")."</br>";
 			if($_POST["password"]=="") $msg.=lang("enter_password")."</br>";
 			if($_POST["name"]=="") $msg.=lang("enter_name")."</br>";
+			if($_POST["number1"]=="") $msg.=lang("enter_number")."</br>";
 			$user="";
 			if($_POST["username"]!=""){
 				$query = $this->homemodel->getUserByUsername($_POST["username"]);
@@ -44,25 +48,49 @@ class newUser extends CI_Controller{
 					$this->load->view("newuser",$data);
 				}
 			}
-			elseif($_POST["username"]=="" || $_POST["password"]=="" || $_POST["name"]==""){
+			elseif($_POST["username"]=="" || $_POST["password"]=="" || $_POST["name"]=="" || $_POST["number1"]==""){
 				$data["idnum"]=$_POST["idnum"];
 				$data["message"]=$msg;
 				$data["msg"] = "-1";
 				$this->load->view("newuser",$data);
 			}
-				$query = $this->usermodel->insertUser(array(
-						"username" => $_POST["username"],
-						"password" => $_POST["password"],
-						"name" => $_POST["name"],
-						"email1" => $_POST["email1"],
-						"email2" => $_POST["email2"],
-						"number1" => $_POST["number1"],
-						"number2" => $_POST["number2"],
-				));
+			$query = $this->usermodel->insertUser(array(
+					"username" => $_POST["username"],
+					"password" => $_POST["password"],
+					"name" => $_POST["name"],
+					"email1" => $_POST["email1"],
+					"email2" => $_POST["email2"],
+					"number1" => $_POST["number1"],
+					"number2" => $_POST["number2"],
+					"idnum" => $_POST["idnum"]
+			));
 			
+			$send=$this->smsmodel->sendSmsNow(array(
+					"username" => $set->smsusername,
+					"password" => dePassword($set->smspassword,$set->salt),
+					"sender" => $set->sendername,
+					"numbers" => $atts["number1"],
+					"message" => $code
+			));
+				
 			$data["color"]="note-success";
 			$data["msg"] = lang("success");
 			$this->load->view("userlogin",$data);
 		}
+	}
+
+	//check mobile code and activate user
+	public function checkCode(){
+		$active = $this->usermodel->checkCode($_POST["code"]);
+		if($active){
+			$this->usermodel->activateUser();
+		}else{
+			$this->session->set_userdata(array("msg"=>lang("code_error")));
+		}
+		redirect(base_url()."userlogin");
+	}
+
+	public function insertUser(){
+
 	}
 }

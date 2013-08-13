@@ -1,4 +1,8 @@
 <?php
+$lang["code_error"] = "الكود المدخل خاطئ";
+$lang["enter_number"] = "ادخل رقم الهاتف";
+$lang["sender_name"] = "اسم المرسل";
+$lang["student_token"] = "الطالب المدخل تم تسجيل مستخدم ولي امر له";
 $lang["sms_username"] = "اسم مستخدم سكربت الرسائل";
 $lang["sms_password"] = "كلمة مرور سكربت الرسائل";
 $lang["site_settings"] = "اعدادات الموقع";

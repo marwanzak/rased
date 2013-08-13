@@ -48,7 +48,15 @@ class userModel extends CI_Model {
 	//get student by idnum
 	public function getStudentByIdnum($idnum){
 		$query = $this->db->get_where("students", array("idnum" => $idnum));
+		if($query->num_rows()>0)
+			return $query->row();
 		return $query->num_rows();
+	}
+	
+	//modify student user
+	public function modifyStudentUser($idnum, $username){
+		$this->db->where("idnum", $idnum);
+		return $this->db->update("students", array("username" => $username));
 	}
 	
 	//insert new user
@@ -63,7 +71,8 @@ class userModel extends CI_Model {
 				"code" => $code,
 				"active" => "1",
 				"role" => 11,
-				"name" => $atts["name"]
+				"name" => $atts["name"],
+				"activated" => "0"
 				));
 		$user_id = $this->db->insert_id();
 		$this->db->insert("defaultnumemail", array(
@@ -73,6 +82,25 @@ class userModel extends CI_Model {
 				"number1" => $atts["number1"],
 				"number2" => $atts["number2"]
 				));
+		$set = $this->homemodel->getSettings();
+		
+		$this->modifyStudentUser($atts["idnum"], $user_id);
 		return $query;
 	}
+	
+	//check mobile code
+	public function checkCode($code){
+		$query = $this->db->get_where("users",array("id"=>$this->session->userdata("id")));
+		$user = $query->row();
+		if($user->code!=$code)
+			return false;
+		return true;
+	}
+	
+	//activate user by code
+	public function activateUser(){
+		$this->db->where("id",$this->session->userdata("id"));
+		return $this->db->update("users", array("activated"=>1));
+	}
+	
 }

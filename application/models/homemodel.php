@@ -484,6 +484,7 @@ class homeModel extends CI_Model {
 				"idnum" => $idnum
 		));
 	}
+	
 	//get student by id.
 	public function getStudent($id){
 		$query = $this->db->get_where("students", array("id"=>$id));
@@ -535,7 +536,7 @@ class homeModel extends CI_Model {
 	}
 
 	//insert sitesettings.
-	public function insertSettings($smsusername, $smspassword, $year, $semester){
+	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender){
 		$this->db->empty_table("sitesettings");
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
@@ -544,7 +545,8 @@ class homeModel extends CI_Model {
 				"smspassword" => $password,
 				"smssalt" => $salt,
 				"date" => $year,
-				"semester" => $semester
+				"semester" => $semester,
+				"sendername" => $sender
 		));
 	}
 	//modify sitesettings.
@@ -1258,7 +1260,7 @@ class homeModel extends CI_Model {
 					$class = $this->homemodel->getClass($row->class);
 					$grade = $this->homemodel->getGrade($class->grade);
 					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$username->username,$row->fullname,
+					$rows[$i] = array($row->id,($row->username=="0")?lang("without"):$username->username,$row->fullname,
 							$row->idnum,$level->level,
 							$grade->grade,$class->class);
 					break;

@@ -37,34 +37,46 @@
 			</div>
 			<!-- /page header -->
 			<div class="body">
-			
-				<form action="<?= base_url()?>admin/insertSiteSettings" method="post">
+
+				<form action="<?= base_url()?>admin/insertSiteSettings"
+					method="post">
 					<div class="block well form-horizontal">
 						<div class="control-group">
 							<label class="control-label"><?= lang("sms_username") ?>:</label>
 							<div class="controls">
-								<input type="text" class="span6" name="smsusername" id="" value="<?=$username ?>" />
+								<input type="text" class="span6" name="smsusername" id=""
+									value="<?=$username ?>" />
 							</div>
 						</div>
 
 						<div class="control-group">
 							<label class="control-label"><?= lang("sms_password") ?>:</label>
-							<div class="controls"> 
-								<input type="text" class="span6" name="smspassword" id="" value="<?=$password ?>" />
+							<div class="controls">
+								<input type="text" class="span6" name="smspassword" id=""
+									value="<?=$password ?>" />
 							</div>
 						</div>
 
 						<div class="control-group">
 							<label class="control-label"><?= lang("semester") ?>:</label>
 							<div class="controls">
-								<input type="text" class="span6" name="semester" id="" value="<?=$semester ?>" />
+								<input type="text" class="span6" name="semester" id=""
+									value="<?=$semester ?>" />
 							</div>
 						</div>
 
 						<div class="control-group">
 							<label class="control-label"><?= lang("year") ?>:</label>
 							<div class="controls">
-								<input type="text" class="span6" name="date" id="" value="<?=$date ?>" />
+								<input type="text" class="span6" name="date" id=""
+									value="<?=$date ?>" />
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label"><?= lang("sender_name") ?>:</label>
+							<div class="controls">
+								<input type="text" class="span6" name="sender" id=""
+									value="<?=$sender ?>" />
 							</div>
 						</div>
 
