@@ -79,6 +79,16 @@
 									value="<?=$sender ?>" />
 							</div>
 						</div>
+						<div class="control-group">
+							<label class="control-label"><?=lang("mobile_activate")?> </label>
+							<div class="controls on_off">
+								<div class="checkbox inline">
+								<input type="hidden" value="0" name="mobileactivate"/>
+									<input type="checkbox" id="check20" <?=($mobileactivate=="1")?"checked='checked'":"" ?>
+										name="mobileactivate" value="1" />
+								</div>
+							</div>
+						</div>
 
 					</div>
 					<div class="modal-footer">

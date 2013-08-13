@@ -87,7 +87,6 @@
 </head>
 <body>
 	<?php
-	echo $msg;
 	if(isset($msg)){
 				if($msg=="1"){?>
 	<div class="outer notice">

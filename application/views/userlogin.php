@@ -83,8 +83,7 @@
 
 <script type="text/javascript"
 	src="<?= base_url() ?>js/functions/custom.js"></script>
-<script type="text/javascript"
-	src="<?= base_url() ?>js/home.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/home.js"></script>
 </head>
 
 <body>
@@ -139,6 +138,7 @@
 					<input type="button" class="btn btn-inverse"
 						value="<?=lang("new_user") ?>" id="new_id_but" />
 				</div>
+			<a href="<?= base_url() ?>newuser/forgetPassword">forget password</a>
 				<div id="new_id_num_div">
 					<form class="form-horizontal"
 						action="<?=base_url() ?>newuser/checkIdnum" method="POST">
@@ -147,7 +147,7 @@
 								class="req">*</span> </label>
 							<div class="controls">
 								<input type="text" class="required span12" name="idnum"
-									id="idnum" />
+									id="" />
 							</div>
 							<div class="control-group" style="text-align: center;">
 								<input type="submit" class="btn btn-success"

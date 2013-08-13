@@ -18,7 +18,7 @@ class newUser extends CI_Controller{
 			$data["msg"] = lang("student_token");
 			$data["color"] = "note-danger";
 			$this->load->view("userlogin",$data);
-		}elseif($ver==0){
+		}elseif(!isset($ver->username) && $ver==0){
 			$data["msg"] = lang("no_idnum");
 			$data["color"] = "note-danger";
 			$this->load->view("userlogin",$data);
@@ -38,7 +38,12 @@ class newUser extends CI_Controller{
 			if($_POST["name"]=="") $msg.=lang("enter_name")."</br>";
 			if($_POST["number1"]=="") $msg.=lang("enter_number")."</br>";
 			$user="";
-			if($_POST["username"]!=""){
+			if($_POST["username"]=="" || $_POST["password"]=="" || $_POST["name"]=="" || $_POST["number1"]==""){
+				$data["idnum"]=$_POST["idnum"];
+				$data["message"]=$msg;
+				$data["msg"] = "-1";
+				$this->load->view("newuser",$data);
+			} else{
 				$query = $this->homemodel->getUserByUsername($_POST["username"]);
 				if($query==0){
 					$data["idnum"]=$_POST["idnum"];
@@ -46,37 +51,35 @@ class newUser extends CI_Controller{
 					$msg.=lang("user_exist");
 					$data["message"] = $msg;
 					$this->load->view("newuser",$data);
+				}else{
+					$query = $this->usermodel->insertUser(array(
+							"username" => $_POST["username"],
+							"password" => $_POST["password"],
+							"name" => $_POST["name"],
+							"email1" => $_POST["email1"],
+							"email2" => $_POST["email2"],
+							"number1" => $_POST["number1"],
+							"number2" => $_POST["number2"],
+							"idnum" => $_POST["idnum"]
+					));
+						
+						
+					$data["color"]="note-success";
+					$data["msg"] = lang("success");
+					$this->load->view("userlogin",$data);
 				}
 			}
-			elseif($_POST["username"]=="" || $_POST["password"]=="" || $_POST["name"]=="" || $_POST["number1"]==""){
-				$data["idnum"]=$_POST["idnum"];
-				$data["message"]=$msg;
-				$data["msg"] = "-1";
-				$this->load->view("newuser",$data);
-			}
-			$query = $this->usermodel->insertUser(array(
-					"username" => $_POST["username"],
-					"password" => $_POST["password"],
-					"name" => $_POST["name"],
-					"email1" => $_POST["email1"],
-					"email2" => $_POST["email2"],
-					"number1" => $_POST["number1"],
-					"number2" => $_POST["number2"],
-					"idnum" => $_POST["idnum"]
-			));
-			
-			$send=$this->smsmodel->sendSmsNow(array(
-					"username" => $set->smsusername,
-					"password" => dePassword($set->smspassword,$set->salt),
-					"sender" => $set->sendername,
-					"numbers" => $atts["number1"],
-					"message" => $code
-			));
-				
-			$data["color"]="note-success";
-			$data["msg"] = lang("success");
-			$this->load->view("userlogin",$data);
 		}
+	}
+	
+	//forget password
+	public function forgetPassword(){
+		$data=array();
+		if($_POST){
+			$forget = $this->usermodel->forgetPassword($_POST["method"], $_POST["content"]);
+			$data["check"] = $forget;
+		}
+		$this->load->view("forgetpassword", $data);
 	}
 
 	//check mobile code and activate user

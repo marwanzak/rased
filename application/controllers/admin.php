@@ -454,7 +454,8 @@ class admin extends CI_Controller {
 		$data["message"]="";
 		if($_POST!=null){
 			$query = $this->homemodel->insertSettings($_POST["smsusername"],
-					$_POST["smspassword"],$_POST["date"],$_POST["semester"],$_POST["sender"]);
+					$_POST["smspassword"],$_POST["date"],$_POST["semester"],
+					$_POST["sender"],$_POST["mobileactivate"]);
 			if($query==1){
 				$data["msg"]=1;
 			}else{
@@ -470,6 +471,7 @@ class admin extends CI_Controller {
 			$data["date"] = $set->date;
 			$data["semester"] = $set->semester;
 			$data["sender"] = $set->sendername;
+			$data["mobileactivate"] = $set->mobileactivate;
 		}
 		$table1['table']="sitesettings";
 		$this->load->view('header');

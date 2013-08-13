@@ -1,4 +1,6 @@
 <?php
+$lang["choose_method"] = "اختر طريقة";
+$lang["mobile_activate"] = "تفعيل المستخدم بالجوال";
 $lang["code_error"] = "الكود المدخل خاطئ";
 $lang["enter_number"] = "ادخل رقم الهاتف";
 $lang["sender_name"] = "اسم المرسل";

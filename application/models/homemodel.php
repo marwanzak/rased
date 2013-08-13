@@ -536,7 +536,7 @@ class homeModel extends CI_Model {
 	}
 
 	//insert sitesettings.
-	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender){
+	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender,$mobileactivate){
 		$this->db->empty_table("sitesettings");
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
@@ -546,7 +546,8 @@ class homeModel extends CI_Model {
 				"smssalt" => $salt,
 				"date" => $year,
 				"semester" => $semester,
-				"sendername" => $sender
+				"sendername" => $sender,
+				"mobileactivate" => $mobileactivate
 		));
 	}
 	//modify sitesettings.
