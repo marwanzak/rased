@@ -108,7 +108,7 @@ foreach($prios as $key1 => $prioa){?>
 										<td>
 											<div class="control-group">
 												<input type="button"
-													class="btn btn-success btnc status-btn<?= ($status=="checked")?"active":"" ?>"
+													class="btn btn-success btnc status-btn<?= ($status=="checked")?" active":" " ?>"
 													data-toggle="button"
 													value="<?= ($status=="checked")?lang("continue"):lang("solved") ?>" />
 													<input type="hidden" value="0" name="status[<?= $key ?>]"/>

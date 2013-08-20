@@ -7,6 +7,8 @@
 <title><?= lang("rased_login") ?></title>
 <link href="<?= base_url() ?>css/main.css" rel="stylesheet"
 	type="text/css" />
+	<link href="<?= base_url() ?>css/style.css" rel="stylesheet"
+	type="text/css" />
 <!--[if IE]> <link href="<?= base_url() ?>css/ie.css" rel="stylesheet" type="text/css"> <![endif]-->
 
 <script type="text/javascript"
@@ -84,6 +86,7 @@
 <script type="text/javascript"
 	src="<?= base_url() ?>js/functions/custom.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/home.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/user.js"></script>
 </head>
 
 <body>
@@ -133,12 +136,14 @@
 						<input type="submit" value="<?= lang("login") ?>"
 							class="btn btn-info btn-block btn-large" />
 					</div>
+					<a style="margin-right: 50px;" href="<?= base_url() ?>newuser/forgetPassword" target="_blank"><?= lang("forget_password")?>
+					</a>
+
 				</form>
 				<div class="control-group" style="text-align: center;">
 					<input type="button" class="btn btn-inverse"
 						value="<?=lang("new_user") ?>" id="new_id_but" />
 				</div>
-			<a href="<?= base_url() ?>newuser/forgetPassword">forget password</a>
 				<div id="new_id_num_div">
 					<form class="form-horizontal"
 						action="<?=base_url() ?>newuser/checkIdnum" method="POST">
@@ -146,8 +151,7 @@
 							<label class="control-label" style="width: 30% !important;"><?= lang('idnum') ?><span
 								class="req">*</span> </label>
 							<div class="controls">
-								<input type="text" class="required span12" name="idnum"
-									id="" />
+								<input type="text" class="required span12" name="idnum" id="" />
 							</div>
 							<div class="control-group" style="text-align: center;">
 								<input type="submit" class="btn btn-success"

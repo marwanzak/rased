@@ -108,7 +108,7 @@
 		<div class="alert alert-block">
 			<button type="button" class="close" data-dismiss="alert">×</button>
 			<img alt="" src="<?= base_url() ?>images/icons/warning.png">
-			<?= $message ?>
+			<?= validation_errors(); ?>
 		</div>
 	</div>
 	<?php }
@@ -128,59 +128,67 @@
 				<!-- /page header -->
 
 				<div class="body">
-					<form action='<?= base_url();?>newuser/newUser' class="row-fluid form-horizontal"
-						method="post">
+					<form action='<?= base_url();?>newuser/newUser'
+						class="row-fluid form-horizontal" method="post">
 						<div class="control-group">
 							<label class="control-label"><?= lang("username") ?>:<span
 								class="req">*</span> </label>
 							<div class="controls">
-								<input type="text" class="required span6" name="username" id="" />
+								<input type="text" class="required span6" name="username" id="" value="<?=set_value("username")?>"/>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("password") ?>:<span
 								class="req">*</span> </label>
 							<div class="controls">
-								<input type="text" class="required span6" name="password" id="" />
+								<input type="password" class="required span6" name="password" id="" />
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("repassword") ?>:<span
 								class="req">*</span> </label>
 							<div class="controls">
-								<input type="text" class="required span6" name="" id="" />
+								<input type="password" class="required span6" name="repassword" id="" />
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("fullname") ?>:<span
 								class="req">*</span> </label>
 							<div class="controls">
-								<input type="text" class="required span6" name="name" id="" />
+								<input type="text" class="required span6" name="name" id="" value="<?=set_value("name")?>"/>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label"><?= lang("phone") ?> 1: <span
+								class="req">*</span></label>
+							<div class="controls">
+								<input type="text" class="span6" name="number1" id="" value="<?=set_value("number1")?>"/>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("email") ?> 1:</label>
 							<div class="controls">
-								<input type="text" class="span6" name="email1" id="" />
+								<input type="text" class="span6" name="email1" id="" value="<?=set_value("email1")?>"/>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("email") ?> 2: </label>
 							<div class="controls">
-								<input type="text" class="span6" name="email2" id="" />
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label"><?= lang("phone") ?> 1: </label>
-							<div class="controls">
-								<input type="text" class="span6" name="number1" id="" />
+								<input type="text" class="span6" name="email2" id="" value="<?=set_value("email2")?>"/>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="control-label"><?= lang("phone") ?> 2:</label>
 							<div class="controls">
-								<input type="text" class="span6" name="number2" id="" />
+								<input type="text" class="span6" name="number2" id="" value="<?=set_value("number2")?>"/>
 							</div>
+						</div>
+						<div class="control-group">
+						<label class="control-label"><?= lang("human_code") ?></label>
+						<div class="controls">
+						<?=$captcha_image?>
+						<input type="text" name="captcha"/>
+						</div>
 						</div>
 						<input type="hidden" class="required span6" name="idnum" id=""
 							value="<?=$idnum ?>" />
@@ -190,8 +198,8 @@
 							<button type="reset" class="btn">
 								<?= lang("reset")?>
 							</button>
-							<a style="float:right;" href="<?=base_url()?>userlogin" class="btn btn-inverse">
-								<?= lang("back")?>
+							<a style="float: right;" href="<?=base_url()?>userlogin"
+								class="btn btn-inverse"> <?= lang("back")?>
 							</a>
 						</div>
 					</form>

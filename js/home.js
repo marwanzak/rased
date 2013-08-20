@@ -10,10 +10,8 @@ $(document).ready(function() {
 		}
 
 	});
-	$("#new_id_num_div").hide();
-	$("#new_id_but").on("click", function(){
-		$("#new_id_num_div").show();
-	})
+	
+	
 	
 	$(".report_pdf_but").on("click", function(){
 		$("#hidden_pdf_content").val($(this).parent().parent().find(".table_div_print").html());
@@ -396,7 +394,7 @@ $(document).ready(function() {
 	});
 });
 
-//function to make input text type only numbers.
+// function to make input text type only numbers.
 function isNumberKey(evt) {
 	var charCode = (evt.which) ? evt.which : event.keyCode
 			if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 46)
@@ -405,7 +403,7 @@ function isNumberKey(evt) {
 	return true;
 }
 
-//function to get grades belong to selected level in select drop
+// function to get grades belong to selected level in select drop
 function getGrades(thislevel, gradesselect) {
 	$.ajax({
 		url : "/rased/get/getLevelGrades",
@@ -428,7 +426,7 @@ function getGrades(thislevel, gradesselect) {
 			});
 	return false;
 }
-//get grade classes
+// get grade classes
 function getClasses(thisgrade, classesselect) {
 	$.ajax({
 		url : "/rased/get/getGradeClasses",
@@ -452,7 +450,7 @@ function getClasses(thisgrade, classesselect) {
 			});
 	return false;
 }
-//function to get level probs
+// function to get level probs
 function getProbs(thislevel, probselect) {
 	$.ajax({
 		url : "/rased/get/getLevelProbs",
@@ -477,7 +475,7 @@ function getProbs(thislevel, probselect) {
 	return false;
 }
 
-//function to get level probs
+// function to get level probs
 function getClassProbs(thisclass, probselect) {
 	$.ajax({
 		url : "/rased/get/getClassProbs",
@@ -502,7 +500,7 @@ function getClassProbs(thisclass, probselect) {
 	return false;
 }
 
-//function to get grade subjects
+// function to get grade subjects
 function getSubjects(thisgrade, subjectsselect) {
 	$.ajax({
 		url : "/rased/get/getGradeSubjects",
@@ -526,7 +524,7 @@ function getSubjects(thisgrade, subjectsselect) {
 	return false;
 }
 
-//function to get user subjects when change class select
+// function to get user subjects when change class select
 function getUserClassSubjects(thisclass, subjectsselect) {
 	$.ajax({
 		url : "/rased/get/getUserClassSubjects",
@@ -550,7 +548,7 @@ function getUserClassSubjects(thisclass, subjectsselect) {
 	return false;
 }
 
-//function to get prob types
+// function to get prob types
 function getTypes(thisprob, typesselect) {
 	$.ajax({
 		url : "/rased/get/getProbTypes",

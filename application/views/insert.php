@@ -22,7 +22,64 @@
 		</button>
 	</div>
 </div>
+<!-- insert lessons  -->
+<div id="add_ra_lessons_dialog" class="modal hide fade" tabindex="-1"
+	role="dialog" aria-labelledby="add_lesson_label" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">&times;</button>
+		<h5 id="myModalLabel">
+			<?= lang("add")." ".lang("lesson") ?>
+		</h5>
+	</div>
+	<form id="add_lesson_form"
+		action="<?= base_url() ?>insert/insertLesson" method="post">
+		<div class="modal-body">
+			<div class="row-fluid">
 
+				<div class="control-group">
+					<label class="control-label"><?= lang("lesson") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+ <select
+							name="level" class="levels_select" id="grade_levels">
+							<option value="">
+								<?= lang("choose_class")?>
+							</option>
+							<?php
+foreach($user_classes as $class){?>
+							<option value=<?= $class->id ?>>
+								<?= $class->class?>
+							</option>
+							<?php }?>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("lesson") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<input type="text" class="required span12" name="lesson"
+							id="add_level_input" />
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id="hidden_ra_levels" name="id" />
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">
+				<?= lang("close") ?>
+			</button>
+			<input value="<?= lang("add")?>" type="submit"
+				class="btn btn-primary" />
+			<button type="reset" class="btn">
+				<?= lang("reset")?>
+			</button>
+
+		</div>
+	</form>
+</div>
 <!-- add level dialog  -->
 <div id="add_ra_levels_dialog" class="modal hide fade" tabindex="-1"
 	role="dialog" aria-labelledby="add_level_label" aria-hidden="true">
@@ -878,8 +935,7 @@ foreach($levels as $level){?>
 				<div class="control-group">
 					<label class="control-label"><?= lang("priority") ?> </label>
 					<div class="controls">
-						<select
-							name="priority" class="" id="begin_notes_priority">
+						<select name="priority" class="" id="begin_notes_priority">
 							<?php
 foreach($prios as $key => $prio){?>
 							<option value=<?= $key ?>>
@@ -971,9 +1027,10 @@ foreach($user_classes as $class){?>
 				<div class="control-group">
 					<label class="control-label"><?= lang("status")?> </label> <input
 						type="button" id="begin_status"
-						class="btn btn-success btnc status-btn active" data-toggle="button"
-						value="<?= lang("continue") ?>" /> <input type="checkbox"
-						name="status" checked="checked" style="display: none;" />
+						class="btn btn-success btnc status-btn active"
+						data-toggle="button" value="<?= lang("continue") ?>" /> <input
+						type="checkbox" name="status" checked="checked"
+						style="display: none;" />
 				</div>
 
 				<div class="control-group">

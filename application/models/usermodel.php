@@ -3,6 +3,13 @@ class userModel extends CI_Model {
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->helper("captcha");
+	}
+
+	//create captcha
+	public function createCaptcha(){
+		$atts=array("img_path"=>"./captcha/","img_url"=>"http://localhost/rased/captcha/","word"=>rand());
+		return create_captcha($atts);
 	}
 
 	public function validate(){
@@ -116,51 +123,177 @@ class userModel extends CI_Model {
 		$this->db->where("number1",$number);
 		$this->db->or_where("number2", $number);
 		$query = $this->db->get("defaultnumemail");
-		return ($query->num_rows()>0)? true:false;
 		if($query->num_rows()>0){
-
+			$def = $query->row();
+			return array("userid" => $def->username, "number" => $def->number1);
 		}else{
-
+			return false;
 		}
 	}
 
 	//check user by username
 	public function checkUsername($username){
 		$query = $this->db->get_where("users", array("username" => $username));
-		return ($query->num_rows()>0)?true:false;
+		if($query->num_rows()>0){
+			$user = $query->row();
+			$query = $this->db->get_where("defaultnumemail", array("username" => $user->id));
+			$def = $query->row();
+			return array("userid" => $user->id, "number" => $def->number1);
+		}else{
+			return false;
+		}
 	}
 
 	//forget password check
 	public function forgetPassword($method, $content){
-		$check=0;
-		$number=0;
+		$data = array();
+		$set = $this->homemodel->getSettings();
+		$check;
 		if($method=="number"){
 			$check = $this->checkNumber($content);
-			$number=$content;
+			if(!$check)
+				return array("check" => false);
 		}elseif($method=="username"){
-			$check = $this->checkUser($content);
-			if($check==1){
-				$query = $this->db->get_where("users", array("username" => $content));
-				$user = $query->row();
-				$query = $this->db->get_where("defaultnumemail", array("username" => $user->username));
-				$def = $query->row();
-				$number = $def->number1;
-			}
+			$check = $this->checkUsername($content);
+			if(!$check)
+				return array("check" => false);
 		}
-		if($check==1){
+		if(isset($check["userid"])){
 			$code=rand();
+			$this->db->where("id", $check["userid"]);
+			$this->db->update("users", array("code" => $code));
 			$this->smsmodel->sendSmsNow(array(
 					"username" => $set->smsusername,
 					"password" => $this->homemodel->dePassword($set->smspassword,$set->smssalt),
 					"sender" => $set->sendername,
-					"number" => $number,
+					"number" => $check["number"],
 					"message" => $code
 			));
+			return array("check" => true, "user" => $check["userid"]);
+
+		}
+	}
+
+	//create new password for user and send it to user mobile
+	public function newPassword($user,$code){
+		$set = $this->homemodel->getSettings();
+		$user = $this->homemodel->getUser($user);
+		if($user->code==$code){
+			$query = $this->db->get_where("defaultnumemail", array("username" => $user->id));
+			$salt=rand();
+			$pass=rand();
+			$password= crypt($pass,$salt);
+			$this->db->where("username", $user->username);
+			$this->db->update("users", array("password" => $password, "salt" => $salt));
+			$msg=lang("username").": ".$user->username."\r\n".lang("password").": ".$pass;
+			$def = $query->row();
+			$this->smsmodel->sendSmsNow(array(
+					"username" => $set->smsusername,
+					"password" => $this->homemodel->dePassword($set->smspassword,$set->smssalt),
+					"sender" => $set->sendername,
+					"number" => $def->number1,
+					"message" => $msg
+			));
 			return true;
+		}else return false;
+
+	}
+
+	//public function get form reasons array
+	public function getReasons(){
+		return array(array("ab",lang("absence")),
+				array("per",lang('per')),
+				array("id",lang("student_id")),
+				array("dis",lang('sa_dis')));
+	}
+
+	//get form reason inrespond to key
+	public function getReason($key){
+		$reasons = $this->getReasons();
+		return $reason[$key][1];
+	}
+
+	//insert form
+	public function insertForm($atts=array()){
+		return $this->db->insert("forms",$atts);
+	}
+
+	//get form
+	public function getForm($id){
+		$query = $this->db->get_where("forms", array("id" => $id));
+		return $query->row();
+	}
+
+	//get all forms
+	public function getAllForm(){
+		$query = $this->db->get("forms");
+		return $query->result();
+	}
+
+	//agree form
+	public function agreeForm($id){
+		$form = $this->getForm($id);
+		$this->db->where("id", $id);
+		return $this->db->update("forms", array("agreed"=>!$form->agreed));
+	}
+
+	//get user students
+	public function getUserStudents($user){
+		$query = $this->db->get_where("students", array("username" => $user));
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//modify user profile
+	public function modifyUser($user=array(), $def=array()){
+		$this->db->where("id",$this->session->userdata("id"));
+		$this->db->update("users",$user);
+		$this->db->where("username",$this->session->userdata("id"));
+		$this->db->update("defaultnumemail",$def);
+	}
+
+	//check username
+	public function checkUserExist($username){
+		$query = $this->db->get_where("users",array("username" => $username));
+		$user1=$this->homemodel->getUser($this->session->userdata("id"));
+		if($query->num_rows()>0){
+			$user = $query->row();
+			if($user->username==$user1->username)
+				return true;
+			return false;
+		}
+		return true;
+	}
+
+	//get user default numbers and emails
+	public function getUserDef(){
+		$query = $this->db->get_where("defaultnumemail",
+				array("username" => $this->session->userdata("id")));
+		return $query->row();
+	}
+
+	//check student idnum exist
+	public function checkIdnumExist($idnum){
+		$this->db->where("idnum",$idnum);
+		$query = $this->db->get("students");
+		if($query->num_rows()>0){
+			$student=$query->row();
+			if($student->username!=0)
+				return 2;
+			return 1;
+		}
+		return 3;
+	}
+	
+	//get student notes
+	public function getStudentNotes($student_id){
+		$query = $this->db->get_where("notes", array("student"=>$student_id));
+		if($query->num_rows()>0){
+			return $query->result();
 		}else{
 			return false;
 		}
-
 	}
 
 }

@@ -429,11 +429,13 @@ class homeModel extends CI_Model {
 	}
 	//get note prob by id.
 	public function getProb($id,$name=""){
-		$query = $this->db->get_where("notesprob", array("id"=>$id));
-		$prob = $query->row();
-		if($name!="")
-			return $prob->prob;
-		else return $query->row();
+		if($id!=0){
+			$query = $this->db->get_where("notesprob", array("id"=>$id));
+			$prob = $query->row();
+			if($name!="")
+				return $prob->prob;
+			else return $query->row();
+		}else return false;
 	}
 	//get all notes probs.
 	public function getAllProb(){
@@ -484,7 +486,7 @@ class homeModel extends CI_Model {
 				"idnum" => $idnum
 		));
 	}
-	
+
 	//get student by id.
 	public function getStudent($id){
 		$query = $this->db->get_where("students", array("id"=>$id));
@@ -1167,6 +1169,9 @@ class homeModel extends CI_Model {
 	public function getHeaders($table){
 		$headings = array();
 		switch($table){
+			case "ra_lessons":
+				$headings = array(lang("class"),lang("day"),lang("order"),lang('subject'));
+				break;
 			case "ra_levels":
 				$headings = array(lang("level", lang("actions")));
 				break;
@@ -1243,6 +1248,13 @@ class homeModel extends CI_Model {
 		foreach($query->result() as $row)
 		{
 			switch($table){
+				case "ra_lessons":
+					$class= $this->homemodel->getClass($row->class);
+					$subject= $this->homemodel->getSubject($row->subject);
+					$day = $this->homemodel->getDay($row->day);
+					$order = $this->homemodel->getOrder($row->order);
+					$rows[$i] = array($row->id, $class->class, $subject->subject, $day, $order);
+					break;
 				case "ra_levels":
 					$rows[$i] = array($row->id,$row->level);
 					break;
@@ -1390,6 +1402,13 @@ class homeModel extends CI_Model {
 		foreach($query->result() as $row)
 		{
 			switch($table){
+				case "ra_lessons":
+					$class= $this->homemodel->getClass($row->class);
+					$subject= $this->homemodel->getSubject($row->subject);
+					$day = $this->homemodel->getDay($row->day);
+					$order = $this->homemodel->getOrder($row->order);
+					if($day==$word||$subject==$word||$order==$word||$day==$word)
+						$rows[$i] = array($row->id, $class->class, $subject->subject, $day, $order);
 				case "ra_levels":
 					if($row->level==$word)
 						$rows[$i] = array($row->id,$row->level);
@@ -1402,8 +1421,9 @@ class homeModel extends CI_Model {
 				case "ra_classes":
 					$grade = $this->homemodel->getGrade($row->grade);
 					$level = $this->homemodel->getLevel($grade->level);
-					$rows[$i] = array($row->id,$level->level,
-							$grade->grade,$row->class);
+					if($level->level==$word||$grade->grade==$word||$row->class==$word)
+						$rows[$i] = array($row->id,$level->level,
+								$grade->grade,$row->class);
 					break;
 				case "ra_students":
 					$username = $this->homemodel->getUser($row->username);
@@ -1566,5 +1586,50 @@ class homeModel extends CI_Model {
 		print "<pre>";
 		var_dump($array);
 		print "</pre>";
+	}
+
+	//get lessons
+	public function getLessons(){
+		$query = $this->db->get("lessons");
+		return $query->result();
+	}
+	public function getLesson($id){
+		return $this->db->get_where("lessons", array("id"=>$id));
+	}
+
+	//insert lesson in db
+	public function insertLesson($atts=array()){
+		return $this->db->insert("lessons",$atts);
+	}
+
+	//modify lesson in db
+	public function modifyLesson($id,$atts=array()){
+		$this->db->where("id",$id);
+		return $this->db->update("lessons", $atts);
+	}
+
+	//get days of week
+	public function getWeekDays(){
+		return array(lang("saturday"),lang("sunday"), lang("monday"),
+				lang("tuesday"), lang("wednesday"), lang("thursday"),
+				lang("friday"));
+	}
+
+	//get day of week
+	public function getDay($day){
+		$days = $this->getWeekDays();
+		return $days[$day];
+	}
+
+	//get all orders of lesson
+	public function getOrders(){
+		return array(lang("first"),lang("second"),lang("third"),lang("fourth"),
+				lang("fifthe"),lang("sixth"),lang("seventh"));
+	}
+
+	//get order of a lesson
+	public function getOrder($order){
+		$orders = $this->getOrders();
+		return $orders[$order];
 	}
 }

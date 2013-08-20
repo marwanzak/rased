@@ -61,7 +61,9 @@ class admin extends CI_Controller {
 				"settings" => $this->homemodel->getSettings(),
 				"days" => $this->homemodel->getDays(),
 				"monthes" => $this->homemodel->getMonthes(),
-				"prios" => $prio
+				"prios" => $prio,
+				"weekdays" => $this->homemodel->getWeekDays(),
+				"orders" => $this->homemodel->getOrders()
 		);
 		$this->load->view('insert', $data);
 		$this->load->view('modify');

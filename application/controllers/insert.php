@@ -116,7 +116,9 @@ class insert extends CI_Controller {
 		}
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
-
-
-
+	
+	//insert lesson in db
+	public function insertLesson(){
+		
+	}
 }

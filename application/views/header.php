@@ -50,6 +50,7 @@
 
 <script type="text/javascript" src="<?= base_url() ?>js/functions/custom.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/home.js"></script>
+<script type="text/javascript" src="<?= base_url() ?>js/user.js"></script>
 <script type="text/javascript" src="<?= base_url() ?>js/dialogs.js"></script>
 
 </head>

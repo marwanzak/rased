@@ -72,6 +72,9 @@
 				href="<?=base_url() ?>admin/show/defaultnumemail" title=""><?= lang("ra_defaultnumemail") ?>
 			</a></li>
 			<?php }?>
+			<li class=<?= ($table=="lessons")? "active":"standard"?>><a
+				href="<?=base_url() ?>admin/show/lessons" title=""><?= lang("ra_lessons") ?>
+			</a></li>
 			<?php if($permissions->ready_see==1){?>
 			<li class=<?= ($table=="ra_readymessages")? "active":"standard"?>><a
 				href="<?=base_url() ?>admin/show/readymessages" title=""><?= lang("ra_readymessages") ?>
