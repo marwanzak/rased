@@ -443,10 +443,11 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert morning appearance.
-	public function insertMorning($student, $datetime){
+	public function insertMorning($student, $time, $date){
 		return $this->db->insert("morning", array(
 				"student" => $student,
-				"datetime" => $datetime
+				"date" => $date,
+				"time"=>$time
 		));
 	}
 	//modify morning appearance.
@@ -468,22 +469,24 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert student.
-	public function insertStudent($username, $fullname, $class, $idnum){
+	public function insertStudent($username, $fullname, $class, $idnum,$finger){
 		return $this->db->insert("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
 				"class" => $class,
-				"idnum" => $idnum
+				"idnum" => $idnum,
+				"fingerprint"=>$finger
 		));
 	}
 	//modify student.
-	public function modifyStudent($id, $username, $fullname, $class, $idnum){
+	public function modifyStudent($id, $username, $fullname, $class, $idnum,$finger){
 		$this->db->where("id",$id);
 		return $this->db->update("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
 				"class" => $class,
-				"idnum" => $idnum
+				"idnum" => $idnum,
+				"fingerprint"=>$finger
 		));
 	}
 
@@ -538,7 +541,7 @@ class homeModel extends CI_Model {
 	}
 
 	//insert sitesettings.
-	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender,$mobileactivate){
+	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender,$mobileactivate,$morning,$user_lessons){
 		$this->db->empty_table("sitesettings");
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
@@ -549,12 +552,14 @@ class homeModel extends CI_Model {
 				"date" => $year,
 				"semester" => $semester,
 				"sendername" => $sender,
-				"mobileactivate" => $mobileactivate
+				"mobileactivate" => $mobileactivate,
+				"morning"=>$morning,
+				"user_lessons"=>$user_lessons
 		));
 	}
 	//modify sitesettings.
 	public function modifySettings($id, $smsusername, $smspassword,
-			$year, $semester){
+			$year, $semester,$morning){
 		$salt = rand();
 		$password = $this->enPassword($smspassword,$salt);
 		$this->db->where("id",$id);
@@ -563,7 +568,8 @@ class homeModel extends CI_Model {
 				"smspassword" => $password,
 				"smssalt" => $salt,
 				"year" => $year,
-				"semester" => $semester
+				"semester" => $semester,
+				"morning"=>$morning
 		));
 	}
 	//get sitesettings
@@ -985,6 +991,18 @@ class homeModel extends CI_Model {
 				if($permissions->def_see!=1)
 					return false;
 				break;
+			case "ra_lessons":
+				if($permissions->lessons_see!=1)
+					return false;
+				break;
+			case "ra_slider":
+				if($permissions->slider_see!=1)
+					return false;
+				break;
+			case "ra_forms":
+				if($permissions->forms_see!=1)
+					return false;
+				break;
 			case "ra_actions":
 				if($permissions->action_see!=1)
 					return false;
@@ -1045,6 +1063,14 @@ class homeModel extends CI_Model {
 				if($permissions->def_delete!=1)
 					return false;
 				break;
+			case "ra_slider":
+				if($permissions->slider_delete!=1)
+					return false;
+				break;
+			case "ra_forms":
+				if($permissions->forms_delete!=1)
+					return false;
+				break;
 			case "ra_actions":
 				if($permissions->action_delete!=1)
 					return false;
@@ -1099,6 +1125,10 @@ class homeModel extends CI_Model {
 				break;
 			case "ra_readymessages":
 				if($permissions->ready_create!=1)
+					return false;
+				break;
+			case "ra_slider":
+				if($permissions->slider_insert!=1)
 					return false;
 				break;
 			case "ra_defaultnumemail":
@@ -1157,6 +1187,14 @@ class homeModel extends CI_Model {
 				if($permissions->ready_modify!=1)
 					return false;
 				break;
+			case "ra_slider":
+				if($permissions->slider_modify!=1)
+					return false;
+				break;
+			case "ra_lessons":
+				if($permissions->lessons_modify!=1)
+					return false;
+				break;
 			case "ra_defaultnumemail":
 				if($permissions->def_modify!=1)
 					return false;
@@ -1170,10 +1208,10 @@ class homeModel extends CI_Model {
 		$headings = array();
 		switch($table){
 			case "ra_lessons":
-				$headings = array(lang("class"),lang("day"),lang("order"),lang('subject'));
+				$headings = array(lang("class"),lang("subject"),lang("day"),lang('order'),lang("actions"));
 				break;
 			case "ra_levels":
-				$headings = array(lang("level", lang("actions")));
+				$headings = array(lang("level"), lang("actions"));
 				break;
 			case "ra_grades":
 				$headings = array(lang("level"),lang("grade"), lang("actions"));
@@ -1183,7 +1221,7 @@ class homeModel extends CI_Model {
 				break;
 			case "ra_students":
 				$headings = array(lang("gaurd"),lang("fullname"),
-				lang("idnum"),lang("level"),lang("grade"),lang("class"), lang("actions"));
+				lang("idnum"),lang("level"),lang("grade"),lang("class"),lang("finger"), lang("actions"));
 				break;
 			case "ra_users":
 				$headings = array(lang("username"),lang("fullname"),
@@ -1275,7 +1313,7 @@ class homeModel extends CI_Model {
 					$level = $this->homemodel->getLevel($grade->level);
 					$rows[$i] = array($row->id,($row->username=="0")?lang("without"):$username->username,$row->fullname,
 							$row->idnum,$level->level,
-							$grade->grade,$class->class);
+							$grade->grade,$class->class,$row->fingerprint);
 					break;
 				case "ra_users":
 					$classes = $this->homemodel->getUserClasses($row->id, "string");
@@ -1435,7 +1473,7 @@ class homeModel extends CI_Model {
 							$grade->grade==$word || $class->class==$word)
 						$rows[$i] = array($row->id,$username->username,$row->fullname,
 								$row->idnum,$level->level,
-								$grade->grade,$class->class);
+								$grade->grade,$class->class,$row->fingerprint);
 					break;
 				case "ra_users":
 					$classes = $this->homemodel->getUserClasses($row->id, "string");
@@ -1589,12 +1627,13 @@ class homeModel extends CI_Model {
 	}
 
 	//get lessons
-	public function getLessons(){
+	public function getAllLesson(){
 		$query = $this->db->get("lessons");
 		return $query->result();
 	}
 	public function getLesson($id){
-		return $this->db->get_where("lessons", array("id"=>$id));
+		$query = $this->db->get_where("lessons", array("id"=>$id));
+		return $query->row();
 	}
 
 	//insert lesson in db
@@ -1603,9 +1642,9 @@ class homeModel extends CI_Model {
 	}
 
 	//modify lesson in db
-	public function modifyLesson($id,$atts=array()){
-		$this->db->where("id",$id);
-		return $this->db->update("lessons", $atts);
+	public function modifyLesson($atts=array(),$subject){
+		$this->db->where($atts);
+		return $this->db->update("lessons", array("subject"=>$subject));
 	}
 
 	//get days of week
@@ -1624,12 +1663,213 @@ class homeModel extends CI_Model {
 	//get all orders of lesson
 	public function getOrders(){
 		return array(lang("first"),lang("second"),lang("third"),lang("fourth"),
-				lang("fifthe"),lang("sixth"),lang("seventh"));
+				lang("fifth"),lang("sixth"),lang("seventh"),lang("eightth"),lang("ninth"));
 	}
 
 	//get order of a lesson
 	public function getOrder($order){
 		$orders = $this->getOrders();
 		return $orders[$order];
+	}
+
+	//determine morning time parts
+	public function morningParts($time){
+		$time_array=explode(":",$time);
+		$hour = $time_array[0];
+		$minutes=substr($time_array[1],0,2);
+		$keeping=substr($time_array[1],-2);
+		return array("hour"=>$hour,"minutes"=>$minutes,"keeping"=>$keeping);
+	}
+
+	//get data from odbc about morning presents of students
+	public function odbcGet(){
+		$conn=odbc_connect('UNIS','','unisamho');
+		$sql="SELECT * FROM tUser";
+		$rs=odbc_exec($conn,$sql);
+		if (!$rs)
+		{
+			exit("Error in SQL");
+		}
+		while (odbc_fetch_row($rs))
+		{
+			echo odbc_result($rs,"C_Name");
+		}
+		odbc_close($conn);
+	}
+
+	//insert slider in database
+	public function insertSlider($atts=array()){
+		return $this->db->insert("slider",$atts);
+	}
+
+	//modify slider in database
+	public function modifySlider($id, $atts=array()){
+		$this->db->where("id",$id);
+		return $this->db->update("slider",$atts);
+	}
+
+	//get slider from database by id
+	public function getSlider($id){
+		$query = $this->db->get_where("slider",array("id"=>$id));
+		if ($query->num_rows()>0)
+			return $query->row();
+		return false;
+	}
+
+	//get all sliders from database
+	public function getAllSlider(){
+		$query = $this->db->get("slider");
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//get all forms from database
+	public function getAllForm(){
+		$query = $this->db->get("forms");
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//get student forms
+	public function getStudentForms($student){
+		$query = $this->db->get_where("forms", array("student"=>$student));
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//get user messages from inbox
+	public function getUserInbox(){
+		$query = $this->db->get_where("inbox", array("username"=>$this->session->userdata("id")));
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//get unread user messages from inbox
+	public function getUserUnreadInbox(){
+		$query = $this->db->get_where("inbox", array("username"=>$this->session->userdata("id"),"read"=>0));
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//get user messages from a user in inbox
+	public function getConversation($user1,$user2,$limit=0){
+		$limitation = ($limit==0)?" LIMIT 0,3":"";
+		$query = $this->db->query("SELECT * FROM (`ra_inbox`) WHERE (`from` = '".$user1."' AND `username` = '".$user2."') OR (`from` = '".$user2."' AND `username` = '".$user1."') ORDER BY `datetime` desc".$limitation);
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
+	}
+
+	//set message in inbox to be read
+	public function readMessage($id){
+		$this->db->where("id",$id);
+		return $this->db->update("inbox", array("read"=>1));
+	}
+
+	//insert message in inbox
+	public function insertInbox($from,$username,$message){
+		return $this->db->insert("inbox",array(
+				"from"=>$from,
+				"username"=> $username,
+				"message"=>$message,
+				"datetime"=>time(),
+				"read"=>0
+		));
+	}
+
+	//delete message from inbox
+	public function deleteInbox($id){
+		$this->db->where("id", $id);
+		return $this->db->delete("inbox");
+	}
+
+	//get time deferent between two times given
+	public function getTimeDef($time1, $time2){
+		$string_def = array(
+				array(60, lang("just_now")),
+				array(90, '1 '.lang("minute")),                  // 60*1.5
+				array(3600, lang("minutes"), 60),             // 60*60, 60
+				array(5400, '1 '.lang("hour")),                  // 60*60*1.5
+				array(86400, lang("hours"), 3600),            // 60*60*24, 60*60
+				array(129600, '1 '.lang("day")),                 // 60*60*24*1.5
+				array(604800, lang("days"), 86400),           // 60*60*24*7, 60*60*24
+				array(907200, '1 '.lang("week")),                // 60*60*24*7*1.5
+				array(2628000, lang("weeks"), 604800),        // 60*60*24*(365/12), 60*60*24*7
+				array(3942000, '1 '.lang("month")),              // 60*60*24*(365/12)*1.5
+				array(31536000, lang("monthes"), 2628000),     // 60*60*24*365, 60*60*24*(365/12)
+				array(47304000, '1 '.lang("year")),              // 60*60*24*365*1.5
+				array(3153600000, lang("years"), 31536000),   // 60*60*24*365*100, 60*60*24*365
+		);
+		$difference = $time1-$time2;
+		$message = "";
+		foreach($string_def as $format){
+			if ($difference < $format[0]) {
+				if (count($format) == 2) {
+					$message = lang("time_from")." ".$format[1];
+					break;
+				} else {
+					$message = lang("time_from")." ".ceil($difference / $format[2]) . ' ' . $format[1];
+					break;
+				}
+			}
+		}
+		return $message;
+	}
+
+	//get gaurds message to admin
+	public function getAdminMessages($read=""){
+		if($read=="")
+			$query = $this->db->get_where("inbox",array("username"=>-1));
+		elseif($read=="unread")
+		$query = $this->db->get_where("inbox", array("username"=>-1,"read"=>0));
+		if($query->num_rows>0)
+			return $query->result();
+		return false;
+	}
+
+	//export to pdf
+	public function exportPdf($body){
+		$stylesheet = file_get_contents(base_url().'css/style.css');
+		$this->load->library("MPDF56/mpdf.php","UTF-8");
+		$this->mpdf->SetDirectionality('rtl');
+		$html = $body;
+		$html = str_replace("\\\"","\"",$html);
+		$this->mpdf->useLang = true;
+		$this->mpdf->WriteHTML($stylesheet,1);
+		$this->mpdf->WriteHTML($html,2);
+		$this->mpdf->Output();
+		exit;
+	}
+
+	//excel test
+	public function testExcel(){
+		$excel = $this->load->library("Classes/PHPExcel");
+		$excel = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+		$excel->save("05featuredemo.xlsx");
+
+	}
+
+	//get table head and body to export to file
+	public function getTableForFile($tbody1,$thead1){
+		$regex = '/(|\\\\[rntv]{1})/';
+		$thead = preg_replace($regex, "", $thead1);
+		$tbody = preg_replace($regex, "", $tbody1);
+		$thead = str_replace(array("[","]","\""), "",$thead);
+		$tbody = str_replace(array("[","]","\""), "",$tbody);
+		$thead_array = explode(",",$thead);
+		$tbody_array = explode(",",$tbody);
+		array_pop($thead_array);
+		$divided = count($tbody_array)/count($thead_array);
+		$tbody = array();
+		for($i=0;$i<$divided;$i++){
+			$tbody[$i]=array();
+			$tbody[$i]+=array_slice($tbody_array,$i*count($thead_array),count($thead_array));
+		}
+		return array("thead"=>$thead_array,"tbody"=>$tbody);
 	}
 }

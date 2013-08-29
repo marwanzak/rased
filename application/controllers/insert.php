@@ -3,6 +3,8 @@
 class insert extends CI_Controller {
 	function __construct(){
 		parent::__construct();
+		$this->lang->load("arabic", "arabic");
+
 	}
 	public function index()
 	{
@@ -77,7 +79,7 @@ class insert extends CI_Controller {
 	}
 	public function insertStudent(){
 		$query = $this->homemodel->insertStudent($_POST["username"],
-				$_POST["fullname"],$_POST["class"], $_POST["idnum"]);
+				$_POST["fullname"],$_POST["class"], $_POST["idnum"],$_POST["finger"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
@@ -95,30 +97,73 @@ class insert extends CI_Controller {
 	}
 	public function insertSettings(){
 		$query = $this->homemodel->insertSettings($_POST["smsusername"],
-				$_POST["smspassword"],$_POST["year"], $_POST["semester"],$_POST["sender"]);
+				$_POST["smspassword"],$_POST["year"], $_POST["semester"],$_POST["sender"],$_POST["morning"]);
 		$this->session->set_userdata("msg",$query);
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
 	public function insertNote(){
 		foreach($_POST["notescheck"] as $key => $check){
 			if($check!="0")
-			$query = $this->homemodel->insertNote($_POST["types"][$key],$check,
-					$_POST["subjects"][$key], $_POST["notes"][$key],
-					$_POST["status"][$key],$_POST["day"][$key], $_POST["month"][$key],
-					$_POST["probs"][$key], "0", $_POST["priority"][$key]
-			);
+				$query = $this->homemodel->insertNote($_POST["types"][$key],$check,
+						$_POST["subjects"][$key], $_POST["notes"][$key],
+						$_POST["status"][$key],$_POST["day"][$key], $_POST["month"][$key],
+						$_POST["probs"][$key], "0", $_POST["priority"][$key]
+				);
 		}
 		if(isset($query))
-		$this->session->set_userdata("msg","1");
+			$this->session->set_userdata("msg","1");
 		else{
 			$this->session->set_userdata("msg","-1");
 			$this->session->set_userdata("message", lang("note_insert_error"));
 		}
 		redirect($this->session->userdata("refered_from"),"refresh");
 	}
-	
+
 	//insert lesson in db
 	public function insertLesson(){
-		
+		$this->form_validation->set_message('required', lang('required')."%s");
+		$this->form_validation->set_rules('day', lang('day'), 'required');
+		$this->form_validation->set_rules('order', lang('order'), 'required');
+		$this->form_validation->set_rules('subject', lang('subject'), 'required');
+		$this->form_validation->set_rules('class', lang('class'), 'required');
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->session->set_userdata("msg","-1");
+			$this->session->set_userdata("message",validation_errors());
+			redirect($this->session->userdata("refered_from"),"refresh");
+		}
+		else
+		{
+			$this->homemodel->insertLesson(array("day"=>$_POST["day"],"class"=>$_POST["class"],
+					"subject"=>$_POST["subject"],"order"=>$_POST["order"]
+			));
+			$this->session->set_userdata("msg","1");
+			redirect($this->session->userdata("refered_from"),"refresh");
+		}
+	}
+
+	//inser message in user inbox
+	public function insertInbox(){
+		if($_POST){
+			$this->form_validation->set_message('required', lang('required')."%s");
+			$this->form_validation->set_rules('message', lang('enter_message'), 'required');
+			if ($this->form_validation->run() == FALSE)
+			{
+				$this->session->set_userdata("msg","-1");
+				$this->session->set_userdata("message",validation_errors());
+				redirect($this->session->userdata("refered_from"),"refresh");
+			}
+			else
+			{
+				if($_POST["admin"]==1)
+					$this->homemodel->insertInbox(-1,$_POST["username"],$_POST["message"]);
+				elseif($_POST["admin"]=="-1"){
+					$this->homemodel->insertInbox($_POST["username"],-1,$_POST["message"]);
+				}else
+					$this->homemodel->insertInbox($this->session->userdata("id"),$_POST["username"],$_POST["message"]);
+				$this->session->set_userdata("msg","1");
+				redirect($this->session->userdata("refered_from"),"refresh");
+			}
+		}
 	}
 }

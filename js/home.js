@@ -1,5 +1,42 @@
 var base_url = "http://localhost/rased/";
 $(document).ready(function() {
+	
+	$("#export_table_form").on("submit", function(){
+		var thead = $("div#table_for_print thead tr th");
+		var tbody_tr = $("div#table_for_print tbody tr");
+		var tbody_td = $("div#table_for_print tbody tr td");
+		var thead_array = new Array();
+		var tbody_array = new Array();
+		for(var i=1;i<thead.length;i++){
+			thead_array.push(thead[i].innerHTML);
+		}
+			for(var k=0;k<tbody_td.length;k++){
+				if(tbody_td[k].innerHTML.search("<")==-1)
+				tbody_array.push(tbody_td[k].innerHTML);
+			}
+		thead_array = JSON.stringify(thead_array);
+		tbody_array = JSON.stringify(tbody_array);
+		$(this).find("textarea[name=tbody]")
+		.val(tbody_array);
+		$(this).find("textarea[name=thead]")
+		.val(thead_array);
+	});
+	
+	$("#table_pdf_export_but").on('click', function(){
+		$("#export_table_form input[name=method]").val("pdf");
+		$("#export_table_form").submit();
+	});
+	$("#table_excel2003_export_but").on('click', function(){
+		$("#export_table_form input[name=method]").val("excel2003");
+		$("#export_table_form").submit();
+
+	});
+	$("#table_excel2007_export_but").on('click', function(){
+		$("#export_table_form input[name=method]").val("excel2007");
+		$("#export_table_form").submit();
+
+	});
+	
 	$(".permission_row_check").on("click", function(){
 		if($(this).is(":checked")){
 			$(this).parent().parent().parent().parent().find(".permissions_checks").prop("checked", true);
@@ -11,7 +48,25 @@ $(document).ready(function() {
 
 	});
 	
-	
+	$(".message-img").on("click", function(){
+		var this_id = this.id;
+		$.ajax({
+			url:base_url+"modify/readMessage",
+			data:{"message_id":this.id},
+			type:"post",
+		}).done(function(data){
+				if(data!=1){
+					alert("حدث خطأ أثناء تعديل وضعية قراءة الرسالة");
+				return;
+				}
+				else if(data==1){
+					$(".timeline-messages .message #"+this_id).removeClass("icon-eye-open");
+					$(".timeline-messages .message #"+this_id).addClass("icon-ok");
+					return;
+				}
+			
+		});
+	});
 	
 	$(".report_pdf_but").on("click", function(){
 		$("#hidden_pdf_content").val($(this).parent().parent().find(".table_div_print").html());
@@ -610,4 +665,11 @@ function modifyAgree(thisnote, agree) {
 	}).done(function(data) {
 	});
 	return false;
+}
+
+function confirmDelete(form_id){
+var c = confirm("هل أنت متأكد من عملية الحذف؟");
+if(c){
+	$(form_id).submit();
+}
 }

@@ -47,10 +47,10 @@
 						<td><span lang="ar"><?= ($note->status==0)?lang("solved"):lang("continue")?>
 						</span></td>
 						<td><span lang="ar"><?= $note->subject?> </span></td>
-						<td><span lang="ar"><?= ($note->prob!=0)?$this->homemodel->getProb($note->prob,"1"):lang('without')?>
+						<td><span lang="ar"><?= ($note->prob!=0)?$this->homemodel->getProb($note->prob)->prob:lang('without')?>
 						</span>
 						</td>
-						<td><span lang="ar"><?= ($note->type!=0)?$this->homemodel->getNoteType($note->type,"1"):lang('without')?>
+						<td><span lang="ar"><?= ($note->type!=0)?$this->homemodel->getNoteType($note->type)->body:lang('without')?>
 						</span>
 						</td>
 						<td><span lang="ar"><?= ($note->note!="")?$note->note:lang("without")?>

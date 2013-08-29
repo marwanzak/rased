@@ -9,6 +9,8 @@
 </form>
 <?php }else{?>
 <a href="<?= base_url()?>user/showForm">forms</a>
+<a href="<?= base_url()?>user/showInbox">Inbox</a>
+<?php if($show_lessons==1){?><a href="<?= base_url()?>user/showLessons">Lessons</a><br/><?php }?>
 <a href="#show_student_notes_dialog" data-toggle="modal">notes</a>
 <a href="<?=base_url()?>user/changeProfile">edit profile</a>
 <a class="btn" href="#add_user_student_dialog" id="" data-toggle="modal">edit

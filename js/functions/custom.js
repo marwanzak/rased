@@ -246,7 +246,7 @@ $(document).ready(function() {
 		"sPaginationType": "full_numbers",
 		"sDom": '<"datatable-header"fl>t<"datatable-footer"ip>',
 		"oLanguage": {
-			"sLengthMenu": "<span>Show entries:</span> _MENU_"
+			"sLengthMenu": "<span>إظهار عدد أسطر:</span> _MENU_"
 		}
     });
 	

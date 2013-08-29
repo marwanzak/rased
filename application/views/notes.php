@@ -162,7 +162,7 @@ foreach($types as $typea){?>
 												<?php }?>
 										</select>
 										</td>
-										<td><textarea name="notes[<?= $key ?>]" cols="50" rows="2"><?= $note ?></textarea></td>
+										<td><textarea name="notes[<?= $key ?>]" cols="15" rows="2"><?= $note ?></textarea></td>
 									</tr>
 									<?php }
 } ?>
@@ -170,7 +170,9 @@ foreach($types as $typea){?>
 							</table>
 						</div>
 					</div>
-					<input type="submit" value="submit" />
+					<div class="well-smoke body">
+					<input class="btn btn-primary" type="submit" value="<?=lang("add")?>" />
+					</div>
 				</form>
 
 			</div>

@@ -80,12 +80,33 @@
 							</div>
 						</div>
 						<div class="control-group">
+							<label class="control-label"><?= lang("morning") ?>:</label>
+							<div class="controls">
+								<input id="defaultValueExample" type="text" class="span6"
+									name="morning" value="<?=$morning ?>" />
+							</div>
+						</div>
+
+						<div class="control-group">
 							<label class="control-label"><?=lang("mobile_activate")?> </label>
 							<div class="controls on_off">
 								<div class="checkbox inline">
-								<input type="hidden" value="0" name="mobileactivate"/>
-									<input type="checkbox" id="check20" <?=($mobileactivate=="1")?"checked='checked'":"" ?>
+									<input type="hidden" value="0" name="mobileactivate" /> <input
+										type="checkbox" id="check20"
+										<?=($mobileactivate=="1")?"checked='checked'":"" ?>
 										name="mobileactivate" value="1" />
+								</div>
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label"><?=lang("show_lessons_user")?> </label>
+							<div class="controls on_off">
+								<div class="checkbox inline">
+									<input type="hidden" value="0" name="user_lessons" /> <input
+										type="checkbox" id="check20"
+										<?=($user_lessons=="1")?"checked='checked'":"" ?>
+										name="user_lessons" value="1" />
 								</div>
 							</div>
 						</div>

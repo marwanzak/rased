@@ -10,6 +10,8 @@ class user extends CI_Controller {
 		$user = $this->homemodel->getUser($this->session->userdata("id"));
 		$data["activated"]=$user->activated;
 		$data["students"]= $this->usermodel->getUserStudents($this->session->userdata("id"));
+		$settings = $this->homemodel->getSettings();
+		$data["show_lessons"] = $settings->user_lessons;
 		$this->load->view("user",$data);
 	}
 
@@ -120,6 +122,7 @@ class user extends CI_Controller {
 									"type"=>0,
 									"student"=>$_POST["student"],
 									"abday"=>$_POST["abday"],
+									"abmonth"=>$_POST["abmonth"],
 									"abreason"=>$_POST["abreason"]
 							));
 							$msg=lang("success");
@@ -132,8 +135,8 @@ class user extends CI_Controller {
 							$this->usermodel->insertForm(array(
 									"type"=>1,
 									"student"=>$_POST["student"],
-									"abday"=>$_POST["perout"],
-									"abreason"=>$_POST["perreason"]
+									"perout"=>$_POST["perout"],
+									"perreason"=>$_POST["perreason"]
 							));
 							$msg=lang("success");
 						}
@@ -145,8 +148,8 @@ class user extends CI_Controller {
 							$this->usermodel->insertForm(array(
 									"type"=>2,
 									"student"=>$_POST["student"],
-									"abday"=>$_POST["iddate"],
-									"abreason"=>$_POST["to"]
+									"iddate"=>$_POST["iddate"],
+									"to"=>$_POST["to"]
 							));
 							$msg=lang("success");
 						}
@@ -158,8 +161,8 @@ class user extends CI_Controller {
 							$this->usermodel->insertForm(array(
 									"type"=>3,
 									"student"=>$_POST["student"],
-									"abday"=>$_POST["disform"],
-									"abreason"=>$_POST["disto"]
+									"disfrom"=>$_POST["disfrom"],
+									"disto"=>$_POST["disto"]
 							));
 							$msg=lang("success");
 							break;
@@ -171,7 +174,8 @@ class user extends CI_Controller {
 		$students = $this->usermodel->getUserStudents($this->session->userdata("id"));
 		$monthes=$this->homemodel->getMonthes();
 		$days=$this->homemodel->getDays();
-		$data = array("forms" => $form, "students" => $students, "monthes"=>$monthes, "days"=>$days);
+		$forms = $this->homemodel->getAllForm();
+		$data = array("forms" => $form, "students" => $students, "monthes"=>$monthes, "days"=>$days,"student_forms"=>$forms);
 		$data["msg"]=$msg;
 		$this->load->view("forms", $data);
 	}
@@ -219,5 +223,28 @@ class user extends CI_Controller {
 			$this->load->view("student_notes", $data);
 		}else return false;
 	}
-
+	
+	
+	//show lessons to user
+	public function showLessons(){
+		$data["classes"] = $this->homemodel->getAllClass();
+		$data["class_id"]=0;
+		if($_POST!=null){
+			$lessons = $this->usermodel->getClassLessons($_POST["class"]);
+			$data["lessons"]=$lessons;	
+			$data["class_id"]=$_POST["class"];		
+		}
+		$this->load->view("lessons",$data);
+	}
+	
+	//show inbox of user
+	public function showInbox(){
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		$data["messages"] = $this->homemodel->getConversation("-1",$this->session->userdata("id"));
+		if(isset($_GET["show"]))
+			if($_GET["show"]=="all"){
+			$data["messages"] = $this->usermodel->getConversation("-1",$this->session->userdata("id"),"1");
+		}		
+		$this->load->view("user-inbox",$data);
+	}
 }

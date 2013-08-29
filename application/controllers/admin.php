@@ -3,6 +3,7 @@
 class admin extends CI_Controller {
 	function __construct(){
 		parent::__construct();
+		date_default_timezone_set("Asia/Riyadh");
 		$this->check_isvalidated();
 		$this->lang->load("arabic", "arabic");
 	}
@@ -22,7 +23,7 @@ class admin extends CI_Controller {
 	public function index($table="")
 	{
 		$user_disagreed_notes = $this->homemodel->getClassDisagreedNotes($this->session->userdata("id"));
-		$this->session->set_userdata('refered_from', uri_string());
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 		$table_permissions = $this->homemodel->checkSeePermissions($table);
 		if($table_permissions==false)
 			exit("no_permissions");
@@ -75,9 +76,9 @@ class admin extends CI_Controller {
 		$monthes = $this->homemodel->getMonthes();
 		$prios = $this->homemodel->getPriorities();
 		$days = $this->homemodel->getDays();
-		$table1['table']="";
+		$table1['table']="showNotes";
 		$this->load->view('header');
-		$this->load->view('top-nav');
+		$this->load->view('top-nav', $table1);
 		$this->load->view('menu-bar', $table1);
 		$students = $this->getNotes(array(
 				"level" => '',
@@ -128,7 +129,7 @@ class admin extends CI_Controller {
 	public function showPermissions(){
 		$table1['table']="";
 		$this->load->view('header');
-		$this->load->view('top-nav');
+		$this->load->view('top-nav',$table1);
 		$this->load->view('menu-bar', $table1);
 		$query = $this->db->get_where("permissions", array("role" => $_GET["id"]));
 		$permissions = $query->row();
@@ -205,11 +206,29 @@ class admin extends CI_Controller {
 						"user_modify" => $permissions->user_modify,
 						"user_delete" => $permissions->user_delete
 				),
-				"ra_actions" => array(
-						"action_see" => $permissions->action_see,
+				"ra_slider" => array(
+						"slider_see" => $permissions->slider_see,
+						"slider_insert" => $permissions->slider_insert,
+						"slider_modify" => $permissions->slider_modify,
+						"slider_delete" => $permissions->slider_delete
+				),
+				"ra_forms" => array(
+						"forms_see" => $permissions->forms_see,
 						"",
 						"",
-						"action_delete" => $permissions->action_delete
+						"forms_delete" => $permissions->forms_delete
+				),
+				"ra_lessons" => array(
+						"lessons_see" => $permissions->lessons_see,
+						"",
+						"lessons_modify"=>$permissions->lessons_modify,
+						""
+				),
+				"sitesettings" => array(
+						"sitesettings" => $permissions->sitesettings,
+						"",
+						"",
+						""
 				),
 				"admin_login" => array(
 						"admin_login" => $permissions->admin_login,
@@ -447,17 +466,17 @@ class admin extends CI_Controller {
 		$this->mpdf->Output();
 		exit;
 	}
-	
+
 	//insert site settings
 	public function insertSiteSettings(){
 		$data=array();
-		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"","sender"=>"");
+		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"","sender"=>"","morning"=>"","user_lessons"=>"");
 		$data["msg"]="";
 		$data["message"]="";
 		if($_POST!=null){
 			$query = $this->homemodel->insertSettings($_POST["smsusername"],
 					$_POST["smspassword"],$_POST["date"],$_POST["semester"],
-					$_POST["sender"],$_POST["mobileactivate"]);
+					$_POST["sender"],$_POST["mobileactivate"],$_POST["morning"],$_POST["user_lessons"]);
 			if($query==1){
 				$data["msg"]=1;
 			}else{
@@ -474,6 +493,8 @@ class admin extends CI_Controller {
 			$data["semester"] = $set->semester;
 			$data["sender"] = $set->sendername;
 			$data["mobileactivate"] = $set->mobileactivate;
+			$data["morning"] = $set->morning;
+			$data["user_lessons"] = $set->user_lessons;
 		}
 		$table1['table']="sitesettings";
 		$this->load->view('header');
@@ -481,8 +502,198 @@ class admin extends CI_Controller {
 		$this->load->view('menu-bar', $table1);
 		$this->load->view('settings',$data);
 		$this->load->view('footer');
-		
-		
-		
 	}
+
+	//show lessons
+	public function showLessons(){
+		$table1['table']="ra_lessons";
+		$this->load->view('header');
+		$this->load->view('top-nav', $table1);
+		$this->load->view('menu-bar', $table1);
+		$data["classes"] = $this->homemodel->getAllClass();
+		$data["subjects"] = $this->homemodel->getAllSubject();
+		if(isset($_POST["class"])){
+			$query = $this->db->get_where("lessons",array("class"=>$_POST["class"]));
+			$data["lessons"]= $query->result_array();
+			$data["class_id"]=$_POST["class"];
+		}
+		if(isset($_POST["insert"])){
+			$query = $this->db->get_where("lessons",array("class"=>$_POST["class"]));
+			$insert=0;
+			if($query->num_rows()==0)
+				$insert=1;
+			foreach($_POST["lessons"] as $key=>$lesson)
+				foreach($lesson as $key1 => $value){
+				if($insert==1)
+					$this->homemodel->insertLesson(array(
+							"class"=>$_POST["class"],
+							"day"=>$key,
+							"order"=>$key1,
+							"subject"=>$value
+					));
+				else
+					$this->homemodel->modifyLesson(array("class"=>$_POST["class"],
+							"day"=>$key,
+							"order"=>$key1
+					),$value);
+			}
+			redirect(base_url()."admin/showLessons","refresh");
+		}
+		$this->load->view('admin-lessons',$data);
+		$this->load->view('footer');
+	}
+
+	//upload slider picture
+	public function showSlider(){
+		$this->form_validation->set_message('numeric', lang('order_numeric'));
+		$this->form_validation->set_rules('order', lang('order'), 'numeric');
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		$data["table"]="ra_slider";
+		if(isset($_POST["upload"])){
+			if ($this->form_validation->run() == FALSE)
+			{
+				$data["msg"]="-1";
+				$data["message"]= validation_errors();
+			}
+			else
+			{
+				if($_FILES["picture"]["error"]>0){
+					$data["msg"]="-1";
+					$data["message"]=($_FILES["picture"]["error"]==4)?lang("enter_picture"):"";
+				}
+				else
+				{
+					$config['upload_path'] = './images/slider/';
+					$config['allowed_types'] = 'gif|jpg|png';
+					$config['max_size']	= '100';
+					$config['max_width']  = '300';
+					$config['max_height']  = '300';
+					$this->load->library('upload', $config);
+					if(!$this->upload->do_upload("picture")){
+						$data["msg"]="-1";
+						$data["message"]=$this->upload->display_errors();
+					}else{
+						$data["msg"] = "1";
+						$upload_data=$this->upload->data();
+						$this->homemodel->insertSlider(array(
+								"picture"=>base_url()."images/slider/".$upload_data["file_name"],
+								"url"=>($_POST["url"]=="")?"#":$_POST["url"],
+								"order"=>($_POST["order"]!="")?$_POST["order"]:0
+						));
+					}
+				}
+			}
+		}
+		$data["sliders"] = $this->homemodel->getAllSlider();
+		$this->load->view("admin-slider",$data);
+
+	}
+
+	//show users form to admin
+	public function showForms(){
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		$data["forms"] = $this->homemodel->getAllForm();
+		$data["table"] = "ra_forms";
+		$this->load->view("admin-forms",$data);
+	}
+
+	//show user inbox
+	public function showInbox(){
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		$data["messages"] = $this->homemodel->getUserUnreadInbox();
+		$data["admin_messages"] = $this->homemodel->getAdminMessages("unread");
+		$data["users"] = $this->homemodel->getAllUser();
+		$data["method"] = "inbox";
+		$data["table"] = "ra_inbox";
+		$data["admin"] = 0;
+		if(isset($_GET["username"]))
+			if($_GET["username"]!=""){
+			$messages = $this->homemodel->getConversation($_GET["username"],$this->session->userdata("id"));
+			if(isset($_GET["show"]))
+				if($_GET["show"]=="all"){
+				//if(isset($_GET["admin"]))
+			//	if($_GET["admin"]=="1"){
+			//	$messages = $this->homemodel->getConversation($username,-1,1);
+			//	$data["admin"]=1;
+			//}else
+			$messages = $this->homemodel->getConversation($_GET["username"],$this->session->userdata("id"),1);
+			}
+			if(isset($_GET["admin"]))
+				if($_GET["admin"]==1){
+				$data["admin"]=1;
+				$messages = $this->homemodel->getConversation($_GET["username"],-1);
+				if(isset($_GET["show"]))
+					if($_GET["show"]=="all"){
+					$messages = $this->homemodel->getConversation($_GET["username"],-1,1);
+				}
+			}
+			$data["messages"] = $messages;
+			$data["method"] = "conversation";
+			$data["username"] = $_GET["username"];
+		}
+		$this->load->view("admin-inbox", $data);
+	}
+
+	//delete message from inbox
+	public function deleteInboxMessage(){
+		if($_GET!=null){
+			$query = $this->homemodel->deleteInbox($_GET["message_id"]);
+			if($query!=1){
+				$this->session->set_userdata("msg","-1");
+				$this->session->set_userdata("message",lang('error'));
+				redirect($this->session->userdata("refered_from"),"refresh");
+			}else{
+				$this->session->set_userdata("msg","1");
+				redirect($this->session->userdata("refered_from"),"refresh");
+			}
+		}
+	}
+
+	public function exportTable(){
+		$table = $this->homemodel->getTableForFile($_POST["tbody"],$_POST["thead"]);
+		$this->load->library('excel');
+		$this->excel->setActiveSheetIndex(0);
+		$this->excel->getActiveSheet()->setTitle('test worksheet');
+		for($i=0;$i<count($table["thead"]);$i++){
+			$this->excel->getActiveSheet()->setCellValueByColumnAndRow($i, 1, $table["thead"][$i]);
+		}
+		for($i=0;$i<count($table["tbody"]);$i++){
+			for($j=0;$j<count($table["thead"]);$j++)
+				$this->excel->getActiveSheet()->setCellValueByColumnAndRow($j, $i+2, $table["tbody"][$i][$j]);
+		}
+
+		if($_POST["method"]=="excel2003"){
+			$filename=$_POST["title"].".xls"; //save our workbook as this file name
+			header("Content-Type: application/vnd.ms-excel");
+			$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+		}elseif($_POST["method"]=="excel2007"){
+			$filename=$_POST["title"].".xlsx"; //save our workbook as this file name
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+		}elseif($_POST["method"]=="pdf"){
+			$html="<table colspan=3 style='border:1px solid black;'><thead><tr style='background-color:#ddd'>";
+			foreach($table["thead"] as $field){
+				$html.="<th><span lang='ar'>".$field."</span></th>";
+			}
+			$html.="</tr></thead>";
+			$html.="<tbody>";
+			foreach($table["tbody"] as $tr){
+				$html.="<tr>";
+				foreach($tr as $td){
+					$html.="<td style='border:1px solid black;padding:10px;'><span lang='ar'>".$td."</span></td>";
+				}
+				$html.="</tr>";
+			}
+			$html.="</tbody></table>";
+			$this->homemodel->exportPdf($html);
+		}
+
+
+		if($_POST["method"]!="pdf"){
+			header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+			header('Cache-Control: max-age=0'); //no cache
+			$objWriter->save('php://output');
+		}
+	}
+
 }

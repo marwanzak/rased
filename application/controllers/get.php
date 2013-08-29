@@ -353,4 +353,26 @@ class get extends CI_Controller {
 		else echo false;
 	}
 
+	//get lesson
+	public function getLesson(){
+		if($_POST!=null)
+			echo json_encode($this->homemodel->getLesson($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+					JSON_HEX_QUOT | JSON_HEX_AMP );
+		else echo false;
+	}
+
+	//get all lessons
+	public function getAllLesson(){
+		echo json_encode($this->homemodel->getAllLesson(), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
+	}
+
+	//get slider
+	public function getSlider(){
+		if($_POST!=null)
+			echo json_encode($this->homemodel->getSlider($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+					JSON_HEX_QUOT | JSON_HEX_AMP );
+		else echo false;
+	}
+
 }

@@ -285,7 +285,7 @@ class userModel extends CI_Model {
 		}
 		return 3;
 	}
-	
+
 	//get student notes
 	public function getStudentNotes($student_id){
 		$query = $this->db->get_where("notes", array("student"=>$student_id));
@@ -295,5 +295,23 @@ class userModel extends CI_Model {
 			return false;
 		}
 	}
-
+	//get class lessons
+	public function getClassLessons($class){
+		$query = $this->db->get_where("lessons", array("class"=>$class));
+		if($query->num_rows()>0){
+			return $query->result_array();
+		}
+		return false;
+	}
+	
+	//get user inbox from admin
+	public function getInbox($read=""){
+		if($read=="")
+		$query = $this->db->get_where("inbox",array("from"=>-1,"username"=>$this->session->userdata("id")));
+		elseif($read=="unread")
+		$query = $this->db->get_where("inbox", array("from"=>-1,"username"=>$this->session->userdata("id"),"read"=>0));
+		if($query->num_rows>0)
+			return $query->result();
+		return false;	
+	}
 }

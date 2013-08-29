@@ -38,33 +38,77 @@
 			<div class="row-fluid">
 
 				<div class="control-group">
-					<label class="control-label"><?= lang("lesson") ?>:<span
-						class="req">*</span> </label>
+					<label class="control-label"><?= lang("class") ?>:<span class="req">*</span>
+					</label>
 					<div class="controls">
- <select
-							name="level" class="levels_select" id="grade_levels">
+						<select name="class" class="classes_select" id="">
 							<option value="">
 								<?= lang("choose_class")?>
 							</option>
 							<?php
 foreach($user_classes as $class){?>
-							<option value=<?= $class->id ?>>
-								<?= $class->class?>
+							<option value=<?= $class["id"] ?>>
+								<?= $class["class"]?>
 							</option>
 							<?php }?>
 						</select>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label"><?= lang("lesson") ?>:<span
+					<label class="control-label"><?= lang("subject") ?>:<span
 						class="req">*</span> </label>
 					<div class="controls">
-						<input type="text" class="required span12" name="lesson"
-							id="add_level_input" />
+						<select name="subject" class="subjects_select" id="">
+							<option value="">
+								<?= lang("choose_subject")?>
+							</option>
+							<?php
+foreach($user_subjects as $subject){?>
+							<option value=<?= $subject["id"] ?>>
+								<?= $subject["subject"]?>
+							</option>
+							<?php }?>
+						</select>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("order") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<select name="order" class="orders_select" id="">
+							<option value="">
+								<?= lang("choose_order")?>
+							</option>
+							<?php
+foreach($orders as $key => $order){?>
+							<option value=<?= $key?>>
+								<?= $order?>
+							</option>
+							<?php }?>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("day") ?>:<span class="req">*</span>
+					</label>
+					<div class="controls">
+						<select name="day" class="days_select" id="">
+							<option value="">
+								<?= lang("choose_day")?>
+							</option>
+							<?php
+foreach($weekdays as $key => $day){?>
+							<option value=<?= $key?>>
+								<?= $day?>
+							</option>
+							<?php }?>
+						</select>
+					</div>
+				</div>
+
 			</div>
-			<input type="hidden" id="hidden_ra_levels" name="id" />
+			<input type="hidden" id="hidden_ra_lessons" name="id" />
 
 		</div>
 		<div class="modal-footer">
@@ -897,6 +941,14 @@ foreach($levels as $level){?>
 					<div class="controls">
 						<input type="text" class="required span12" name="fullname"
 							id="add_student_fullname" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label"><?= lang("finger") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<input type="text" class="required span12" name="finger"
+							id="add_student_finger" />
 					</div>
 				</div>
 			</div>

@@ -1,69 +1,65 @@
+var base_url = "http://localhost/rased/";
+
 $(document).ready(function(){
 	// add dialogs
 	$(".body").on("click", ".add_ra_levels",function(){
-		$("#add_level_form").attr("action","/rased/insert/insertLevel");
+		$("#add_level_form").attr("action",base_url+"insert/insertLevel");
+	});
+	
+	$(".body").on("click", "#add_ra_slider",function(){
+		$("#add_new_slide_form").attr("action",base_url+"admin/showSlider");
+		$("#add_slide_div").show();
 
-
+	});	
+	
+	$(".body").on("click", ".add_ra_lessons",function(){
+		$("#add_lesson_form").attr("action",base_url+"insert/insertLesson");
 	});
 
 	$(".body").on("click", ".add_ra_grades",function(){
-		$("#add_grade_form").attr("action","/rased/insert/insertGrade");
-
+		$("#add_grade_form").attr("action",base_url+"insert/insertGrade");
 	});
 
 	$(".body").on("click", ".add_ra_classes",function(){
-		$("#add_class_form").attr("action","/rased/insert/insertClass");
-
+		$("#add_class_form").attr("action",base_url+"insert/insertClass");
 	});
 
 	$(".body").on("click", ".add_ra_users",function(){
-		$("#add_user_form").attr("action","/rased/insert/insertUser");
+		$("#add_user_form").attr("action",base_url+"insert/insertUser");
 		$("#password_container").show();
-
-
 	});
 
 	$(".body").on("click", ".add_ra_students",function(){
-		$("#add_student_form").attr("action","/rased/insert/insertStudent");
-
+		$("#add_student_form").attr("action",base_url+"insert/insertStudent");
 	});
 
 	$(".body").on("click", ".add_ra_defaultnumemail",function(){
-		$("#add_def_form").attr("action","/rased/insert/insertDef");
-
+		$("#add_def_form").attr("action",base_url+"insert/insertDef");
 	});
 
 	$(".body").on("click", ".add_ra_notestypes",function(){
-		$("#add_notetype_form").attr("action","/rased/insert/insertNoteType");
-		
-
+		$("#add_notetype_form").attr("action",base_url+"insert/insertNoteType");
 	});
 
 	$(".body").on("click", ".add_ra_readymessages",function(){
-		$("#add_ready_form").attr("action","/rased/insert/insertReady");
-
+		$("#add_ready_form").attr("action",base_url+"insert/insertReady");
 	});
 
 	$(".body").on("click", ".add_ra_roles",function(){
-		$("#add_role_form").attr("action","/rased/insert/insertRole");
-
+		$("#add_role_form").attr("action",base_url+"insert/insertRole");
 	});
 
 	$(".body").on("click", ".add_ra_subjects",function(){
-		$("#add_subject_form").attr("action","/rased/insert/insertSubject");
-
+		$("#add_subject_form").attr("action",base_url+"insert/insertSubject");
 	});
 
 	$(".body").on("click", ".add_ra_notesprob",function(){
-		$("#add_prob_form").attr("action","/rased/insert/insertProb");
-
+		$("#add_prob_form").attr("action",base_url+"insert/insertProb");
 	});
 
 	$(".body").on("click", ".add_ra_notes",function(){
 		$("#begin_notes_form input[name=num]").parent().parent().show();
-		$("#begin_notes_form").attr("action","/rased/admin/showNotes");
-
-
+		$("#begin_notes_form").attr("action",base_url+"admin/showNotes");
 	});
 
 	$("#add_ra_users_dialog").on("click", "#user_classes_but", function(){
@@ -79,9 +75,9 @@ $(document).ready(function(){
 	// modify level
 	$(".body").on("click", ".modify_ra_levels",function(){
 		$("#hidden_ra_levels").val(this.id);
-		$("#add_level_form").attr("action","/rased/modify/modifyLevel");
+		$("#add_level_form").attr("action",base_url+"modify/modifyLevel");
 		$.ajax({
-			url:"/rased/get/getLevel",
+			url:base_url+"get/getLevel",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -94,9 +90,9 @@ $(document).ready(function(){
 	// modify grade
 	$(".body").on("click", ".modify_ra_grades",function(){
 		$("#hidden_ra_grades").val(this.id);
-		$("#add_grade_form").attr("action","/rased/modify/modifyGrade");
+		$("#add_grade_form").attr("action",base_url+"modify/modifyGrade");
 		$.ajax({
-			url:"/rased/get/getGrade",
+			url:base_url+"get/getGrade",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -109,9 +105,9 @@ $(document).ready(function(){
 	// modify class
 	$(".body").on("click", ".modify_ra_classes",function(){
 		$("#hidden_ra_classes").val(this.id);
-		$("#add_class_form").attr("action","/rased/modify/modifyClass");
+		$("#add_class_form").attr("action",base_url+"modify/modifyClass");
 		$.ajax({
-			url:"/rased/get/getClass",
+			url:base_url+"get/getClass",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json",
@@ -127,10 +123,10 @@ $(document).ready(function(){
 //	modify user
 	$(".body").on("click", ".modify_ra_users",function(){
 		$("#hidden_ra_users").val(this.id);
-		$("#add_user_form").attr("action","/rased/modify/modifyUser");
+		$("#add_user_form").attr("action",base_url+"modify/modifyUser");
 		$(".modify_password").attr("id",this.id);
 		$.ajax({
-			url:"/rased/get/getUser",
+			url:base_url+"get/getUser",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -193,9 +189,9 @@ $(document).ready(function(){
 	// modify subject
 	$(".body").on("click", ".modify_ra_subjects",function(){
 		$("#hidden_ra_subjects").val(this.id);
-		$("#add_subject_form").attr("action","/rased/modify/modifySubject");
+		$("#add_subject_form").attr("action",base_url+"modify/modifySubject");
 		$.ajax({
-			url:"/rased/get/getSubject",
+			url:base_url+"get/getSubject",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -207,12 +203,31 @@ $(document).ready(function(){
 			$("#subject_grades").val(data.grade).select();
 		});
 	});
+	
+	// modify slider
+	$(".body").on("click", ".modify_ra_slider",function(){
+		$("#add_new_slide_form input[name=id]").val(this.id);
+		$("#add_slide_div").hide();
+		$("#add_new_slide_form").attr("action",base_url+"modify/modifySlider");
+		$.ajax({
+			url:base_url+"get/getSlider",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_new_slide_form input[name=url]").val(data.url);
+			$("#add_new_slide_form input[name=order]").val(data.order);
+		});
+	});
+	
+	
 //	modify student
 	$(".body").on("click", ".modify_ra_students",function(){
 		$("#hidden_ra_students").val(this.id);
-		$("#add_student_form").attr("action","/rased/modify/modifyStudent");
+		$("#add_student_form").attr("action",base_url+"modify/modifyStudent");
 		$.ajax({
-			url:"/rased/get/getStudent",
+			url:base_url+"get/getStudent",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -226,6 +241,7 @@ $(document).ready(function(){
 			getClasses(data.grade,".classes_select");
 			$("#add_student_classes").val(data.class).select();
 			$("#add_ra_students_dialog input[name='fullname']").val(data.fullname);
+			$("#add_ra_students_dialog input[name='finger']").val(data.fingerprint);
 
 
 		});
@@ -233,9 +249,9 @@ $(document).ready(function(){
 	// modify default numbers and emails for a user
 	$(".body").on("click", ".modify_ra_defaultnumemail",function(){
 		$("#hidden_ra_defaultnumemail").val(this.id);
-		$("#add_def_form").attr("action","/rased/modify/modifyDef");
+		$("#add_def_form").attr("action",base_url+"modify/modifyDef");
 		$.ajax({
-			url:"/rased/get/getDef",
+			url:base_url+"get/getDef",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -251,9 +267,9 @@ $(document).ready(function(){
 	// modify note type
 	$(".body").on("click", ".modify_ra_notestypes",function(){
 		$("#hidden_ra_notestypes").val(this.id);
-		$("#add_notetype_form").attr("action","/rased/modify/modifyNoteType");
+		$("#add_notetype_form").attr("action",base_url+"modify/modifyNoteType");
 		$.ajax({
-			url:"/rased/get/getNoteType",
+			url:base_url+"get/getNoteType",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -273,9 +289,9 @@ $(document).ready(function(){
 	$(".body").on("click", ".modify_ra_notes",function(){
 		$("#begin_notes_form input[name=num]").parent().parent().hide();
 		$("#hidden_ra_notes").val(this.id);
-		$("#begin_notes_form").attr("action","/rased/modify/modifyNote");
+		$("#begin_notes_form").attr("action",base_url+"modify/modifyNote");
 		$.ajax({
-			url:"/rased/get/getNote",
+			url:base_url+"get/getNote",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -311,9 +327,9 @@ $(document).ready(function(){
 	//modify ready message
 	$(".body").on("click", ".modify_ra_readymessages",function(){
 		$("#hidden_ra_readymessages").val(this.id);
-		$("#add_ready_form").attr("action","/rased/modify/modifyReady");
+		$("#add_ready_form").attr("action",base_url+"modify/modifyReady");
 		$.ajax({
-			url:"/rased/get/getReady",
+			url:base_url+"get/getReady",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -321,14 +337,33 @@ $(document).ready(function(){
 		.done(function(data){
 			$("#add_ra_readymessages_dialog textarea[name='message']").val(data.message);
 		});
+	})
+	
+	//modify lesson
+		//modify ready message
+	$(".body").on("click", ".modify_ra_lessons",function(){
+		$("#hidden_ra_lessons").val(this.id);
+		$("#add_lesson_form").attr("action",base_url+"modify/modifyLesson");
+		$.ajax({
+			url:base_url+"get/getLesson",
+			data:{id:this.id},
+			type:"post",
+			dataType:"json"
+		})
+		.done(function(data){
+			$("#add_ra_lessons_dialog select[name=day]").val(data.day).select();
+			$("#add_ra_lessons_dialog select[name=class]").val(data.class).select();
+			$("#add_ra_lessons_dialog select[name=subject]").val(data.subject).select();
+			$("#add_ra_lessons_dialog select[name=order]").val(data.order).select();
+		});
 	});
 
 	//modify role
 	$(".body").on("click", ".modify_ra_roles",function(){
 		$("#hidden_ra_roles").val(this.id);
-		$("#add_role_form").attr("action","/rased/modify/modifyRole");
+		$("#add_role_form").attr("action",base_url+"modify/modifyRole");
 		$.ajax({
-			url:"/rased/get/getRole",
+			url:base_url+"get/getRole",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
@@ -341,9 +376,9 @@ $(document).ready(function(){
 	//modify note prob
 	$(".body").on("click", ".modify_ra_notesprob",function(){
 		$("#hidden_ra_notesprob").val(this.id);
-		$("#add_prob_form").attr("action","/rased/modify/modifyProb");
+		$("#add_prob_form").attr("action",base_url+"modify/modifyProb");
 		$.ajax({
-			url:"/rased/get/getProb",
+			url:base_url+"get/getProb",
 			data:{id:this.id},
 			type:"post",
 			dataType:"json"
