@@ -5,8 +5,16 @@ class homeModel extends CI_Model {
 		parent::__construct();
 	}
 
+	//get student by finger
+	public function getStudentByFinger($atts = array()){
+		$this->db->where($atts);
+		$query = $this->db->get("students");
+		if($query->num_rows()>0)
+			return $query->row();
+		return false;
+	}
 	//get students tree
-	public function getStudentTree($student){
+	public function getStudentTree($student,$export=""){
 		$user = $this->session->userdata("id");
 		$student_query = $this->db->get_where("students" ,array(
 				"id" => $student
@@ -29,7 +37,7 @@ class homeModel extends CI_Model {
 		));
 		$probs = $probs_query->result();
 		$subjects = $this->getUserClassSubjects($user, $class->id);
-		return array(
+		$output = array(
 				"id" => $student->id,
 				"student" => $student->fullname,
 				"level" => $level->id,
@@ -39,6 +47,11 @@ class homeModel extends CI_Model {
 				"probs" => $probs
 
 		);
+		$object_output = (object)$output;
+		if($export == "object")
+			return $object_output;
+		else
+			return $output;
 
 	}
 
@@ -321,6 +334,7 @@ class homeModel extends CI_Model {
 		$query = $this->db->get_where("defaultnumemail", array("id"=>$id));
 		return $query->row();
 	}
+
 	//get all defaults.
 	public function getAllDef(){
 		$query = $this->db->get("defaultnumemail");
@@ -408,7 +422,9 @@ class homeModel extends CI_Model {
 	//get all ready messages.
 	public function getAllReady(){
 		$query = $this->db->get("readymessages");
-		return $query->result();
+		if($query->num_rows()>0)
+			return $query->result();
+		return false;
 	}
 	//insert note prob message
 	public function insertProb($level,$prob,$color){
@@ -469,24 +485,26 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert student.
-	public function insertStudent($username, $fullname, $class, $idnum,$finger){
+	public function insertStudent($username, $fullname, $class, $idnum,$finger,$terminal_id){
 		return $this->db->insert("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
 				"class" => $class,
 				"idnum" => $idnum,
-				"fingerprint"=>$finger
+				"fingerprint"=>$finger,
+				"terminal_id"=>$terminal_id
 		));
 	}
 	//modify student.
-	public function modifyStudent($id, $username, $fullname, $class, $idnum,$finger){
+	public function modifyStudent($id, $username, $fullname, $class, $idnum,$finger,$terminal_id){
 		$this->db->where("id",$id);
 		return $this->db->update("students", array(
 				"username" => $username,
 				"fullname" => $fullname,
 				"class" => $class,
 				"idnum" => $idnum,
-				"fingerprint"=>$finger
+				"fingerprint"=>$finger,
+				"terminal_id"=>$terminal_id
 		));
 	}
 
@@ -525,12 +543,12 @@ class homeModel extends CI_Model {
 		return $query->result();
 	}
 	//insert action.
-	public function insertAction($username, $action, $type){
+	public function insertAction($action, $type){
 		$datetime = $this->getTimeDate();
 		return $this->db->insert("actions", array(
-				"username" => $username,
+				"username" => $this->session->userdata("id"),
 				"action" => $action,
-				"datetime" => $datetime,
+				"datetime" => time(),
 				"type" => $type
 		));
 	}
@@ -541,21 +559,13 @@ class homeModel extends CI_Model {
 	}
 
 	//insert sitesettings.
-	public function insertSettings($smsusername, $smspassword, $year, $semester,$sender,$mobileactivate,$morning,$user_lessons){
+	public function insertSettings($atts=array()){
 		$this->db->empty_table("sitesettings");
 		$salt = rand();
-		$password = $this->enPassword($smspassword,$salt);
-		return $this->db->insert("sitesettings", array(
-				"smsusername" => $smsusername,
-				"smspassword" => $password,
-				"smssalt" => $salt,
-				"date" => $year,
-				"semester" => $semester,
-				"sendername" => $sender,
-				"mobileactivate" => $mobileactivate,
-				"morning"=>$morning,
-				"user_lessons"=>$user_lessons
-		));
+		$password = $this->enPassword($atts["smspassword"],$salt);
+		$atts["smspassword"]=$password;
+		$atts["smssalt"] = $salt;
+		return $this->db->insert("sitesettings", $atts);
 	}
 	//modify sitesettings.
 	public function modifySettings($id, $smsusername, $smspassword,
@@ -1007,6 +1017,10 @@ class homeModel extends CI_Model {
 				if($permissions->action_see!=1)
 					return false;
 				break;
+			case "admin_inbox":
+				if($permissions->admin_inbox!=1)
+					return false;
+				break;
 		}
 		return true;
 	}
@@ -1221,7 +1235,7 @@ class homeModel extends CI_Model {
 				break;
 			case "ra_students":
 				$headings = array(lang("gaurd"),lang("fullname"),
-				lang("idnum"),lang("level"),lang("grade"),lang("class"),lang("finger"), lang("actions"));
+				lang("idnum"),lang("level"),lang("grade"),lang("class"),lang("finger"),lang("terminal_id"), lang("actions"));
 				break;
 			case "ra_users":
 				$headings = array(lang("username"),lang("fullname"),
@@ -1229,7 +1243,7 @@ class homeModel extends CI_Model {
 				break;
 			case "ra_actions":
 				$headings = array(lang("username"),lang("action"),
-				lang("datetime"),lang("type"));
+				lang("datetime"),lang("type"), lang("actions"));
 				break;
 			case "ra_defaultnumemail":
 				$headings = array(lang("username"),lang("email")." 1",
@@ -1264,6 +1278,7 @@ class homeModel extends CI_Model {
 
 	//get table contents for the BIG SHOW!!
 	public function getTable($table,$note="",$atts=array()){
+		$settings = $this->getSettings();
 		$rows = array();
 		$query = $this->db->get($table);
 		if($note!=""){
@@ -1280,7 +1295,7 @@ class homeModel extends CI_Model {
 			if($day1!="") $this->db->where("day >=",$day1);
 			if($day2!="") $this->db->where("day <=",$day2);
 			$this->db->where($atts);
-			$query = $this->db->get("ra_notes");
+			$query = $this->db->get_where("ra_notes", array("year"=>$settings->date, "semester"=>$settings->semester));
 		}
 		$i=0;
 		foreach($query->result() as $row)
@@ -1313,7 +1328,7 @@ class homeModel extends CI_Model {
 					$level = $this->homemodel->getLevel($grade->level);
 					$rows[$i] = array($row->id,($row->username=="0")?lang("without"):$username->username,$row->fullname,
 							$row->idnum,$level->level,
-							$grade->grade,$class->class,$row->fingerprint);
+							$grade->grade,$class->class,$row->fingerprint,$row->terminal_id);
 					break;
 				case "ra_users":
 					$classes = $this->homemodel->getUserClasses($row->id, "string");
@@ -1326,7 +1341,7 @@ class homeModel extends CI_Model {
 				case "ra_actions":
 					$username = $this->homemodel->getUser($row->username);
 					$rows[$i] = array($row->id,$username->username,
-							$row->action,$row->datetime,$row->type);
+							$row->action,date("Y-m-d H:i:s",$row->datetime),$row->type);
 					break;
 				case "ra_defaultnumemail":
 					$username = $this->homemodel->getUser($row->username);
@@ -1358,6 +1373,7 @@ class homeModel extends CI_Model {
 							$grade->grade, $row->subject);
 					break;
 				case "ra_notes":
+					if($row->year==$settings->date&& $row->semester==$settings->semester){
 					$agreed="";
 					$class = $this->homemodel->getStudentClass($row->student);
 					$student = $this->homemodel->getStudent($row->student);
@@ -1379,7 +1395,7 @@ class homeModel extends CI_Model {
 					$prio = $this->homemodel->getPriority($row->priority);
 					$prio = ($row->priority==2)? "<div style='font-weight:bold; color:red;'>".$prio."</div>": $prio;
 					$set = $this->homemodel->getSettings();
-					$date = $set->date."-الفصل:".$set->semester."-".$row->day."-".$this->getMonth($row->month);
+					$date = $row->year."-الفصل:".$row->semester."-".$row->day."-".$this->getMonth($row->month);
 					$username = $this->homemodel->getUser($row->username);
 					$perm = $this->homemodel->getUserPermissions($this->session->userdata("id"));
 					if($perm->modify_agree==1){
@@ -1409,6 +1425,7 @@ class homeModel extends CI_Model {
 							$status, $prio,
 							$row->note, $row->sold, $username->name, $date,
 							$agreed);
+					}
 					break;
 				default:
 					echo lang("wrong_request");
@@ -1473,7 +1490,7 @@ class homeModel extends CI_Model {
 							$grade->grade==$word || $class->class==$word)
 						$rows[$i] = array($row->id,$username->username,$row->fullname,
 								$row->idnum,$level->level,
-								$grade->grade,$class->class,$row->fingerprint);
+								$grade->grade,$class->class,$row->fingerprint,$row->terminal_id);
 					break;
 				case "ra_users":
 					$classes = $this->homemodel->getUserClasses($row->id, "string");
@@ -1679,22 +1696,6 @@ class homeModel extends CI_Model {
 		$minutes=substr($time_array[1],0,2);
 		$keeping=substr($time_array[1],-2);
 		return array("hour"=>$hour,"minutes"=>$minutes,"keeping"=>$keeping);
-	}
-
-	//get data from odbc about morning presents of students
-	public function odbcGet(){
-		$conn=odbc_connect('UNIS','','unisamho');
-		$sql="SELECT * FROM tUser";
-		$rs=odbc_exec($conn,$sql);
-		if (!$rs)
-		{
-			exit("Error in SQL");
-		}
-		while (odbc_fetch_row($rs))
-		{
-			echo odbc_result($rs,"C_Name");
-		}
-		odbc_close($conn);
 	}
 
 	//insert slider in database

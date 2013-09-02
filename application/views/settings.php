@@ -58,6 +58,48 @@
 						</div>
 
 						<div class="control-group">
+							<label class="control-label"><?= lang("email_method") ?>:</label> <label
+								class="radio inline"><input
+								type="radio" name="email_method" value="smtp" class="style" id="email_method_smtp"
+								<?=($email_method=="smtp"? "checked='checked'":"")?>>SMTP</label> <label class="radio inline"><input
+								type="radio" name="email_method" value="php_mail" class="style" id="email_method_php"
+								<?=($email_method=="php_mail"? "checked='checked'":"")?>>PHP mail</label>
+						</div>
+						<div <?=($email_method=="php_mail"? "style='display:none;'":"")?> id="email_settings_div">
+							<div class="control-group">
+								<label class="control-label"><?= lang("email_server") ?>:</label>
+								<div class="controls">
+									<input type="text" class="span6" name="email_server" id=""
+										value="<?=$email_server ?>" />
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label"><?= lang("email_port") ?>:</label>
+								<div class="controls">
+									<input type="text" class="span6" name="email_port" id=""
+										value="<?=$email_port ?>" />
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label"><?= lang("email_username") ?>:</label>
+								<div class="controls">
+									<input type="text" class="span6" name="email_username" id=""
+										value="<?=$email_username ?>" />
+								</div>
+							</div>
+
+							<div class="control-group">
+								<label class="control-label"><?= lang("email_password") ?>:</label>
+								<div class="controls">
+									<input type="password" class="span6" name="email_password"
+										id="" value="" />
+								</div>
+							</div>
+						</div>
+
+						<div class="control-group">
 							<label class="control-label"><?= lang("semester") ?>:</label>
 							<div class="controls">
 								<input type="text" class="span6" name="semester" id=""

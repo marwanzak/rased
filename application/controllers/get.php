@@ -8,6 +8,21 @@ class get extends CI_Controller {
 	{
 
 	}
+
+	public function getStudentDef(){
+		if($_POST!=null){
+			$query = $this->db->get_where("students", array("id"=>$_POST["student_id"]));
+			if($query->num_rows()>0){
+				$student = $query->row();
+				$query = $this->db->get_where('defaultnumemail', array("username"=>$student->username));
+				if($query->num_rows()>0)
+					echo json_encode($query->row(), JSON_HEX_TAG | JSON_HEX_APOS |
+							JSON_HEX_QUOT | JSON_HEX_AMP );
+				else echo 0;
+			}else echo 0;
+
+		}
+	}
 	public function getLevel(){
 		if($_POST!=null)
 			echo json_encode($this->homemodel->getLevel($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
@@ -79,10 +94,8 @@ class get extends CI_Controller {
 		echo $this->homemodel->getAllPermissions();
 	}
 	public function getDef(){
-		if($_POST!=null)
-			echo json_encode($this->homemodel->getDef($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
-					JSON_HEX_QUOT | JSON_HEX_AMP );
-		else echo false;
+		echo json_encode($this->homemodel->getDef($_POST["id"]), JSON_HEX_TAG | JSON_HEX_APOS |
+				JSON_HEX_QUOT | JSON_HEX_AMP );
 	}
 	public function getAllDef(){
 		echo $this->homemodel->getAllDef();

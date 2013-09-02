@@ -4,14 +4,7 @@
         <ul class="topnav">
             <li class="topuser">
                 <a title="" data-toggle="dropdown"><img src="<?=base_url() ?>images/user.png" alt="" /><span><?= $this->session->userdata("name")?></span><i class="caret"></i></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" title=""><span class="user-profile"></span>My profile</a></li>
-                    <li><a href="#" title=""><span class="user-stats"></span>Statistics <strong>2</strong></a></li>
-                    <li><a href="#" title=""><span class="user-settings"></span>Switch user</a></li>
-                    <li><a href="<?= base_url() ?>admin/do_logout" title=""><span class="user-logout"></span>Logout</a></li>
-                </ul>
             </li>
-            <li><a href="#" title=""><b class="settings"></b></a></li>
             <li><a href="<?=base_url()?>admin/showInbox" title="<?=lang("inbox")?>"><b class="mail"></b></a></li>
             <?php if($table!="search_note"){?>
             <?php if($table!="showNotes"&& $table!="settings" && $table!="showLessons" && $table!="showInbox"){?>

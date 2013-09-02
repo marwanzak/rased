@@ -951,6 +951,15 @@ foreach($levels as $level){?>
 							id="add_student_finger" />
 					</div>
 				</div>
+
+				<div class="control-group">
+					<label class="control-label"><?= lang("terminal_id") ?>:<span
+						class="req">*</span> </label>
+					<div class="controls">
+						<input type="text" class="required span12" name="terminal_id"
+							id="add_student_terminal" />
+					</div>
+				</div>
 			</div>
 			<input type="hidden" id="hidden_ra_students" name="id" />
 

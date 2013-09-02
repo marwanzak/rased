@@ -5,6 +5,8 @@ class admin extends CI_Controller {
 		parent::__construct();
 		date_default_timezone_set("Asia/Riyadh");
 		$this->check_isvalidated();
+		$this->load->model("finger");
+		$this->finger->getRemoteMorning();
 		$this->lang->load("arabic", "arabic");
 	}
 
@@ -22,7 +24,12 @@ class admin extends CI_Controller {
 	}
 	public function index($table="")
 	{
+		if($table==""){
+			redirect(base_url()."admin/dashboard", "refresh");
+		}
 		$user_disagreed_notes = $this->homemodel->getClassDisagreedNotes($this->session->userdata("id"));
+		$admin_unread_messages = $this->homemodel->getAdminMessages("unread");
+		$user_unread_inbox = $this->homemodel->getUserUnreadInbox();
 		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 		$table_permissions = $this->homemodel->checkSeePermissions($table);
 		if($table_permissions==false)
@@ -46,6 +53,8 @@ class admin extends CI_Controller {
 			$table_data = $this->homemodel->searchWord($table,$_POST['word']);
 		}
 		$table_data["table"] = $table;
+		$table_data["admin_messages"] = $admin_unread_messages;
+		$table_data["user_inbox"] = $user_unread_inbox;
 		$table_data["permissions"] = $permissions;
 		$table_data["disagreed_notes"] = $user_disagreed_notes;
 		$this->load->view('body',$table_data);
@@ -241,7 +250,13 @@ class admin extends CI_Controller {
 						"",
 						"",
 						""
-				)
+				),
+				"admin_inbox"=>array(
+						"admin_inbox"=>$permissions->admin_inbox,
+						"",
+						"",
+						""
+						)
 		);
 		$data = array(
 				"id" => $_GET["id"],
@@ -275,6 +290,7 @@ class admin extends CI_Controller {
 
 			}
 			if($count==0){
+				$this->homemodel->insertAction(lang($_POST["table"]),lang("delete"));
 				$this->session->set_userdata("msg","1");
 			}else{
 				$this->session->set_userdata("msg","-1");
@@ -470,13 +486,31 @@ class admin extends CI_Controller {
 	//insert site settings
 	public function insertSiteSettings(){
 		$data=array();
-		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"","sender"=>"","morning"=>"","user_lessons"=>"");
+		$data = array("username"=>"","password"=>"","date"=>"","semester"=>"",
+				"sender"=>"","morning"=>"","user_lessons"=>"",
+				"email_username"=>"mail@gmail.com",
+				"email_port"=>465,
+				"email_server"=>"smtp.gmail.com"
+		);
 		$data["msg"]="";
 		$data["message"]="";
 		if($_POST!=null){
-			$query = $this->homemodel->insertSettings($_POST["smsusername"],
-					$_POST["smspassword"],$_POST["date"],$_POST["semester"],
-					$_POST["sender"],$_POST["mobileactivate"],$_POST["morning"],$_POST["user_lessons"]);
+			$query = $this->homemodel->insertSettings(
+					array(
+							"smsusername" => $_POST["smsusername"],
+							"smspassword" => $_POST["smspassword"],
+							"date" => $_POST["date"],
+							"semester" => $_POST["semester"],
+							"sendername" => $_POST["sender"],
+							"mobileactivate" => $_POST["mobileactivate"],
+							"morning"=>$_POST["morning"],
+							"user_lessons"=>$_POST["user_lessons"],
+							"email_username"=>$_POST["email_username"],
+							"email_password"=>$_POST["email_password"],
+							"email_server"=>$_POST["email_server"],
+							"email_port"=>$_POST["email_port"],
+							"email_method"=>$_POST["email_method"]
+					));
 			if($query==1){
 				$data["msg"]=1;
 			}else{
@@ -494,7 +528,10 @@ class admin extends CI_Controller {
 			$data["sender"] = $set->sendername;
 			$data["mobileactivate"] = $set->mobileactivate;
 			$data["morning"] = $set->morning;
-			$data["user_lessons"] = $set->user_lessons;
+			$data["email_server"] = $set->email_server;
+			$data["email_port"] = $set->email_port;
+			$data["email_username"] = $set->email_username;
+			$data["email_method"] = $set->email_method;
 		}
 		$table1['table']="sitesettings";
 		$this->load->view('header');
@@ -696,4 +733,86 @@ class admin extends CI_Controller {
 		}
 	}
 
+	//show dashboard
+	public function dashboard(){
+		$this->session->set_userdata('refered_from', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+		$user_disagreed_notes = $this->homemodel->getClassDisagreedNotes($this->session->userdata("id"));
+		$admin_unread_messages = $this->homemodel->getAdminMessages("unread");
+		$ready_messages = $this->homemodel->getAllReady();
+		$user_unread_inbox = $this->homemodel->getUserUnreadInbox();
+		$role_query = $this->db->get_where("users", array("id" => $this->session->userdata("id")));
+		$role = $role_query->row();
+		$permissions_query = $this->db->get_where("permissions", array("role" => $role->role ));
+		$permissions = $permissions_query->row();
+		$data["table"] = "dashboard";
+		$data["admin_inbox"] = $admin_unread_messages;
+		$data["user_inbox"] = $user_unread_inbox;
+		$data["permissions"] = $permissions;
+		$data["notes"] = $user_disagreed_notes;
+		$data["mornings"] = $this->finger->getDayMornings(date("Ymd"));
+		$data["ready_messages"] = $ready_messages;
+		$this->load->view("header");
+		$this->load->view("top-nav",$data);
+		$this->load->view("menu-bar",$data);
+		$this->load->view("dashboard",$data);
+	}
+
+	public function odbcGet(){
+		$morning = $this->finger->getMornings();
+		$this->homemodel->array_print($morning);
+	}
+
+	//send email
+	public function sendEmail(){
+		if($_POST){
+			$this->form_validation->set_message('required', lang('required')."%s");
+			$this->form_validation->set_message('email', lang('email'));
+			$this->form_validation->set_rules('subject', lang('subject'), 'required');
+			$this->form_validation->set_rules('address', lang('email'), 'required|email');
+			$this->form_validation->set_rules('message', lang('message'), 'required');
+			if ($this->form_validation->run() == FALSE)
+			{
+				echo validation_errors();
+			}
+			else
+			{
+				$this->load->model("emailmodel");
+				echo $this->emailmodel->sendEmail(array(
+						"message"=>$_POST["message"],
+						"address"=>$_POST["address"],
+						"subject"=>$_POST["subject"]
+				));
+			}
+		}else echo 0;
+	}
+	
+	//send sms
+	public function sendSms(){
+		if($_POST){
+			$this->form_validation->set_message('required', lang('required')."%s");
+			$this->form_validation->set_message('number', lang('number')."%s");
+			$this->form_validation->set_rules('number', lang('number'), 'required|number');
+			$this->form_validation->set_rules('message', lang('message'), 'required');
+			if ($this->form_validation->run() == FALSE)
+			{
+				echo validation_errors();
+			}
+			else
+			{
+				$this->load->model("smsmodel");
+				$settings = $this->homemodel->getSettings();
+				$password = $this->homemodel->dePassword($settings->smspassword,$settings->smssalt);
+				$send = $this->smsmodel->sendSmsNow(array(
+						"username"=>$settings->smsusername,
+						"password"=>$password,
+						"number"=>$_POST["number"],
+						"sender" => $settings->sendername,
+						"message" => $_POST["message"]
+				));
+				if($send)
+					echo $send->MessageIs;
+				else echo 3;
+			}
+		}else echo 0;
+	}
 }

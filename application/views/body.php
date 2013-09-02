@@ -51,7 +51,7 @@
 				<?php $delete = $this->homemodel->checkCreatePermissions($table);?>
 				<?php if($delete && $table!="ra_actions"){?>
 				<div class="well-smoke body">
-					<input type="hidden" value=<?= $table ?> name="table" /> <a
+					 <a
 						data-toggle="modal" href="#add_<?= $table ?>_dialog"
 						class="btn btn-success add_<?= $table?>"><i class="icon-plus"></i>
 						<?= lang("add") ?> </a>
@@ -92,6 +92,7 @@
 						<div id="table_for_print">
 							<form id="main_table_form" method="post"
 								action="<?= base_url()?>admin/delete">
+								<input type="hidden" value=<?= $table ?> name="table" />
 								<table class="table table-checks table-hover table-striped"
 									id="data-table">
 									<thead>

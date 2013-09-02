@@ -1,5 +1,18 @@
 var base_url = "http://localhost/rased/";
 $(document).ready(function() {
+	$("#loader_div").hide();
+	$(document).ajaxStart(function(){
+		$(".loader_div").show();
+	});
+	$(document).ajaxStop(function(){
+		$(".loader_div").hide();
+	});
+	$("#email_method_smtp").on("click", function(){
+		$("#email_settings_div").show();
+	});
+	$("#email_method_php").on("click", function(){
+		$("#email_settings_div").hide();
+	});
 	
 	$("#export_table_form").on("submit", function(){
 		var thead = $("div#table_for_print thead tr th");

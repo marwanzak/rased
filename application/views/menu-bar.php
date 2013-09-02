@@ -5,14 +5,14 @@
 	<div class="sidebar" id="left-sidebar">
 		<ul class="navigation standard">
 			<!-- standard nav -->
-			<li><a href="<?=base_url() ?>admin/" title=""
-				class=<?= ($table=="")? "active":"standard"?>><img
+			<li class=<?= ($table=="dashboard")? "active":"standard"?>><a href="<?=base_url() ?>admin/dashboard" title=""
+				><img
 					src="<?=base_url() ?>images/icons/mainnav/dashboard.png" alt="" />
 					<?= lang("dashboard") ?> </a></li>
 			<li
-				class=<?=($table=="ra_users"||$table=="ra_roles"||$table=="ra_actions"||$table=="ra_defaultnumemail")?"active":""?>><a
+				class=<?=($table=="ra_users"||$table=="ra_roles"||$table=="ra_actions"||$table=="ra_defaultnumemail")?"active":""?>><a href="#" title="" class="expand"
 				id=<?=($table=="ra_users"||$table=="ra_roles"||$table=="ra_actions"||$table=="ra_defaultnumemail")?"current":""?>
-				href="#" title="" class="expand"><img src="" alt="" /> <?=lang("users")?>
+				><img src="" alt="" /> <?=lang("users")?>
 			</a>
 				<ul>
 					<?php if($permissions->user_see==1){?>
@@ -77,9 +77,9 @@
 				</ul>
 			</li>
 			<li
-				class=<?=($table=="ra_notesprob"||$table=="ra_notestypes"||$table=="ra_notes"||$table=="search_note")? "active":""?>><a
+				class=<?=($table=="ra_notesprob"||$table=="ra_notestypes"||$table=="ra_notes"||$table=="search_note")? "active":""?>><a href="#" title="" class="expand"
 				id=<?=($table=="ra_notesprob"||$table=="ra_notestypes"||$table=="ra_notes"||$table=="search_note")? "current":""?>
-				href="#" title="" class="expand"><img src="" alt="" /> <?=lang("notes")?>
+				><img src="" alt="" /> <?=lang("notes")?>
 			</a>
 				<ul>
 					<?php if($permissions->prob_see==1){?>
@@ -104,9 +104,9 @@
 			</li>
 
 			<li
-				class=<?=($table=="ra_forms"||$table=="ra_inbox")? "active":""?>><a
+				class=<?=($table=="ra_forms"||$table=="ra_inbox")? "active":""?>><a href="#" title="" class="expand"
 				id=<?=($table=="ra_forms"||$table=="ra_inbox")? "current":""?>
-				href="#" title="" class="expand"><img src="" alt="" /> <?=lang("trans")?>
+				><img src="" alt="" /> <?=lang("trans")?>
 			</a>
 				<ul>
 			<?php if($permissions->forms_see==1){?>
@@ -121,14 +121,14 @@
 			</li>
 	
 				<li
-				class=<?=($table=="ra_slider"||$table=="ra_readymessages"||$table=="sitesettings")? "active":""?>><a
+				class=<?=($table=="ra_slider"||$table=="ra_readymessages"||$table=="sitesettings")? "active":""?>><a href="#" title="" class="expand"
 				id=<?=($table=="ra_slider"||$table=="ra_readymessages"||$table=="sitesettings")? "current":""?>
-				href="#" title="" class="expand"><img src="" alt="" /> <?=lang("trans")?>
+				><img src="" alt="" /> <?=lang("site")?>
 			</a>
 				<ul>
 			<?php if($permissions->slider_see==1){?>
 			<li class=<?= ($table=="ra_slider")? "current":""?>><a
-				href="<?=base_url() ?>admin/showSlider" title=""><?= lang("site") ?>
+				href="<?=base_url() ?>admin/showSlider" title=""><?= lang("slider") ?>
 			</a></li>
 			<?php }?>
 
@@ -169,4 +169,3 @@
 		<!-- /standard nav -->
 	</div>
 	<!-- /left sidebar -->
-</div>

@@ -3,7 +3,8 @@
 <?php $this->load->view("header")?>
 <?php $this->load->view("top-nav",$data)?>
 <?php $this->load->view("menu-bar",$data)?>
-<div class="content">
+<div
+	class="content">
 	<?php 
 	if($this->session->userdata("msg")){
 		$msg = $this->session->userdata("msg");
@@ -138,6 +139,8 @@
 			</div>
 			<div class="body">
 				<?php if($method=="inbox"){?>
+				<?php $permissions1 = $this->homemodel->checkSeePermissions("admin_inbox")?>
+				<?php if($permissions1){?>
 				<!-- admin inbox -->
 				<div class="block well">
 					<div class="navbar">
@@ -179,6 +182,7 @@
 			</div>
 			<!-- end of admin inbox -->
 			<?php }?>
+			<?php }?>
 		</div>
 		<!-- /main content -->
 	</div>
@@ -207,6 +211,6 @@
 			</button>
 		</div>
 	</div>
-	</div>
-	</body>
-	</html>
+</div>
+</body>
+</html>

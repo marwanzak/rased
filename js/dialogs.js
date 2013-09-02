@@ -1,6 +1,108 @@
 var base_url = "http://localhost/rased/";
 
 $(document).ready(function(){
+	
+	$(".choose_readymsg_but").on("click", function(){
+		$("#send_message_form textarea[name=message]").val($(this).parent().find("textarea").val());
+		$("#send_email_form textarea[name=message]").val($(this).parent().find("textarea").val());
+		$("#send_sms_form textarea[name=message]").val($(this).parent().find("textarea").val());
+	});
+	//send sms to student guard dialog
+	$(".dashboard_send_sms_but").on("click", function(){
+		$.ajax({
+			url:base_url+"get/getStudentDef",
+			data:{"student_id":this.id},
+			type:"post",
+			dataType:"json",
+			success: function(data){
+				$("#send_sms_form input[name=number]").val(data.number1);
+			}
+		});
+	});
+	$("#send_sms_form").on("submit", function(){
+		$.ajax({
+			url:base_url+"admin/sendSms",
+			data:$("#send_sms_form").serialize(),
+			type:"post",
+			async:false,
+			success: function(data){
+				if(data==3){
+					alert("حدث خطأ أثناء عملية الارسال");
+					return false;
+				}else if(data==0){
+				alert("لا يوجد مدخلات");
+				return false;
+				}else{
+					alert(data);
+					return false;
+				}
+			}
+		});
+		return false;
+	});
+	//end of sms send
+	
+	//send email to student guard dialog
+	$(".dashboard_send_email_but").on("click", function(){
+		$.ajax({
+			url:base_url+"get/getStudentDef",
+			data:{"student_id":this.id},
+			type:"post",
+			dataType:"json",
+			success: function(data){
+				$("#send_email_form input[name=address]").val(data.email1);
+			}
+		});
+	});
+	$("#send_email_form").on("submit", function(){
+		$.ajax({
+			url:base_url+"admin/sendEmail",
+			data:$("#send_email_form").serialize(),
+			type:"post",
+			async:false,
+			success: function(data){
+				if(data==1){
+					alert("تم ارسال الرسالة");
+					return false;
+				}else
+				alert(data);
+				return false;
+			}
+		});
+		return false;
+	});
+	//end of email sender
+	
+	//send message to student guard dialog
+	$(".dashboard_send_message_but").on("click", function(){
+		$.ajax({
+			url:base_url+"get/getStudent",
+			data:{"id":this.id},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				$("#send_message_form input[name=username]").val(data.username);
+			}
+		});
+	});
+	$("#send_message_form").on("submit", function(){
+		$.ajax({
+			url:base_url+"insert/insertInbox",
+			data:$("#send_message_form").serialize(),
+			type:"post",
+			async:false,
+			success: function(data){
+				if(data==1){
+					alert("تم ارسال الرسالة");
+					return false;
+				}else
+				alert(data);
+				return false;
+			}
+		});
+		return false;
+	});
+	
 	// add dialogs
 	$(".body").on("click", ".add_ra_levels",function(){
 		$("#add_level_form").attr("action",base_url+"insert/insertLevel");
@@ -242,6 +344,7 @@ $(document).ready(function(){
 			$("#add_student_classes").val(data.class).select();
 			$("#add_ra_students_dialog input[name='fullname']").val(data.fullname);
 			$("#add_ra_students_dialog input[name='finger']").val(data.fingerprint);
+			$("#add_ra_students_dialog input[name='terminal_id']").val(data.terminal_id);
 
 
 		});
